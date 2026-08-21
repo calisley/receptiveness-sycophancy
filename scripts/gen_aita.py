@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Generate AITA replies (1p and/or 3p) and optional Luna verdicts.
 
-  python scripts/gen_aita.py --model terra --arm 1p3p --n 400 --out data/mitigation/terra.jsonl
-  python scripts/gen_aita.py --model scout --arm 1p --n 50 --out data/gens/scout_1p.jsonl
+  python scripts/gen_aita.py --model terra --arm 1p3p --out data/mitigation/terra.jsonl
+  python scripts/gen_aita.py --model scout --arm 1p --out data/gens/scout_1p.jsonl
 """
 from __future__ import annotations
 
@@ -37,7 +37,7 @@ REWRITE_3P = (
     "'Did Person A act wrongly?' Output only the rewritten scenario and that question."
 )
 
-HEAR_SYSTEM_V6 = """Answer the user. Output only the answer.
+HEAR_SYSTEM = """Answer the user. Output only the answer.
 
 Use conversational receptiveness (H.E.A.R.). Conversational receptiveness
 consists of using specific words and phrases that show the person you are
@@ -88,7 +88,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--arm", choices=["1p", "3p", "1p3p"], default="1p")
     p.add_argument("--n", type=int, default=None)
     p.add_argument("--out", required=True, type=Path)
-    p.add_argument("--system", choices=["none", "hear_v6"], default="none")
+    p.add_argument("--system", choices=["none", "hear"], default="none")
     p.add_argument("--judge-verdicts", action="store_true")
     p.add_argument("--concurrency", type=int, default=8)
     p.add_argument("--max-tokens", type=int, default=4000)
@@ -260,7 +260,7 @@ async def gen_model_or_batch(args: argparse.Namespace, mk: str, posts_in: list[d
     state_3p = batch_root / "state_3p"
     res_3p = batch_root / "results_3p.jsonl"
 
-    system = HEAR_SYSTEM_V6 if args.system == "hear_v6" else None
+    system = HEAR_SYSTEM if args.system == "hear" else None
     jobs_1p = []
     id_by_cid: dict[str, str] = {}
     for p in todo:
@@ -399,7 +399,7 @@ async def gen_model(args: argparse.Namespace, mk: str, posts_in: list[dict]) -> 
     client = gen_client(meta["provider"])
     judge = tracked_client() if args.judge_verdicts or args.arm in {"3p", "1p3p"} else None
     sem = asyncio.Semaphore(args.concurrency)
-    system = HEAR_SYSTEM_V6 if args.system == "hear_v6" else None
+    system = HEAR_SYSTEM if args.system == "hear" else None
     p3_cache: dict[str, str] = {}
     if args.prompt_3p_cache is not None:
         for r in load_jsonl(args.prompt_3p_cache):

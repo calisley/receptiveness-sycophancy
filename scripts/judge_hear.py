@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""HEAR v5 Likert scores mapped to paper rec_raw (OLS).
+"""HEAR Likert scores mapped to paper rec_raw (OLS).
 
   python scripts/judge_hear.py --target data/gens/pairs --out data/gens/hear.jsonl
 """

@@ -191,7 +191,7 @@ def load_jsonl_by_key(path: Path, key: str = "key") -> dict[str, dict]:
 def append_jsonl(path: Path, row: dict) -> None:
     """Append one JSONL row and fsync so a mid-run wifi drop keeps finished work.
 
-    Uses an advisory flock so parallel dens-A workers can share the same file.
+    Uses an advisory flock so parallel writers can share the same file.
     """
     path.parent.mkdir(parents=True, exist_ok=True)
     line = json.dumps(row, ensure_ascii=False) + "\n"

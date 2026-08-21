@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build pair jsonl from AITA gens (1p YTA dens) plus human top comments.
+"""Build pair jsonl from AITA gens (crowd-YTA ∩ model-1p-YTA sample) plus human top comments.
 
   python scripts/export_pairs.py --gens data/gens/terra.jsonl --source terra \\
       --speaker "GPT-5.6 Terra" --out-model data/gens/terra.jsonl \\
@@ -71,7 +71,7 @@ def main() -> None:
                     "corpus": "aita",
                     "source": args.source,
                     "speaker": args.speaker,
-                    "dens": args.speaker,
+                    "label": args.speaker,
                     "arm": "1p",
                     "verdict_1p": verdict,
                     "question": post["prompt"],
@@ -98,7 +98,7 @@ def main() -> None:
                         "corpus": "aita",
                         "source": "human",
                         "speaker": "Human",
-                        "dens": args.speaker,
+                        "label": args.speaker,
                         "arm": "1p",
                         "question": post["prompt"],
                         "response": ht,

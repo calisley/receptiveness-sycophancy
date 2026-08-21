@@ -26,7 +26,7 @@ aita_soc_df <- read_csv(
   )
 
 # Per-post Luna 1p verdicts (YTA / NTA / mixed / other) over the full corpus.
-# Used for raw verdict-rate tables; dens in aita_soc_df is the clear-YTA
+# Used for raw verdict-rate tables; aita_soc_df is the clear-YTA
 # ∩ usable-human subset for Figure 1, not the raw YTA rate.
 aita_verdicts_1p <- read_csv(path("data", "aita_verdicts_1p.csv")) %>%
   mutate(
@@ -134,7 +134,7 @@ front_T <- front_long %>%
     n_3p_softer = sum(landing == "3p_softer", na.rm = TRUE),
     n_tie = sum(landing == "same", na.rm = TRUE),
     T = (n_1p_softer + 0.5 * n_tie) / n,
-    # Receptiveness among 1p=YTA only (disagree dens); T stays unconditional.
+    # Receptiveness among 1p=YTA only (among 1p=YTA disagreement posts); T stays unconditional.
     n_rec_yta = sum(verdict_1p == "YTA" & !is.na(rec_raw), na.rm = TRUE),
     rec_raw = mean(rec_raw[verdict_1p == "YTA"], na.rm = TRUE),
     .groups = "drop"
@@ -547,14 +547,14 @@ rcpt_trans %>%
 
 # Reported in the text on model YTA / mixed rates. Denominator for shares is
 # n_judged (posts with a Luna verdict). pct_*_of_2000 uses the fixed corpus
-# size N = 2000. dens_clear_yta is nrow(aita_soc_df) for that model — the
+# size N = 2000. n_fig1_sample is nrow(aita_soc_df) for that model — the
 # Figure 1 clear-YTA ∩ usable-human filter — and understates raw clear YTA.
 
 N_aita <- 2000L
 
-dens_by_model <- aita_soc_df %>%
+fig1_n_by_model <- aita_soc_df %>%
   filter(speaker != "Human", speaker != "Rewrite") %>%
-  count(model = speaker, name = "dens_clear_yta")
+  count(model = speaker, name = "n_fig1_sample")
 
 aita_verdict_rates <- aita_verdicts_1p %>%
   count(model, verdict, name = "n") %>%
@@ -575,7 +575,7 @@ aita_verdict_rates_wide <- aita_verdict_rates %>%
     names_glue = "{verdict}_{.value}"
   ) %>%
   mutate(n_judged = YTA_n + NTA_n + mixed_n + other_n) %>%
-  left_join(dens_by_model, by = "model") %>%
+  left_join(fig1_n_by_model, by = "model") %>%
   transmute(
     model,
     n_judged,
@@ -588,8 +588,8 @@ aita_verdict_rates_wide <- aita_verdict_rates %>%
     pct_mixed = mixed_share_of_judged,
     pct_other = other_share_of_judged,
     pct_YTA_of_2000 = YTA_share_of_2000,
-    dens_clear_yta,
-    dens_over_2000 = dens_clear_yta / N_aita
+    n_fig1_sample,
+    fig1_share_of_2000 = n_fig1_sample / N_aita
   )
 
 aita_verdict_rates_wide
@@ -655,10 +655,10 @@ rcpt_trans %>%
     hi = est + 1.96 * se
   )
 
-## Verdict preservation (listen_once_v3 terra rewrites) --------------------
+## Verdict preservation (listen_once terra rewrites) --------------------
 
 # Reported in the text of "Making responses receptive makes them sycophantic."
-# Paired judge: receptivize_hear_substance_v5 on fig1dens_listen_once_v3 pairs.
+# Paired judge: receptivize_hear_substance on fig1_listen_once pairs.
 # Verdict_same only; takeaway_same is not reported (post-based listening beat
 # is intentional).
 

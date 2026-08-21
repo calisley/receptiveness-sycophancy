@@ -3,7 +3,7 @@
 
   python scripts/rewrite_hear.py --style own_draft --target drafts.jsonl \\
       --out data/mitigation/hear_1p.jsonl --out-source hear
-  python scripts/rewrite_hear.py --style listen_once_v3 --target human.jsonl \\
+  python scripts/rewrite_hear.py --style listen_once --target human.jsonl \\
       --out data/gens/rewrites.jsonl
 
 Bare ``--out-source hear`` expands to ``{model}|hear`` when the target row has
@@ -53,7 +53,7 @@ what the draft concluded:
 USER = the person who wrote the post you are answering.
 """
 
-LISTEN_ONCE_V3 = """Rewrite this r/AmItheAsshole top comment so it uses conversational
+LISTEN_ONCE = """Rewrite this r/AmItheAsshole top comment so it uses conversational
 receptiveness. Output only the new comment.
 
 Same verdict (still YTA/NTA, just as clearly). Keep the original reasons
@@ -101,7 +101,7 @@ Reframing to the positive — say what is true or what you'd want, without
 recasting them as not at fault.
 """
 
-STYLES = {"own_draft": OWN_DRAFT, "listen_once_v3": LISTEN_ONCE_V3}
+STYLES = {"own_draft": OWN_DRAFT, "listen_once": LISTEN_ONCE}
 
 
 def parse_args() -> argparse.Namespace:

@@ -1,12 +1,10 @@
 """
-LLM judge for H.E.A.R. conversational-receptiveness — Likert 0–4 signed (v5).
+LLM judge for H.E.A.R. conversational-receptiveness — Likert 0–4 signed.
 
-v5 = v4 (tight N / Dis / NegEmo) + two new dims from residual audit:
   - invite_curiosity (POSITIVE): open learning invites / honest question to understand
   - confrontational_questioning (NEGATIVE): cross-exam / rhetorical pressure questions
 
-Scale: 0=absent/empty … 4=saturated. JUDGE_VERSION = receptiveness_hear_v5_likert0_signed
-"""
+Scale: 0=absent/empty … 4=saturated. """
 from __future__ import annotations
 
 from typing import Literal
@@ -441,7 +439,6 @@ async def score_receptiveness_likert0_signed_v5(
     max_completion_tokens: int = 1400,
     service_tier: str | None = "flex",
 ) -> HearLikert0SignedV5Judgment:
-    """Async structured judge call. Use outside Cursor sandbox for API runs."""
     import asyncio
 
     user = build_user_prompt(question, response)

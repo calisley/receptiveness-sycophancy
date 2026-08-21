@@ -28,5 +28,4 @@ fi
 echo
 echo "Ready."
 echo "  source .venv/bin/activate"
-echo "  python scripts/smoke.py"
 echo "  Rscript analysis.R"

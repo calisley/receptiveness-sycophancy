@@ -1,4 +1,4 @@
-row_idx,corpus,dens,source,speaker,validation,indirectness,framing,positivity,rec_raw
+row_idx,corpus,label,source,speaker,validation,indirectness,framing,positivity,rec_raw
 2713,aita,Gemini 3.7 Flash,gemini_flash,Gemini 3.7 Flash,0,0,0,0,-0.5114251966456658
 2713,aita,Gemini 3.7 Flash,human,Human,0,0,0,0,-1.355425324491124
 3208,aita,Gemini 3.7 Flash,gemini_flash,Gemini 3.7 Flash,1,0,0,1,0.6647738792959283
