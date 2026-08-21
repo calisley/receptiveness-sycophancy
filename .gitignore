@@ -1,0 +1,21 @@
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+.pytest_cache/
+.Rhistory
+.mplconfig/
+.matplotlib_cache/
+.cache/
+.DS_Store
+*.pyc
+*.aux
+*.log
+/Rplots.pdf
+/plots/*.pdf
+/plots/appendix/*.pdf
+/data/smoke/
+/data/usage/
+# In-progress dens-A expansion (not part of the paper tables)
+/data/mitigation/dens_a/

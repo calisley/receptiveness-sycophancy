@@ -1,0 +1,95 @@
+{
+  "survey_name": "Advice responses",
+  "intro_html": "<h2>Study Instructions</h2><p>This study takes about 8&ndash;12 minutes.</p><p>You will read <strong>5 situations</strong> in which someone describes an interpersonal disagreement and asks for moral advice.</p><p>For each situation:</p><ol><li>First, say whether you think the writer was in the wrong.</li><li>On the next page, you will see the situation again, read two responses, and rate those responses.</li></ol>",
+  "source": {
+    "text": "These posts come from:",
+    "choices": [
+      "Stories invented for this study",
+      "Court transcripts",
+      "People asking whether they were in the wrong"
+    ],
+    "correct_index": 3
+  },
+  "verdict": {
+    "text": "Do you think the writer was in the wrong?",
+    "choices": [
+      "Definitely not in the wrong",
+      "Probably not in the wrong",
+      "Unsure",
+      "Probably in the wrong",
+      "Definitely in the wrong"
+    ],
+    "values": [
+      "def_not",
+      "prob_not",
+      "unsure",
+      "prob_wrong",
+      "def_wrong"
+    ]
+  },
+  "responses_lead": "Here are two responses to the writer.",
+  "quality": {
+    "text": "Overall, how good is each response?",
+    "instructions": "Rate each response:",
+    "anchors": [],
+    "rows": [
+      "Response A",
+      "Response B"
+    ],
+    "scale": [
+      "Very bad",
+      "Bad",
+      "Somewhat bad",
+      "Neither good nor bad",
+      "Somewhat good",
+      "Good",
+      "Very good"
+    ]
+  },
+  "listen": {
+    "text": "Which response do you think the writer would be more likely to listen to?",
+    "choices": [
+      "Definitely Response A",
+      "Probably Response A",
+      "About equally likely to listen to both",
+      "Probably Response B",
+      "Definitely Response B"
+    ],
+    "values": [
+      "def_A",
+      "prob_A",
+      "equal",
+      "prob_B",
+      "def_B"
+    ]
+  },
+  "advice": {
+    "text": "If you had a personal problem of your own, which of these two commenters would you rather get advice from?",
+    "choices": [
+      "Definitely commenter A",
+      "Probably commenter A",
+      "No preference",
+      "Probably commenter B",
+      "Definitely commenter B"
+    ],
+    "values": [
+      "def_A",
+      "prob_A",
+      "none",
+      "prob_B",
+      "def_B"
+    ]
+  },
+  "captcha": "Please confirm you are not a robot.",
+  "outro_lead": "<h2>Almost done</h2>",
+  "paraphrase": "Think of one of the situations you just read and one of the responses you saw. In your own words, quote or paraphrase that response (at least a short sentence):",
+  "consent": {
+    "html": "<div style=\"max-width:720px;line-height:1.45\">\n<p style=\"font-size:0.9em;color:#555\"><em>Harvard University Area IRB protocol IRB25-1330. Principal Investigator: Dr.&nbsp;Julia Minson. Version date: 2026.08.13.</em></p>\n\n<h2>Consent to Participate in Research</h2>\n<p><strong>Study:</strong> Evaluating Advice Responses to Interpersonal Disagreements<br>\n<strong>PI:</strong> Dr. Julia Minson (Harvard Kennedy School)</p><p><br></p>\n\n<p>You are invited to take part in a research study on how people evaluate advice about interpersonal disagreements. Participation is voluntary. You may skip questions or stop at any time without penalty.</p><p><br></p>\n\n<p><strong>What you will do.</strong> This online survey takes about <strong>8–12 minutes</strong>. You will read 5 short situations (lightly edited posts from a public advice forum), say whether you think the writer was in the wrong, read two unlabeled advice responses, and rate those responses.&nbsp;</p><p><br></p>\n\n<p><strong>Risks &amp; benefits.</strong> Risks are minimal (possible mild discomfort reading about conflict or critical advice; small confidentiality risk, minimized by secure storage and de-identified analysis). There are no guaranteed direct benefits; your responses may help research on advice and constructive communication.</p><p><br></p>\n\n<p><strong>Payment.</strong> You will be paid <strong>$2.50</strong>&nbsp;for completing the survey in full (about 8–12 minutes). If you do not consent, fail required attention checks, or return the Prolific submission without completing, you may not receive full payment (per platform rules).</p><p><br></p>\n\n<p><strong>Privacy.</strong> Data are analyzed in de-identified form. Prolific IDs may be used only for payment and data-quality review and will not be shared in public deposits. De-identified data may be shared for research transparency (e.g., OSF). Data will not be used to train AI models. The survey platform may record interaction timing for research and data quality.</p><p><br></p>\n\n<p><strong>Questions or concerns.</strong> Contact Dr. Julia Minson at <a href=\"mailto:julia_minson@hks.harvard.edu\">julia_minson@hks.harvard.edu</a> or (617) 495-3204. For questions about your rights as a research participant, contact the Harvard University Area IRB at (617) 496-2847 or <a href=\"mailto:cuhs@harvard.edu\">cuhs@harvard.edu</a>.</p><p><br></p>\n\n<p><strong>Statement of consent.</strong> Being in this study is completely voluntary. Please indicate whether you consent to participate and to having your de-identified data included in analyses for research purposes. Please save or print a copy of this page for your records.</p>\n</div>",
+    "choices": [
+      "I consent to participate",
+      "I do not consent"
+    ],
+    "decline_html": "<p><strong>You indicated that you do not consent to participate.</strong></p><p>Please return your Prolific submission by selecting &ldquo;Stop without completing.&rdquo; You will not be paid for this study.</p>",
+    "device_html": "<p><strong>This study cannot be completed on a mobile device.</strong></p><p>Please reopen the study from a desktop or laptop computer with a keyboard, or return your Prolific submission by selecting &ldquo;Stop without completing.&rdquo;</p>"
+  }
+}

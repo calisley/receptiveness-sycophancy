@@ -1,0 +1,649 @@
+{
+  "note": "Preserves WORKING consent/CSS. Page1=wrongness+timing; page2=situation re-read+ratings+timing. Timing tags t_v_*/t_r_* (First/Last Click, Page Submit, Click Count). Within each item, Response A/B order is randomized (even 1-of-2): ord_<id>=ab means human is A, ba means rewrite is A. If Create-from-file rejects new Timing QIDs, add Timing in the UI on one pack, re-export WORKING, re-run fill.",
+  "base": "Advice_responses_WORKING.qsf",
+  "survey_id": "SV_5vwCAJWWw8RZFn8",
+  "n_sq": 144,
+  "n_timing": 40,
+  "items": [
+    {
+      "id": 921,
+      "order": "randomized",
+      "A": "human if ord=ab else rewrite",
+      "B": "rewrite if ord=ab else human",
+      "qids": [
+        "QID1",
+        "QID2",
+        "QID3",
+        "QID4",
+        "QID85"
+      ],
+      "timing": {
+        "verdict": "QID105",
+        "responses": "QID106"
+      },
+      "block": "BL_6yE3F8l9hUikad7",
+      "tags": {
+        "verdict": "v_921",
+        "quality_A": "gA_921",
+        "quality_B": "gB_921",
+        "listen": "l_921",
+        "order": "ord_921",
+        "timing_verdict": "t_v_921",
+        "timing_responses": "t_r_921",
+        "advice": "a_921"
+      },
+      "pages": [
+        "verdict",
+        "responses"
+      ]
+    },
+    {
+      "id": 3731,
+      "order": "randomized",
+      "A": "human if ord=ab else rewrite",
+      "B": "rewrite if ord=ab else human",
+      "qids": [
+        "QID5",
+        "QID6",
+        "QID7",
+        "QID8",
+        "QID86"
+      ],
+      "timing": {
+        "verdict": "QID107",
+        "responses": "QID108"
+      },
+      "block": "BL_bdCVDLSCxhWO8OF",
+      "tags": {
+        "verdict": "v_3731",
+        "quality_A": "gA_3731",
+        "quality_B": "gB_3731",
+        "listen": "l_3731",
+        "order": "ord_3731",
+        "timing_verdict": "t_v_3731",
+        "timing_responses": "t_r_3731",
+        "advice": "a_3731"
+      },
+      "pages": [
+        "verdict",
+        "responses"
+      ]
+    },
+    {
+      "id": 1084,
+      "order": "randomized",
+      "A": "human if ord=ab else rewrite",
+      "B": "rewrite if ord=ab else human",
+      "qids": [
+        "QID9",
+        "QID10",
+        "QID11",
+        "QID12",
+        "QID87"
+      ],
+      "timing": {
+        "verdict": "QID109",
+        "responses": "QID110"
+      },
+      "block": "BL_0PS224iJB49NtVb",
+      "tags": {
+        "verdict": "v_1084",
+        "quality_A": "gA_1084",
+        "quality_B": "gB_1084",
+        "listen": "l_1084",
+        "order": "ord_1084",
+        "timing_verdict": "t_v_1084",
+        "timing_responses": "t_r_1084",
+        "advice": "a_1084"
+      },
+      "pages": [
+        "verdict",
+        "responses"
+      ]
+    },
+    {
+      "id": 939,
+      "order": "randomized",
+      "A": "human if ord=ab else rewrite",
+      "B": "rewrite if ord=ab else human",
+      "qids": [
+        "QID13",
+        "QID14",
+        "QID15",
+        "QID16",
+        "QID88"
+      ],
+      "timing": {
+        "verdict": "QID111",
+        "responses": "QID112"
+      },
+      "block": "BL_9vuvYfD4zFpvUHj",
+      "tags": {
+        "verdict": "v_939",
+        "quality_A": "gA_939",
+        "quality_B": "gB_939",
+        "listen": "l_939",
+        "order": "ord_939",
+        "timing_verdict": "t_v_939",
+        "timing_responses": "t_r_939",
+        "advice": "a_939"
+      },
+      "pages": [
+        "verdict",
+        "responses"
+      ]
+    },
+    {
+      "id": 607,
+      "order": "randomized",
+      "A": "human if ord=ab else rewrite",
+      "B": "rewrite if ord=ab else human",
+      "qids": [
+        "QID21",
+        "QID22",
+        "QID23",
+        "QID24",
+        "QID89"
+      ],
+      "timing": {
+        "verdict": "QID113",
+        "responses": "QID114"
+      },
+      "block": "BL_0MKJcn06rBoq6iN",
+      "tags": {
+        "verdict": "v_607",
+        "quality_A": "gA_607",
+        "quality_B": "gB_607",
+        "listen": "l_607",
+        "order": "ord_607",
+        "timing_verdict": "t_v_607",
+        "timing_responses": "t_r_607",
+        "advice": "a_607"
+      },
+      "pages": [
+        "verdict",
+        "responses"
+      ]
+    },
+    {
+      "id": 3488,
+      "order": "randomized",
+      "A": "human if ord=ab else rewrite",
+      "B": "rewrite if ord=ab else human",
+      "qids": [
+        "QID25",
+        "QID26",
+        "QID27",
+        "QID28",
+        "QID90"
+      ],
+      "timing": {
+        "verdict": "QID115",
+        "responses": "QID116"
+      },
+      "block": "BL_FGyfKApnfHNzTrH",
+      "tags": {
+        "verdict": "v_3488",
+        "quality_A": "gA_3488",
+        "quality_B": "gB_3488",
+        "listen": "l_3488",
+        "order": "ord_3488",
+        "timing_verdict": "t_v_3488",
+        "timing_responses": "t_r_3488",
+        "advice": "a_3488"
+      },
+      "pages": [
+        "verdict",
+        "responses"
+      ]
+    },
+    {
+      "id": 687,
+      "order": "randomized",
+      "A": "human if ord=ab else rewrite",
+      "B": "rewrite if ord=ab else human",
+      "qids": [
+        "QID29",
+        "QID30",
+        "QID31",
+        "QID32",
+        "QID91"
+      ],
+      "timing": {
+        "verdict": "QID117",
+        "responses": "QID118"
+      },
+      "block": "BL_wmHR5Cz3fNnDXM9",
+      "tags": {
+        "verdict": "v_687",
+        "quality_A": "gA_687",
+        "quality_B": "gB_687",
+        "listen": "l_687",
+        "order": "ord_687",
+        "timing_verdict": "t_v_687",
+        "timing_responses": "t_r_687",
+        "advice": "a_687"
+      },
+      "pages": [
+        "verdict",
+        "responses"
+      ]
+    },
+    {
+      "id": 2276,
+      "order": "randomized",
+      "A": "human if ord=ab else rewrite",
+      "B": "rewrite if ord=ab else human",
+      "qids": [
+        "QID33",
+        "QID34",
+        "QID35",
+        "QID36",
+        "QID92"
+      ],
+      "timing": {
+        "verdict": "QID119",
+        "responses": "QID120"
+      },
+      "block": "BL_Tdv9K8yaj4cy0qm",
+      "tags": {
+        "verdict": "v_2276",
+        "quality_A": "gA_2276",
+        "quality_B": "gB_2276",
+        "listen": "l_2276",
+        "order": "ord_2276",
+        "timing_verdict": "t_v_2276",
+        "timing_responses": "t_r_2276",
+        "advice": "a_2276"
+      },
+      "pages": [
+        "verdict",
+        "responses"
+      ]
+    },
+    {
+      "id": 1073,
+      "order": "randomized",
+      "A": "human if ord=ab else rewrite",
+      "B": "rewrite if ord=ab else human",
+      "qids": [
+        "QID37",
+        "QID38",
+        "QID39",
+        "QID40",
+        "QID93"
+      ],
+      "timing": {
+        "verdict": "QID121",
+        "responses": "QID122"
+      },
+      "block": "BL_aNUv8MtPBFto2XA",
+      "tags": {
+        "verdict": "v_1073",
+        "quality_A": "gA_1073",
+        "quality_B": "gB_1073",
+        "listen": "l_1073",
+        "order": "ord_1073",
+        "timing_verdict": "t_v_1073",
+        "timing_responses": "t_r_1073",
+        "advice": "a_1073"
+      },
+      "pages": [
+        "verdict",
+        "responses"
+      ]
+    },
+    {
+      "id": 3804,
+      "order": "randomized",
+      "A": "human if ord=ab else rewrite",
+      "B": "rewrite if ord=ab else human",
+      "qids": [
+        "QID41",
+        "QID42",
+        "QID43",
+        "QID44",
+        "QID94"
+      ],
+      "timing": {
+        "verdict": "QID123",
+        "responses": "QID124"
+      },
+      "block": "BL_bkYrR1j7cOV423E",
+      "tags": {
+        "verdict": "v_3804",
+        "quality_A": "gA_3804",
+        "quality_B": "gB_3804",
+        "listen": "l_3804",
+        "order": "ord_3804",
+        "timing_verdict": "t_v_3804",
+        "timing_responses": "t_r_3804",
+        "advice": "a_3804"
+      },
+      "pages": [
+        "verdict",
+        "responses"
+      ]
+    },
+    {
+      "id": 2710,
+      "order": "randomized",
+      "A": "human if ord=ab else rewrite",
+      "B": "rewrite if ord=ab else human",
+      "qids": [
+        "QID45",
+        "QID46",
+        "QID47",
+        "QID48",
+        "QID95"
+      ],
+      "timing": {
+        "verdict": "QID125",
+        "responses": "QID126"
+      },
+      "block": "BL_AmKYW23QoXywdgK",
+      "tags": {
+        "verdict": "v_2710",
+        "quality_A": "gA_2710",
+        "quality_B": "gB_2710",
+        "listen": "l_2710",
+        "order": "ord_2710",
+        "timing_verdict": "t_v_2710",
+        "timing_responses": "t_r_2710",
+        "advice": "a_2710"
+      },
+      "pages": [
+        "verdict",
+        "responses"
+      ]
+    },
+    {
+      "id": 1672,
+      "order": "randomized",
+      "A": "human if ord=ab else rewrite",
+      "B": "rewrite if ord=ab else human",
+      "qids": [
+        "QID49",
+        "QID50",
+        "QID51",
+        "QID52",
+        "QID96"
+      ],
+      "timing": {
+        "verdict": "QID127",
+        "responses": "QID128"
+      },
+      "block": "BL_Ao8qsqAwovGXTFi",
+      "tags": {
+        "verdict": "v_1672",
+        "quality_A": "gA_1672",
+        "quality_B": "gB_1672",
+        "listen": "l_1672",
+        "order": "ord_1672",
+        "timing_verdict": "t_v_1672",
+        "timing_responses": "t_r_1672",
+        "advice": "a_1672"
+      },
+      "pages": [
+        "verdict",
+        "responses"
+      ]
+    },
+    {
+      "id": 2937,
+      "order": "randomized",
+      "A": "human if ord=ab else rewrite",
+      "B": "rewrite if ord=ab else human",
+      "qids": [
+        "QID53",
+        "QID54",
+        "QID55",
+        "QID56",
+        "QID97"
+      ],
+      "timing": {
+        "verdict": "QID129",
+        "responses": "QID130"
+      },
+      "block": "BL_e4DJ1weVXMUfEKY",
+      "tags": {
+        "verdict": "v_2937",
+        "quality_A": "gA_2937",
+        "quality_B": "gB_2937",
+        "listen": "l_2937",
+        "order": "ord_2937",
+        "timing_verdict": "t_v_2937",
+        "timing_responses": "t_r_2937",
+        "advice": "a_2937"
+      },
+      "pages": [
+        "verdict",
+        "responses"
+      ]
+    },
+    {
+      "id": 787,
+      "order": "randomized",
+      "A": "human if ord=ab else rewrite",
+      "B": "rewrite if ord=ab else human",
+      "qids": [
+        "QID57",
+        "QID58",
+        "QID59",
+        "QID60",
+        "QID98"
+      ],
+      "timing": {
+        "verdict": "QID131",
+        "responses": "QID132"
+      },
+      "block": "BL_QCQUB3JhIGz1rVA",
+      "tags": {
+        "verdict": "v_787",
+        "quality_A": "gA_787",
+        "quality_B": "gB_787",
+        "listen": "l_787",
+        "order": "ord_787",
+        "timing_verdict": "t_v_787",
+        "timing_responses": "t_r_787",
+        "advice": "a_787"
+      },
+      "pages": [
+        "verdict",
+        "responses"
+      ]
+    },
+    {
+      "id": 3920,
+      "order": "randomized",
+      "A": "human if ord=ab else rewrite",
+      "B": "rewrite if ord=ab else human",
+      "qids": [
+        "QID61",
+        "QID62",
+        "QID63",
+        "QID64",
+        "QID99"
+      ],
+      "timing": {
+        "verdict": "QID133",
+        "responses": "QID134"
+      },
+      "block": "BL_oB4s9Knh9mKumeA",
+      "tags": {
+        "verdict": "v_3920",
+        "quality_A": "gA_3920",
+        "quality_B": "gB_3920",
+        "listen": "l_3920",
+        "order": "ord_3920",
+        "timing_verdict": "t_v_3920",
+        "timing_responses": "t_r_3920",
+        "advice": "a_3920"
+      },
+      "pages": [
+        "verdict",
+        "responses"
+      ]
+    },
+    {
+      "id": 2291,
+      "order": "randomized",
+      "A": "human if ord=ab else rewrite",
+      "B": "rewrite if ord=ab else human",
+      "qids": [
+        "QID65",
+        "QID66",
+        "QID67",
+        "QID68",
+        "QID100"
+      ],
+      "timing": {
+        "verdict": "QID135",
+        "responses": "QID136"
+      },
+      "block": "BL_dXavEPquqU0vBHV",
+      "tags": {
+        "verdict": "v_2291",
+        "quality_A": "gA_2291",
+        "quality_B": "gB_2291",
+        "listen": "l_2291",
+        "order": "ord_2291",
+        "timing_verdict": "t_v_2291",
+        "timing_responses": "t_r_2291",
+        "advice": "a_2291"
+      },
+      "pages": [
+        "verdict",
+        "responses"
+      ]
+    },
+    {
+      "id": 1030,
+      "order": "randomized",
+      "A": "human if ord=ab else rewrite",
+      "B": "rewrite if ord=ab else human",
+      "qids": [
+        "QID69",
+        "QID70",
+        "QID71",
+        "QID72",
+        "QID101"
+      ],
+      "timing": {
+        "verdict": "QID137",
+        "responses": "QID138"
+      },
+      "block": "BL_G2wdqg1DPwDdFi1",
+      "tags": {
+        "verdict": "v_1030",
+        "quality_A": "gA_1030",
+        "quality_B": "gB_1030",
+        "listen": "l_1030",
+        "order": "ord_1030",
+        "timing_verdict": "t_v_1030",
+        "timing_responses": "t_r_1030",
+        "advice": "a_1030"
+      },
+      "pages": [
+        "verdict",
+        "responses"
+      ]
+    },
+    {
+      "id": 246,
+      "order": "randomized",
+      "A": "human if ord=ab else rewrite",
+      "B": "rewrite if ord=ab else human",
+      "qids": [
+        "QID73",
+        "QID74",
+        "QID75",
+        "QID76",
+        "QID102"
+      ],
+      "timing": {
+        "verdict": "QID139",
+        "responses": "QID140"
+      },
+      "block": "BL_txJnyhcu1fSQb4B",
+      "tags": {
+        "verdict": "v_246",
+        "quality_A": "gA_246",
+        "quality_B": "gB_246",
+        "listen": "l_246",
+        "order": "ord_246",
+        "timing_verdict": "t_v_246",
+        "timing_responses": "t_r_246",
+        "advice": "a_246"
+      },
+      "pages": [
+        "verdict",
+        "responses"
+      ]
+    },
+    {
+      "id": 1317,
+      "order": "randomized",
+      "A": "human if ord=ab else rewrite",
+      "B": "rewrite if ord=ab else human",
+      "qids": [
+        "QID77",
+        "QID78",
+        "QID79",
+        "QID80",
+        "QID103"
+      ],
+      "timing": {
+        "verdict": "QID141",
+        "responses": "QID142"
+      },
+      "block": "BL_KusI7s3IxAfRR9h",
+      "tags": {
+        "verdict": "v_1317",
+        "quality_A": "gA_1317",
+        "quality_B": "gB_1317",
+        "listen": "l_1317",
+        "order": "ord_1317",
+        "timing_verdict": "t_v_1317",
+        "timing_responses": "t_r_1317",
+        "advice": "a_1317"
+      },
+      "pages": [
+        "verdict",
+        "responses"
+      ]
+    },
+    {
+      "id": 24,
+      "order": "randomized",
+      "A": "human if ord=ab else rewrite",
+      "B": "rewrite if ord=ab else human",
+      "qids": [
+        "QID81",
+        "QID82",
+        "QID83",
+        "QID84",
+        "QID104"
+      ],
+      "timing": {
+        "verdict": "QID143",
+        "responses": "QID144"
+      },
+      "block": "BL_k0va7GAiv4JBbBb",
+      "tags": {
+        "verdict": "v_24",
+        "quality_A": "gA_24",
+        "quality_B": "gB_24",
+        "listen": "l_24",
+        "order": "ord_24",
+        "timing_verdict": "t_v_24",
+        "timing_responses": "t_r_24",
+        "advice": "a_24"
+      },
+      "pages": [
+        "verdict",
+        "responses"
+      ]
+    }
+  ]
+}
