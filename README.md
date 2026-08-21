@@ -1,4 +1,4 @@
-# Reproduction packet for *Receptiveness, Not Sycophancy: Distinguishing Engagement from Deference in Language Models*
+# Reproduction package for *Receptiveness, Not Sycophancy: Distinguishing Engagement from Deference in Language Models*
 
 Prompts live in the Python files that use them. `analysis.R` builds every plot and reported statistic from the CSVs under `data/`.
 
