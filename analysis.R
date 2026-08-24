@@ -61,21 +61,33 @@ aita_verdicts_1p <- read_csv(path("data", "aita_verdicts_1p.csv")) %>%
     verdict = factor(verdict, levels = c("YTA", "NTA", "mixed", "other"))
   )
 
-# Fig2 receptive-rewrite panel. Main-text Figure 2 uses the original n = 808
-# subset (GPT-5 auxiliary 1p verdict = YTA). The full eligible panel
-# (n = 1,892) is kept as rcpt_trans_all for robustness checks at the end.
+# Fig 2 receptive-rewrite panels (receptiveness_transform.csv).
+# Expanded (n = 1,892): every distinct row_idx with complete Human + Rewrite
+# rows — i.e. AITA human top comment, successful listen-once rewrite, and
+# non-missing ELEPHANT + HEAR + positivity scores (see scripts/compile_fig2.py).
+# Main text (n = 808): expanded panel ∩ GPT-5 auxiliary 1p verdict = YTA.
 rcpt_trans_all <- read_csv(
   path("data", "receptiveness_transform.csv")
 ) %>%
   mutate(
     speaker = factor(speaker, levels = c("Human", "GPT-5", "Rewrite")),
-    any_elephant = validation | indirectness | framing_v2,
-    any_syc = validation | indirectness | framing_v2 | positivity
+    any_elephant = validation | indirectness | framing,
+    any_syc = validation | indirectness | framing | positivity
   )
+
+fig2_expanded_row_idx <- rcpt_trans_all %>%
+  distinct(row_idx) %>%
+  arrange(row_idx) %>%
+  pull(row_idx)
+
+stopifnot(
+  length(fig2_expanded_row_idx) == n_distinct(rcpt_trans_all$row_idx),
+  all(unname(table(rcpt_trans_all$row_idx)) == 2L)
+)
 
 fig2_row_idx <- aita_verdicts_1p %>%
   filter(model == "GPT-5", verdict == "YTA") %>%
-  semi_join(rcpt_trans_all %>% distinct(row_idx), by = "row_idx") %>%
+  semi_join(tibble(row_idx = fig2_expanded_row_idx), by = "row_idx") %>%
   pull(row_idx)
 
 rcpt_trans <- rcpt_trans_all %>%
@@ -656,7 +668,7 @@ tryCatch(
 )
 
 
-## Figure 1: receptiveness vs social sycophancy (AITA-YTA) -----------------
+## Receptiveness vs social sycophancy (AITA-YTA) -----------------
 
 message("\n=== Main text: pooled r(total social sycophancy, receptiveness), AITA-YTA ===")
 aita_soc_df %>%
@@ -936,7 +948,7 @@ message(
 message("\n=== human experiment outcomes (raw, n=200) ===")
 print(exp_robustness_csv %>% select(Outcome, `Main text (n=200)`))
 
-## Figure 3: preference vs baseline receptiveness --------------------------
+## Preference vs baseline receptiveness --------------------------
 
 message("\n=== Main text: preference gap slope vs original receptiveness (item-level) ===")
 exp %>%
@@ -1397,6 +1409,20 @@ aita_verdict_rates_wide <- aita_verdict_rates %>%
 message("\n=== Supplement: raw Luna 1p verdict rates by model (N=2000) ===")
 aita_verdict_rates_wide
 
+message("\n=== Supplement: AITA sample sizes (corpus → Fig 2 panels) ===")
+tibble(
+  stage = c(
+    "Full AITA-YTA corpus (posts with Luna 1p verdict)",
+    "Fig 2 expanded (complete human/rewrite pairs in receptiveness_transform.csv)",
+    "Fig 2 main text (expanded ∩ GPT-5 1p verdict = YTA)"
+  ),
+  n = c(
+    N_aita,
+    length(fig2_expanded_row_idx),
+    length(fig2_row_idx)
+  )
+)
+
 
 message("\n=== Supplement: share judging asker not in the wrong (verdict <= 2) ===")
 {
@@ -1419,6 +1445,7 @@ message("\n=== Supplement: share judging asker not in the wrong (verdict <= 2) =
 # (contaminated framing_v2 vs corrected framing vs omit framing).
 
 rcpt_trans_expanded <- rcpt_trans_all %>%
+  filter(row_idx %in% fig2_expanded_row_idx) %>%
   mutate(
     rec_z = (rec_raw - mean(rec_raw[speaker == "Human"])) /
       sd(rec_raw[speaker == "Human"])
@@ -1427,7 +1454,7 @@ rcpt_trans_expanded <- rcpt_trans_all %>%
 ## Expanded fig2 panel (n = 1,892) -----------------------------------------
 
 # Receptiveness gain on the full eligible human-comment panel.
-message("\n=== Supplement: receptiveness gain, expanded fig2 panel (n=1,892) ===")
+message("\n=== Supplement: receptiveness gain, expanded fig2 panel ===")
 rcpt_trans_expanded %>%
   select(row_idx, speaker, rec_z) %>%
   pivot_wider(names_from = speaker, values_from = rec_z) %>%
@@ -1442,11 +1469,18 @@ rcpt_trans_expanded %>%
   mutate(lo = est - 1.96 * se, hi = est + 1.96 * se)
 
 # Verdict preservation on the expanded panel.
-message("\n=== Supplement: verdict preservation, expanded fig2 panel (n=1,892) ===")
+message("\n=== Supplement: verdict preservation, expanded fig2 panel ===")
 {
-  n <- length(judged_v3_all)
+  judged_expanded <- judged_v3_all[
+    vapply(
+      judged_v3_all,
+      function(j) as.integer(j$row_idx) %in% fig2_expanded_row_idx,
+      logical(1)
+    )
+  ]
+  n <- length(judged_expanded)
   k <- sum(vapply(
-    judged_v3_all,
+    judged_expanded,
     function(j) as.integer(j$verdict_same),
     integer(1)
   ))
