@@ -753,19 +753,18 @@ exp_items %>%
 
 exp_part <- read_csv(path("data", "experiment", "participants.csv"))
 
-MANUAL_PARAPHRASE_FAIL <- "6a0c93436c009b0e6c8a3fda"
-
-prereg_exclude_pids <- exp_part %>%
+# Prereg paraphrase QC: empty/short outro, or manual fail flagged at deposit.
+prereg_exclude_ids <- exp_part %>%
   filter(
     is.na(outro_paraphrase) |
       trimws(outro_paraphrase) == "" |
       nchar(trimws(outro_paraphrase)) < 10L |
-      prolific_pid == MANUAL_PARAPHRASE_FAIL
+      flag_manual_paraphrase_fail == 1L
   ) %>%
-  pull(prolific_pid)
+  pull(participant_id)
 
 exp_prereg <- exp %>%
-  filter(!prolific_pid %in% prereg_exclude_pids)
+  filter(!participant_id %in% prereg_exclude_ids)
 
 exp_len <- exp %>%
   left_join(exp_items %>% select(item_id, words_delta), by = "item_id")
@@ -943,7 +942,7 @@ writeLines(
 
 message(
   "Wrote tables/exp_human_robustness.{csv,tex} (prereg paraphrase exclusions: ",
-  length(prereg_exclude_pids), " participants)."
+  length(prereg_exclude_ids), " participants)."
 )
 
 message("\n=== human experiment outcomes (raw, n=200) ===")
