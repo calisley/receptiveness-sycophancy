@@ -33,15 +33,11 @@ PREREG_RAW = ROOT / "data" / "experiment" / "Advice responses prereg_August 18, 
 PREREG_ITEMS = ROOT / "data" / "experiment" / "items.json"
 PREREG_WAVE = "prereg_20260818"
 
-SELF_IP = "66.31.164.127"
-# Experimenter / Qualtrics tests: drop from released files entirely.
-EXPERIMENTER_PIDS = {
-    "6a7e8f75cfcd04db97e588b6",
-}
-QC_REVIEW_PIDS = {
-    "69694a17e34d205d4484f00a",
-    "608981c1be83df6a5452398e",
-}
+SELF_IP = ""  # redacted in public deposit; drop rule is a no-op
+# Experimenter / QC Prolific IDs redacted in the public deposit. Released
+# analysis tables are already compiled; flag_qc_review is baked into CSVs.
+EXPERIMENTER_PIDS: set[str] = set()
+QC_REVIEW_PIDS: set[str] = set()
 CONSENT_YES = "I consent to participate"
 
 VERDICT_MAP = {
@@ -418,7 +414,8 @@ Review these before dropping anyone.
 
     notes += """
 ## Privacy
-Clean files **omit IP addresses** and lat/long. `prolific_pid` is retained for payment/QC; strip before public deposit.
+Clean files **omit IP addresses** and lat/long. Participant IDs in released
+tables are anonymous `participant_id` values; Prolific IDs are blanked.
 """
     out_notes.write_text(notes)
 
@@ -981,7 +978,8 @@ Model-origin `model_label` counts: {model_counts}
 
     notes += """
 ## Privacy
-Clean files **omit IP addresses** and lat/long. `prolific_pid` is retained for payment/QC; strip before public deposit.
+Clean files **omit IP addresses** and lat/long. Participant IDs in released
+tables are anonymous `participant_id` values; Prolific IDs are blanked.
 """
     out_notes.write_text(notes)
 
