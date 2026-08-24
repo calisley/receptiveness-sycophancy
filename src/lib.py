@@ -181,7 +181,7 @@ def load_jsonl(path: Path) -> list[dict]:
     if not path.is_file():
         return []
     rows = []
-    with path.open() as f:
+    with path.open(encoding="utf-8") as f:
         for line in f:
             if line.strip():
                 rows.append(json.loads(line))
@@ -204,7 +204,7 @@ def append_jsonl(path: Path, row: dict) -> None:
     """
     path.parent.mkdir(parents=True, exist_ok=True)
     line = json.dumps(row, ensure_ascii=False) + "\n"
-    with path.open("a") as f:
+    with path.open("a", encoding="utf-8") as f:
         try:
             import fcntl
 
@@ -369,7 +369,7 @@ def fit_hear_ols():
     from hear import ALL_FEAT
 
     rows = []
-    with TRAIN_HEAR.open() as f:
+    with TRAIN_HEAR.open(encoding="utf-8") as f:
         for line in f:
             r = json.loads(line)
             if all(k in r for k in ALL_FEAT):

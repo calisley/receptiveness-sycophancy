@@ -67,7 +67,7 @@ def load_model(store: dict, mk: str, gens: Path) -> None:
         for r in df.itertuples(index=False):
             add(store, mk, r.row_idx, r.verdict_1p, source=paired.name, overwrite=True)
     if verd.is_file():
-        for line in verd.open():
+        for line in verd.open(encoding="utf-8"):
             r = json.loads(line)
             if r.get("arm") not in (None, "1p"):
                 continue
@@ -102,7 +102,7 @@ def main() -> None:
     )
     if not gpt5.is_file():
         raise SystemExit(f"missing GPT-5 verdicts: {gpt5}")
-    for line in gpt5.open():
+    for line in gpt5.open(encoding="utf-8"):
         r = json.loads(line)
         add(store, "gpt5", r["row_idx"], r["verdict"], r.get("mixed_subtype"), source=gpt5.name)
 

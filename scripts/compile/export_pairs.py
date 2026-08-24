@@ -35,7 +35,7 @@ def parse_args() -> argparse.Namespace:
 def existing_ids(path: Path) -> set[str]:
     if not path.is_file():
         return set()
-    return {json.loads(l)["id"] for l in path.open() if l.strip()}
+    return {json.loads(l)["id"] for l in path.open(encoding="utf-8") if l.strip()}
 
 
 def main() -> None:
