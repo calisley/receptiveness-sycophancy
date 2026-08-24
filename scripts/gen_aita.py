@@ -271,12 +271,7 @@ async def rewrite_3p(
                     model="gpt-5.6-luna",
                     messages=[
                         {"role": "system", "content": REWRITE_3P},
-                        {
-                            "role": "user",
-                            "content": fill_prompt_template(
-                                _REWRITE_3P_USER or "{post}", post=prompt_1p
-                            ),
-                        },
+                        {"role": "user", "content": prompt_1p},
                     ],
                     response_format=Rewrite3p,
                     max_completion_tokens=2000,
