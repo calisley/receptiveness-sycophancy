@@ -1,11 +1,14 @@
 #!/usr/bin/env Rscript
 # Regenerate tables/exp_human_robustness.{csv,tex} without running all of analysis.R.
 
-suppressPackageStartupMessages({
-  library(fs)
-  library(tidyverse)
-  library(jsonlite)
-})
+if (!requireNamespace("groundhog", quietly = TRUE)) {
+  install.packages("groundhog", repos = "https://cloud.r-project.org")
+}
+
+groundhog.library(
+  c("fs", "tidyverse", "jsonlite"),
+  date = "2026-08-24"
+)
 
 exp <- read_csv(path("data", "experiment", "responses.csv"), show_col_types = FALSE) %>%
   mutate(

@@ -1,8 +1,14 @@
-library(fs)
-library(tidyverse)
-library(cowplot)
-library(jsonlite)
-library(patchwork)
+if (!requireNamespace("groundhog", quietly = TRUE)) {
+  install.packages("groundhog", repos = "https://cloud.r-project.org")
+}
+
+Sys.setenv(LANG = Sys.getenv("LANG", "en_US.UTF-8"))
+invisible(Sys.setlocale("LC_ALL", "en_US.UTF-8"))
+
+groundhog.library(
+  c("fs", "tidyverse", "cowplot", "jsonlite", "patchwork", "politeness"),
+  date = "2026-08-24"
+)
 
 theme_set(
   theme_bw(base_size = 9)
