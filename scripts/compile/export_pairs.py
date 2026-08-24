@@ -25,6 +25,11 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--out-model", required=True, type=Path)
     p.add_argument("--out-human", type=Path, default=None)
     p.add_argument("--keep-verdict", default="YTA")
+    p.add_argument(
+        "--all-verdicts",
+        action="store_true",
+        help="Export every ok row regardless of verdict (mitigation / smoke).",
+    )
     p.add_argument("--verdict-field", default="verdict_1p")
     p.add_argument("--response-field", default="response_1p")
     p.add_argument("--only-model", default=None, help="Keep gens rows with this model key.")
@@ -41,7 +46,7 @@ def existing_ids(path: Path) -> set[str]:
 def main() -> None:
     args = parse_args()
     aita = {r["row_idx"]: r for r in load_aita()}
-    keep = str(args.keep_verdict or "").upper()
+    keep = "" if args.all_verdicts else str(args.keep_verdict or "").upper()
     seen_m = existing_ids(args.out_model) if args.merge else set()
     seen_h = existing_ids(args.out_human) if args.merge and args.out_human else set()
     n_m = n_h = 0

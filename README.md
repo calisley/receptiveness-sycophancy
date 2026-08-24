@@ -159,7 +159,7 @@ Score HEAR receptiveness on free 1p replies. **On macOS/Linux:**
 ```bash
 for mk in terra gpt5 sonnet5 gemini_flash scout; do
   python scripts/compile/export_pairs.py --gens data/mitigation/gens.jsonl \
-    --source "$mk" --speaker "$mk" --only-model "$mk" --keep-verdict "" \
+    --source "$mk" --speaker "$mk" --only-model "$mk" --all-verdicts \
     --out-model "data/mitigation/${mk}.jsonl"
   python scripts/judge_hear.py --target "data/mitigation/${mk}.jsonl" \
     --out data/mitigation/hear.jsonl
@@ -171,7 +171,7 @@ done
 ```powershell
 foreach ($mk in "terra","gpt5","sonnet5","gemini_flash","scout") {
   python scripts/compile/export_pairs.py --gens data/mitigation/gens.jsonl `
-    --source $mk --speaker $mk --only-model $mk --keep-verdict "" `
+    --source $mk --speaker $mk --only-model $mk --all-verdicts `
     --out-model "data/mitigation/$mk.jsonl"
   python scripts/judge_hear.py --target "data/mitigation/$mk.jsonl" `
     --out data/mitigation/hear.jsonl

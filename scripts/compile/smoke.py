@@ -521,8 +521,7 @@ def api_pipeline() -> tuple[int, int, int, float]:
             meta["speaker"],
             "--only-model",
             mk,
-            "--keep-verdict",
-            "",
+            "--all-verdicts",
             "--out-model",
             str(SMOKE / f"{mk}.jsonl"),
         ]
