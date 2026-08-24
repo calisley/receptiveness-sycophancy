@@ -1,9 +1,7 @@
 if (!requireNamespace("groundhog", quietly = TRUE)) {
   install.packages("groundhog", repos = "https://cloud.r-project.org")
 }
-
-Sys.setenv(LANG = Sys.getenv("LANG", "en_US.UTF-8"))
-invisible(Sys.setlocale("LC_ALL", "en_US.UTF-8"))
+library(groundhog)
 
 groundhog.library(
   c("fs", "tidyverse", "cowplot", "jsonlite", "patchwork", "politeness"),
