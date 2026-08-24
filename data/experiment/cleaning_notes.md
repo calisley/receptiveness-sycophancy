@@ -1,6 +1,6 @@
 # Advice responses (prereg) — cleaning notes
 
-**Source:** `Advice responses prereg_August 18, 2026_20.46.csv`  
+**Source (author archive, not shipped):** Qualtrics prereg export  
 **Wave:** `prereg_20260818`  
 **Item bank:** `items.json` (100 items)  
 **Raw rows:** 206  
@@ -8,14 +8,16 @@
 **Released participants:** 200  
 **Long rows (released, participant × item shown):** 1000  
 
-Do **not** confuse with the Aug 14 20-item pilot (`advice_responses_clean_long.csv`).
+Do **not** confuse with the Aug 14 20-item pilot.
 
-## Outputs
+## Outputs (shipped)
 - `responses.csv` — analysis table (one row per released participant × item shown)
 - `participants.csv` — one row per released participant (tester / preview / missing-PID rows omitted)
-- `cleaning_notes.md` — this file (records who was dropped; those people are **not** in the CSVs)
+- `items.json` — survey item bank (post + base + rewrite texts)
+- `questions.json` — survey question / consent wording
+- `cleaning_notes.md` — this file
 
-Participant identifiers in the released CSVs are anonymous `participant_id` values (`P001`…`P200`). Raw Qualtrics Prolific ID columns are blanked in this deposit.
+Raw Qualtrics CSVs and the `.qsf` are **not** part of this deposit. Participant identifiers in the released CSVs are anonymous `participant_id` values (`P001`…`P200`).
 
 ## Mechanical drops (omitted from both CSVs)
 Dropped, in order: Qualtrics Survey Preview; experimenter self-test IP `[self IP redacted]`; known experimenter Prolific PID(s) `[redacted]`; missing `PROLIFIC_PID`; non-consent; empty / no-items; then duplicate `PROLIFIC_PID` (keep **latest `RecordedDate`**).
@@ -37,7 +39,7 @@ These tag the **base comment** (the human Reddit top comment or the model's own 
 | Column | Meaning |
 |---|---|
 | `survey_wave` | `prereg_20260818` |
-| `source_file` | raw CSV filename |
+| `source_file` | original Qualtrics export filename (author archive; not shipped) |
 | `origin` | `human` or `model` from the item bank |
 | `model` / `model_label` | model identity; NA for human-origin items |
 | `dz`, `rec_z_base`, `rec_z_rewrite`, `title` | from `items.json` |
@@ -84,8 +86,8 @@ none
 ## Difficulties / caveats
 - `Status` is unusable as a complete/incomplete flag (unique values: ['IP Address', 'Survey Preview']). All rows have Finished=True / Progress=100. Survey Preview / missing PID / experimenter-PID rows are dropped from the released CSVs.
 - No rows with experimenter self IP [self IP redacted] (none dropped on that rule).
-- Typed Prolific ID (`Q145`) and URL `PROLIFIC_PID` are blanked in the deposited raw CSVs. Analysis uses anonymous `participant_id`.
+- Typed Prolific ID (`Q145`) and URL `PROLIFIC_PID` were used only for cleaning and are not in this deposit. Analysis uses anonymous `participant_id`.
 - QC-review participants kept with `flag_qc_review=1` (n_participants=2, n_long_rows=10). Not auto-dropped.
 
 ## Privacy
-Released files omit IP addresses, lat/long, and Prolific IDs. Participant linkage uses anonymous `participant_id` only.
+Released files omit IP addresses, lat/long, Prolific IDs, and raw Qualtrics exports. Participant linkage uses anonymous `participant_id` only.

@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
 """Clean Qualtrics Advice-responses export into R-ready CSVs.
 
-Reads the raw Qualtrics CSV (3 header rows), drops experimenter self-tests,
+Author-side utility: raw Qualtrics exports are **not** shipped in the public
+deposit. Released analysis uses data/experiment/{responses,participants}.csv
+plus items.json / questions.json.
+
+Reads a raw Qualtrics CSV (3 header rows), drops experimenter self-tests,
 reshapes to one row per (participant × item), and maps A/B labels onto
 base/rewrite.
 
-Default (no flags): Aug 14 20-item pilot. Fixed A/B from data/experiment/qa.json;
-writes data/experiment/advice_responses_clean_*.csv (does not touch prereg outputs).
+Default (no flags): Aug 14 20-item pilot. Fixed A/B from a local qa.json;
+writes advice_responses_clean_*.csv (does not touch prereg outputs).
 
 --prereg: Aug 18 100-item wave. Per-participant ord_<id>, provenance from
 items.json; writes data/experiment/responses.csv (+ participants.csv).

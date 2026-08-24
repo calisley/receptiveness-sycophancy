@@ -206,10 +206,12 @@ python scripts/export_elephant_pairs.py \
 
 ### Human experiment
 
-Rebuild `data/experiment/responses.csv` from the Qualtrics export:
+Shipped analysis inputs (no raw Qualtrics export):
 
-```bash
-python scripts/compile_experiment.py --prereg
-```
+- `data/experiment/items.json` — 100 survey items (post + base + rewrite)
+- `data/experiment/responses.csv` — participant × item ratings
+- `data/experiment/participants.csv` — one row per participant (+ QC flags)
+- `data/experiment/questions.json` — survey question / consent wording
+- `data/experiment/cleaning_notes.md` — how the analysis tables were built
 
-Then rerun `Rscript analysis.R`.
+Then run `Rscript analysis.R`.

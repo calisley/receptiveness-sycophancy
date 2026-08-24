@@ -79,11 +79,15 @@ def load_rows(path: Path) -> list[dict]:
 
 
 def compile_experiment() -> int:
-    run([PY, "scripts/compile_experiment.py", "--prereg", "--out-dir", str(SMOKE)])
+    """Validate shipped experiment tables (raw Qualtrics exports are not deposited)."""
+    shipped = ROOT / "data" / "experiment" / "responses.csv"
+    if not shipped.is_file():
+        raise SystemExit("missing data/experiment/responses.csv")
     return check_csv(
-        SMOKE / "responses.csv",
+        shipped,
         [
             "response_id",
+            "participant_id",
             "item_id",
             "verdict",
             "quality_human",
