@@ -62,25 +62,15 @@ def hear_map(path: Path) -> dict[str, float]:
     return out
 
 
-def parse_args() -> argparse.Namespace:
-    p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--human", type=Path, required=True)
-    p.add_argument("--rewrite", type=Path, required=True)
-    p.add_argument("--elephant", type=Path, required=True)
-    p.add_argument("--positivity", type=Path, required=True)
-    p.add_argument("--hear", type=Path, required=True)
-    p.add_argument("--model", default="GPT-5.6 Terra", help="Rewriter label.")
-    p.add_argument("--out", type=Path, default=ROOT / "data/receptiveness_transform.csv")
-    return p.parse_args()
-
-
-def main() -> None:
-    args = parse_args()
-    ele = elephant_map(args.elephant)
-    pos = positivity_map(args.positivity)
-    hear = hear_map(args.hear)
-    humans = load_pairs(args.human)
-    rewrites = {str(p["join_id"]): p for p in load_pairs(args.rewrite)}
+def compile_rows(
+    humans: list[dict],
+    rewrites: dict[str, dict],
+    ele: dict[str, dict[str, int]],
+    hear: dict[str, float],
+    pos: dict[tuple[str, str, str], float],
+    *,
+    model: str,
+) -> list[dict]:
     rows = []
     for h in humans:
         jid = str(h["join_id"])
@@ -97,7 +87,7 @@ def main() -> None:
             rows.append(
                 {
                     "row_idx": int(rec["row_idx"]),
-                    "model": args.model,
+                    "model": model,
                     "source": src,
                     "speaker": speaker,
                     "validation": labels["validation"],
@@ -107,6 +97,65 @@ def main() -> None:
                     "rec_raw": rec_raw,
                 }
             )
+    return rows
+
+
+def merge_elephant_maps(*paths: Path) -> dict[str, dict[str, int]]:
+    out: dict[str, dict[str, int]] = defaultdict(dict)
+    for path in paths:
+        if path and path.is_file():
+            for pid, labels in elephant_map(path).items():
+                out[pid].update(labels)
+    return dict(out)
+
+
+def merge_hear_maps(*paths: Path) -> dict[str, float]:
+    out: dict[str, float] = {}
+    for path in paths:
+        if path and path.is_file():
+            out.update(hear_map(path))
+    return out
+
+
+def human_scores_from_csv(path: Path) -> tuple[dict[str, dict[str, int]], dict[str, float]]:
+    """Load human baseline scores keyed by pair id (aita:{row_idx}|human)."""
+    if not path.is_file():
+        return {}, {}
+    ele: dict[str, dict[str, int]] = {}
+    hear: dict[str, float] = {}
+    df = pd.read_csv(path)
+    h = df[df["source"] == "human"]
+    for _, r in h.iterrows():
+        pid = f"aita:{int(r['row_idx'])}|human"
+        ele[pid] = {
+            "validation": int(r["validation"]),
+            "indirectness": int(r["indirectness"]),
+            "framing": int(r["framing"]),
+        }
+        hear[pid] = float(r["rec_raw"])
+    return ele, hear
+
+
+def parse_args() -> argparse.Namespace:
+    p = argparse.ArgumentParser(description=__doc__)
+    p.add_argument("--human", type=Path, required=True)
+    p.add_argument("--rewrite", type=Path, required=True)
+    p.add_argument("--elephant", type=Path, required=True)
+    p.add_argument("--positivity", type=Path, required=True)
+    p.add_argument("--hear", type=Path, required=True)
+    p.add_argument("--model", default="GPT-5.6 Terra", help="Rewriter / dens label.")
+    p.add_argument("--out", type=Path, default=ROOT / "data/receptiveness_transform.csv")
+    return p.parse_args()
+
+
+def main() -> None:
+    args = parse_args()
+    ele = elephant_map(args.elephant)
+    pos = positivity_map(args.positivity)
+    hear = hear_map(args.hear)
+    humans = load_pairs(args.human)
+    rewrites = {str(p["join_id"]): p for p in load_pairs(args.rewrite)}
+    rows = compile_rows(humans, rewrites, ele, hear, pos, model=args.model)
     out = pd.DataFrame(rows)[COLS]
     args.out.parent.mkdir(parents=True, exist_ok=True)
     out.to_csv(args.out, index=False)

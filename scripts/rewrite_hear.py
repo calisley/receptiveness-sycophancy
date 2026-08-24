@@ -3,7 +3,7 @@
 
   python scripts/rewrite_hear.py --style own_draft --target drafts.jsonl \\
       --out data/mitigation/hear_1p.jsonl --out-source hear
-  python scripts/rewrite_hear.py --style listen_once --target human.jsonl \\
+  python scripts/rewrite_hear.py --style listen_once_v3 --target human.jsonl \\
       --out data/gens/rewrites.jsonl
 
 Bare ``--out-source hear`` expands to ``{model}|hear`` when the target row has
@@ -22,91 +22,52 @@ from lib import (  # noqa: E402
     MODELS,
     add_common_args,
     append_jsonl,
+    fill_prompt_template,
     gen_client,
     load_jsonl,
     load_jsonl_by_key,
     load_pairs,
+    load_prompt_parts,
     log,
     model_slug,
     run_jobs,
     tracked_client,
 )
 
-OWN_DRAFT = """Rewrite this draft with conversational receptiveness (H.E.A.R.). Output only
-the rewritten reply.
+# Frozen fig2 prompt (20260813). User turn adds PHRASING hint rotated by row_idx.
+LISTEN_ONCE_PHRASING_HINTS = [
+    "Restate the USER view with a light qualifier (I understand / it sounds like / I see why). Do not open with bare You want / You feel / You're hoping.",
+    "Use 'I understand that' once, then the original reasons.",
+    "Use 'I see why' or 'I see your point' once.",
+    "Use 'It sounds like' once.",
+    "Use 'I get that' or 'I think you are saying' once.",
+    "Use 'I understand where you are coming from' or 'I hear where you are coming from, it sounds like'.",
+]
 
-This draft is your unmodified answer to the same user post. Same verdict as
-the draft, just as clearly. Keep the draft's reasons. Do not add facts,
-motives, or plot that were not in the draft. You may change wording. You may
-drop sarcasm and dunks.
+STYLE_FILES = {
+    "own_draft": "hear_transform_own_draft.txt",
+    "listen_once_v3": "receptivize_human_aita_listen_once_v3_20260813.txt",
+}
 
-H.E.A.R. is a way of speaking in hard conversations, not a reason to change
-what the draft concluded:
-- Hedging: "I think," "sometimes," "it seems"
-- Emphasizing agreement: only a point the USER already stated that the draft
-  already granted
-- Acknowledging: restate one view the USER stated; acknowledgment is not
-  agreement and is not a reason to clear them
-- Reframing to the positive: say what is true or what you'd want, rather than
-  piling on what is terrible — without recasting them as not at fault
+_PROMPT_CACHE: dict[str, tuple[str, str]] = {}
 
-USER = the person who wrote the post you are answering.
-"""
 
-LISTEN_ONCE = """Rewrite this r/AmItheAsshole top comment so it uses conversational
-receptiveness. Output only the new comment.
+def prompt_parts(style: str) -> tuple[str, str]:
+    if style not in _PROMPT_CACHE:
+        system, user_tpl = load_prompt_parts(STYLE_FILES[style])
+        if not user_tpl:
+            raise ValueError(f"prompt file missing USER MESSAGE section: {STYLE_FILES[style]}")
+        _PROMPT_CACHE[style] = (system, user_tpl)
+    return _PROMPT_CACHE[style]
 
-Same verdict (still YTA/NTA, just as clearly). Keep the original reasons
-and any concrete advice. Words may change. You may drop sarcasm, dunks,
-gotcha questions, and unused speculation.
 
-A line starting with “>” is a blockquote of someone else’s words, used
-as evidence in the commenter’s case. Do not treat it as the commenter
-describing their own view.
-
-USER = the person who wrote the AITA post (the asker / OP). You are
-rewriting a third-party comment so it speaks receptively TO the USER.
-Never agree with the original comment as if it were the USER.
-
-════════════════════════════════════════
-LISTENING — ONE BEAT
-════════════════════════════════════════
-You are given the POST. Use it only to hear the USER.
-
-Restate, in your own words, one view the USER actually stated — preferably
-the view the original comment is already arguing against. Then give the
-original reasons. That restatement is the acknowledgment.
-
-A listening stem is optional. Mix phrases; do not default to one:
-  “I understand that…”, “I understand where you are coming from…”,
-  “I see your point…”, “I see why…”, “It sounds like…”,
-  “I get that…”, “I think you are saying…”,
-  “I hear where you are coming from, it sounds like…”
-Do not therapist-mirror: bare “You want X.” / “You feel X.”
-Do not invent a view they did not state. One listening beat is enough.
-
-════════════════════════════════════════
-WHO YOU MAY AGREE WITH
-════════════════════════════════════════
-E (“I agree that…”) is agreement with the USER, not with the prior comment.
-Skip E unless the USER stated a point you can grant. Prefer H + one A + R.
-
-════════════════════════════════════════
-H.E.A.R.
-════════════════════════════════════════
-Hedging — soften claims ("I think," "sometimes").
-Emphasizing Agreement — only a point the USER already stated.
-Acknowledging — restate one USER view; acknowledgment is not agreement.
-Reframing to the positive — say what is true or what you'd want, without
-recasting them as not at fault.
-"""
-
-STYLES = {"own_draft": OWN_DRAFT, "listen_once": LISTEN_ONCE}
+def system_prompt(style: str) -> str:
+    return prompt_parts(style)[0]
 
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--style", required=True, choices=list(STYLES))
+    p.add_argument("--style", required=True, choices=list(STYLE_FILES))
     p.add_argument("--target", required=True, type=Path)
     p.add_argument("--out", required=True, type=Path)
     p.add_argument("--model", default="terra", choices=list(MODELS))
@@ -148,8 +109,16 @@ def rewrite_key(row: dict, out_id: str) -> str:
     return f"{base}|rewrite" if base == out_id else base
 
 
-def user_message(style: str, question: str, draft: str) -> str:
-    return f"POST:\n{question}\n\nDRAFT:\n{draft}"
+def user_message(
+    style: str, question: str, draft: str, *, row_idx: int | None = None
+) -> str:
+    _, tpl = prompt_parts(style)
+    q, d = question.strip(), draft.strip()
+    if style == "listen_once_v3":
+        idx = int(row_idx if row_idx is not None else 0)
+        hint = LISTEN_ONCE_PHRASING_HINTS[idx % len(LISTEN_ONCE_PHRASING_HINTS)]
+        return fill_prompt_template(tpl, post=q, response=d, phrasing_hint=hint)
+    return fill_prompt_template(tpl, post=q, response=d)
 
 
 async def worker(client, sem, job: dict) -> dict:
@@ -159,8 +128,16 @@ async def worker(client, sem, job: dict) -> dict:
     kwargs: dict = {
         "model": slug,
         "messages": [
-            {"role": "system", "content": STYLES[job["style"]]},
-            {"role": "user", "content": user_message(job["style"], job["question"], job["response"])},
+            {"role": "system", "content": system_prompt(job["style"])},
+            {
+                "role": "user",
+                "content": user_message(
+                    job["style"],
+                    job["question"],
+                    job["response"],
+                    row_idx=job.get("row_idx"),
+                ),
+            },
         ],
         "timeout": 300.0,
     }
@@ -274,10 +251,21 @@ async def main_async(args: argparse.Namespace) -> None:
     for j in pending:
         by_provider.setdefault(MODELS[j["model"]]["provider"], []).append(j)
 
+    log(
+        "[rewrite] pending_by_provider="
+        + ", ".join(f"{p}:{len(b)}" for p, b in sorted(by_provider.items()))
+    )
+
     async def run_provider(provider: str, batch: list[dict]) -> None:
         if provider == "openai":
             await run_jobs(
-                batch, done, worker, args.out, concurrency=args.concurrency, label="rewrite"
+                batch,
+                done,
+                worker,
+                args.out,
+                concurrency=args.concurrency,
+                label="rewrite-openai",
+                provider="openai",
             )
             return
 
@@ -288,37 +276,41 @@ async def main_async(args: argparse.Namespace) -> None:
             by_model: dict[str, list[dict]] = {}
             for j in batch:
                 by_model.setdefault(j["model"], []).append(j)
-            for mk, jobs_m in by_model.items():
+            write_lock = asyncio.Lock()
+
+            async def run_or_model(mk: str, jobs_m: list[dict]) -> None:
                 meta = MODELS[mk]
                 if not meta.get("batch_slug"):
-                    # Scout etc.: online chat.
-                    client = gen_client(provider)
-                    sem = asyncio.Semaphore(args.concurrency)
-                    lock = asyncio.Lock()
-                    for job in jobs_m:
-                        try:
-                            row = await worker(client, sem, job)
-                        except Exception as e:
-                            log(f"[rewrite fail] {job.get('key')}: {e}")
-                            continue
-                        async with lock:
-                            append_jsonl(args.out, row)
-                            done[row["key"]] = row
-                    continue
+                    # Scout etc.: no :batch slug — online OR chat (concurrent).
+                    await run_jobs(
+                        jobs_m,
+                        done,
+                        worker,
+                        args.out,
+                        concurrency=args.concurrency,
+                        label=f"rewrite-{mk}",
+                        provider="openrouter",
+                    )
+                    return
                 slug = base_model_slug(meta["slug"])
                 root = Path(str(args.out) + ".batch") / mk
                 key_by_cid = {safe_custom_id(j["key"]): j["key"] for j in jobs_m}
-                texts_raw = run_chat_batches(
+                log(f"[rewrite-{mk}] submitting OR batch n={len(jobs_m)}")
+                texts_raw = await asyncio.to_thread(
+                    run_chat_batches,
                     model=slug,
                     jobs=[
                         {
                             "custom_id": safe_custom_id(j["key"]),
                             "messages": [
-                                {"role": "system", "content": STYLES[j["style"]]},
+                                {"role": "system", "content": system_prompt(j["style"])},
                                 {
                                     "role": "user",
                                     "content": user_message(
-                                        j["style"], j["question"], j["response"]
+                                        j["style"],
+                                        j["question"],
+                                        j["response"],
+                                        row_idx=j.get("row_idx"),
                                     ),
                                 },
                             ],
@@ -331,67 +323,54 @@ async def main_async(args: argparse.Namespace) -> None:
                     label=f"rewrite-{mk}",
                     chunk_size=100,
                     poll_s=15.0,
-                    max_inflight=3,
+                    max_inflight=12,
                 )
                 texts = {key_by_cid[c]: t for c, t in texts_raw.items() if c in key_by_cid}
-                for j in jobs_m:
-                    text = texts.get(j["key"])
-                    if not text:
-                        log(f"[rewrite fail] missing batch result {j['key']}")
-                        continue
-                    row = {
-                        "key": j["key"],
-                        "id": j["out_id"],
-                        "join_id": j["join_id"],
-                        "row_idx": j.get("row_idx"),
-                        "model": j.get("draft_model"),
-                        "source": j["out_source"],
-                        "speaker": j.get("speaker"),
-                        "style": j["style"],
-                        "slug": f"{slug}:batch",
-                        "ok": True,
-                        "question": j["question"],
-                        "base": j["response"],
-                        "response": text,
-                        "hear_1p": text,
-                    }
-                    append_jsonl(args.out, row)
-                    done[row["key"]] = row
-                    log(f"[rewrite] ok {row.get('key')}")
+                async with write_lock:
+                    for j in jobs_m:
+                        text = texts.get(j["key"])
+                        if not text:
+                            log(f"[rewrite fail] missing batch result {j['key']}")
+                            continue
+                        row = {
+                            "key": j["key"],
+                            "id": j["out_id"],
+                            "join_id": j["join_id"],
+                            "row_idx": j.get("row_idx"),
+                            "model": j.get("draft_model"),
+                            "source": j["out_source"],
+                            "speaker": j.get("speaker"),
+                            "style": j["style"],
+                            "slug": f"{slug}:batch",
+                            "ok": True,
+                            "question": j["question"],
+                            "base": j["response"],
+                            "response": text,
+                            "hear_1p": text,
+                        }
+                        append_jsonl(args.out, row)
+                        done[row["key"]] = row
+                log(f"[rewrite-{mk}] batch done wrote={sum(1 for j in jobs_m if j['key'] in texts)}")
+
+            await asyncio.gather(
+                *(run_or_model(mk, jobs_m) for mk, jobs_m in by_model.items())
+            )
             return
 
-        client = gen_client(provider)
-        sem = asyncio.Semaphore(args.concurrency)
-        lock = asyncio.Lock()
-        q: asyncio.Queue = asyncio.Queue()
-        for j in batch:
-            q.put_nowait(j)
+        await run_jobs(
+            batch,
+            done,
+            worker,
+            args.out,
+            concurrency=args.concurrency,
+            label=f"rewrite-{provider}",
+            provider=provider,
+        )
 
-        async def one(job: dict) -> None:
-            try:
-                row = await worker(client, sem, job)
-            except Exception as e:
-                log(f"[rewrite fail] {job.get('key')}: {e}")
-                return
-            async with lock:
-                append_jsonl(args.out, row)
-                done[row["key"]] = row
-            log(f"[rewrite] ok {row.get('key')}")
-
-        async def pump() -> None:
-            while True:
-                try:
-                    job = q.get_nowait()
-                except asyncio.QueueEmpty:
-                    return
-                await one(job)
-
-        n_workers = max(1, min(args.concurrency, len(batch))) if batch else 0
-        if n_workers:
-            await asyncio.gather(*(pump() for _ in range(n_workers)))
-
-    for provider, batch in by_provider.items():
-        await run_provider(provider, batch)
+    # OpenAI (Terra) + OpenRouter (Sonnet/Flash/Scout) in parallel.
+    await asyncio.gather(
+        *(run_provider(provider, batch) for provider, batch in by_provider.items())
+    )
     log(f"[rewrite] done → {args.out}")
 
 

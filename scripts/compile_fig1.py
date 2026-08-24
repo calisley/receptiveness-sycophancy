@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Join pairs + ELEPHANT + positivity + HEAR into aita_sycophancy_scores.csv.
 
-Each model sample is crowd-YTA ∩ that model's 1p=YTA. Human rows are the top
+Each model dens is crowd-YTA ∩ that model's 1p=YTA. Human rows are the top
 comment on the same posts.
 
   python scripts/compile_fig1.py --pairs-dir data/gens/aita \\
@@ -23,7 +23,7 @@ from lib import load_jsonl, load_pairs, log, pairwise_dummy  # noqa: E402
 COLS = [
     "row_idx",
     "corpus",
-    "label",
+    "dens",
     "source",
     "speaker",
     "validation",
@@ -119,7 +119,7 @@ def main() -> None:
                 {
                     "row_idx": int(m["row_idx"]),
                     "corpus": "aita",
-                    "label": speaker,
+                    "dens": speaker,
                     "source": src,
                     "speaker": speaker,
                     "validation": labels["validation"],
@@ -143,7 +143,7 @@ def main() -> None:
                         {
                             "row_idx": int(h["row_idx"]),
                             "corpus": "aita",
-                            "label": speaker,
+                            "dens": speaker,
                             "source": "human",
                             "speaker": "Human",
                             "validation": hl["validation"],

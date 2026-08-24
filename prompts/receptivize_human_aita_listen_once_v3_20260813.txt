@@ -1,0 +1,149 @@
+Rewrite this r/AmItheAsshole top comment so it uses conversational
+receptiveness. Output only the new comment.
+
+Same verdict (still YTA/NTA, just as clearly). Keep the original reasons
+and any concrete advice. Words may change. You may drop sarcasm, dunks,
+gotcha questions, and unused speculation.
+
+A line starting with “>” is a blockquote of someone else’s words, used
+as evidence in the commenter’s case. Do not treat it as the commenter
+describing their own view.
+
+USER = the person who wrote the AITA post (the asker / OP). You are
+rewriting a third-party comment so it speaks receptively TO the USER.
+Never agree with the original comment as if it were the USER.
+
+════════════════════════════════════════
+LISTENING — ONE BEAT
+════════════════════════════════════════
+You are given the POST. Use it only to hear the USER.
+
+Restate, in your own words, one view the USER actually stated — preferably
+the view the original comment is already arguing against. Then give the
+original reasons. That restatement is the acknowledgment.
+
+A listening stem is optional. If you use one, pick whatever fits this
+comment — mix across comments, do not default to one phrase:
+  “I understand that…”, “I understand where you are coming from…”,
+  “I see your point…”, “I see why…”, “It sounds like…”,
+  “I get that…”, “I think you are saying…”,
+  “I hear where you are coming from, it sounds like…”
+Ordinary restatement is fine if it has a light qualifier
+(“I understand that you want…”, “It sounds like you want…”).
+Do not mirror like a therapist: bare “You want X.” / “You feel X.” /
+“You're hoping X.” with no qualifier. That is reflection, not H.E.A.R.
+Do not write the formula
+  “You're in the wrong. I hear that X. Still, I think Y.”
+on every comment. Put the listening beat wherever it reads naturally.
+
+Canonical good — USER said reserved spots are PR stunts that sit empty;
+comment said pickup / kid safety / pregnancy:
+  “You're in the wrong. I understand that these spots often sit empty
+  and can feel like a PR stunt. I still think they are meant for people
+  picking up orders quickly, including curbside pickup. They can also
+  make things safer for parents with young children who are managing
+  groceries in a parking lot. For pregnant people, walking around can
+  be difficult. These spaces help make pickup safer and easier for the
+  people who need them.”
+Same three reasons. One listening beat. Verdict unchanged.
+
+Also fine: “Reserved spots sitting empty can make them look like a PR
+stunt.” (no stem)
+Also fine: “I see why those spots feel pointless when they sit unused.”
+Also fine: “It sounds like you were trying to keep the first tank off
+the group tab.”
+Bad: the same stem on every rewrite.
+Bad: extra biography (“you visit several stores daily”).
+Bad: granting the excuse (“it's not a big deal”).
+Bad: generic (“you may see this differently”).
+Bad: acknowledging a charging fact the commenter used as why they are TA.
+Bad: an empathy paragraph or a softer verdict.
+
+If the original comment already attributed a USER view, restate that
+instead of pulling a different one from the post.
+
+Do not overdo it. One listening beat is enough.
+
+════════════════════════════════════════
+WHO YOU MAY AGREE WITH
+════════════════════════════════════════
+E (“I agree that…”, “like you, I also…”, “we both agree…”) is agreement
+with the USER, not with the prior human comment.
+
+The original comment’s own claims stay the commenter’s claims. Hedge or
+restate them. Do not wrap them in “I agree that…”.
+
+Canonical fail — original:
+  YTA. Pride is wonderful and fun and so important to young gay people.
+  Be a good parent and take her to a place that makes her feel welcome.
+Bad: “I agree that Pride is wonderful…” (the USER never said that).
+OK: “YTA. I think Pride is often wonderful and important for young gay
+people. Taking her somewhere she feels welcome is part of being a good
+parent.”
+
+Skip E unless the USER stated a point you can grant without changing
+the takeaway. Prefer H + one A + R.
+
+════════════════════════════════════════
+Conversational receptiveness (H.E.A.R.)
+════════════════════════════════════════
+Conversational receptiveness consists of using specific words and phrases
+that show the person you are speaking to that you are thoughtfully
+engaging with their perspective even if you disagree. The goal is not
+to reach common ground, compromise, or find a solution. The goal is to
+demonstrate engagement with each other's ideas.
+
+Hedging — USE "HEDGES" TO SOFTEN YOUR CLAIMS
+For example: "X is partly true..." or "Y is sometimes the case."
+"I think that sometimes people don't realize how dangerous COVID can be."
+"I believe that in many situations people have heard some mis-information
+about the vaccine."
+"There are some cases when people have exaggerated the risk of
+side-effects."
+
+Emphasizing Agreement — ONLY WITH THE USER
+Even when you disagree, focus on some things you do agree with *that
+the USER already said*, like "I agree that it's a difficult situation,"
+rather than "that doesn't work because Y."
+"I agree that this year has been really hard and everyone has had to
+make difficult choices."
+"We both agree that we want the world to get back to normal as quickly
+as possible."
+"Like you, I also think that there has been a lot of confusing
+information out there."
+If the USER did not make that point, do not write “I agree that…”.
+
+Acknowledging Other Perspectives — THE USER'S VIEWS ONLY
+Demonstrate listening, then restate their view. Counterpart = USER.
+"I understand that you are concerned about the safety profile of the
+vaccine."
+"I see your point; it sounds like more research would need to be done
+before you feel totally comfortable."
+"I hear where you are coming from, it sounds like you are concerned
+about how quickly the vaccine was developed."
+"Reserved spots sitting empty can make them look like a PR stunt."
+The view must be one the USER stated in the post, or one the original
+comment already attributed to them. Do not invent a view.
+
+Reframing to the positive — USE POSITIVE AFFIRMING STATEMENTS
+Say "X is true" or "X is good," rather than "Y is not true."
+"It has been so exciting to watch the world reopen and vaccinated
+people begin to enjoy life again."
+"Getting vaccinated is so important to protect your loved ones who may
+be more vulnerable."
+"We are so fortunate to have access to the amazing medical advances
+that make the vaccines possible."
+
+Negative features decrease receptiveness and should be avoided.
+Do not use explanatory "because" / "therefore".
+Do not use dismissive "just," "only," "simply".
+Avoid extra negatively valenced pile-on ("terrible," "creepy") when a
+positive reframe of the same point exists. Keep the verdict itself.
+
+--- USER MESSAGE ---
+
+POST:
+{post}
+
+ORIGINAL COMMENT:
+{response}

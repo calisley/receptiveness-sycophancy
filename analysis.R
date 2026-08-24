@@ -10,16 +10,29 @@ theme_set(
 
 # Data --------------------------------------------------------------------
 
+# Long CSV duplicates each human once per model dens (column `dens`) because positivity is
+# pairwise vs that model. Collapse to unique (speaker, row_idx) for Figure 1 /
+# correlations: mean over copies (ELEPHANT/rec are constant; positivity is
+# the partner-average, then thresholded at 0.5 for the binary total).
 aita_soc_df <- read_csv(
   path("data", "aita_sycophancy_scores.csv")
 ) %>%
+  group_by(speaker, row_idx) %>%
+  summarize(
+    across(
+      c(validation, indirectness, framing, framing_v2, positivity, rec_raw),
+      \(x) mean(x, na.rm = TRUE)
+    ),
+    .groups = "drop"
+  ) %>%
   mutate(
-    speaker = factor(speaker, 
+    positivity = as.integer(positivity >= 0.5),
+    speaker = factor(speaker,
                      levels = c("Human", "GPT-5", "Rewrite", "Gemini 3.7 Flash",
-                                "Claude Sonnet 5", "GPT-5.6 Terra", 
+                                "Claude Sonnet 5", "GPT-5.6 Terra",
                                 "Llama 4 Scout")
     ),
-    rec_z = (rec_raw - mean(rec_raw[speaker == "Human"], na.rm = TRUE)) / 
+    rec_z = (rec_raw - mean(rec_raw[speaker == "Human"], na.rm = TRUE)) /
       sd(rec_raw[speaker == "Human"], na.rm = TRUE),
     any_elephant = validation | indirectness | framing,
     any_syc = validation | indirectness | framing | positivity
@@ -43,16 +56,43 @@ aita_verdicts_1p <- read_csv(path("data", "aita_verdicts_1p.csv")) %>%
     verdict = factor(verdict, levels = c("YTA", "NTA", "mixed", "other"))
   )
 
-rcpt_trans <- read_csv(
+# Fig2 receptive-rewrite panel. Main-text Figure 2 uses the original n = 808
+# subset (GPT-5 auxiliary 1p verdict = YTA). The full eligible panel
+# (n = 1,892) is kept as rcpt_trans_all for robustness checks at the end.
+rcpt_trans_all <- read_csv(
   path("data", "receptiveness_transform.csv")
 ) %>%
   mutate(
     speaker = factor(speaker, levels = c("Human", "GPT-5", "Rewrite")),
-    rec_z = (rec_raw - mean(rec_raw[speaker == "Human"])) /
-      sd(rec_raw[speaker == "Human"]),
     any_elephant = validation | indirectness | framing,
     any_syc = validation | indirectness | framing | positivity
   )
+
+fig2_row_idx <- aita_verdicts_1p %>%
+  filter(model == "GPT-5", verdict == "YTA") %>%
+  semi_join(rcpt_trans_all %>% distinct(row_idx), by = "row_idx") %>%
+  pull(row_idx)
+
+rcpt_trans <- rcpt_trans_all %>%
+  filter(row_idx %in% fig2_row_idx) %>%
+  mutate(
+    rec_z = (rec_raw - mean(rec_raw[speaker == "Human"])) /
+      sd(rec_raw[speaker == "Human"])
+  )
+
+judged_v3_all <- read_lines(
+  path("data", "receptiveness_transform_judged.jsonl")
+) %>%
+  keep(~ nzchar(.x)) %>%
+  map(fromJSON, simplifyVector = FALSE)
+
+judged_v3 <- judged_v3_all[
+  vapply(
+    judged_v3_all,
+    function(j) as.integer(j$row_idx) %in% fig2_row_idx,
+    logical(1)
+  )
+]
 
 exp <- read_csv(path("data", "experiment", "responses.csv")) %>%
   mutate(
@@ -105,6 +145,9 @@ exp_items <- fromJSON(path("data", "experiment", "items.json")) %>%
     rec_z_human = rec_z_base,
     rec_z_rewrite = rec_z_rewrite,
     rec_delta = rec_z_rewrite - rec_z_base,
+    n_words_base = n_words_base,
+    n_words_rewrite = n_words_rewrite,
+    words_delta = n_words_rewrite - n_words_base,
     rewrite_more_positive = rec_z_rewrite > rec_z_base,
     origin = origin,
     model = model,
@@ -137,14 +180,53 @@ front_T <- front_long %>%
     # Receptiveness among 1p=YTA only (among 1p=YTA disagreement posts); T stays unconditional.
     n_rec_yta = sum(verdict_1p == "YTA" & !is.na(rec_raw), na.rm = TRUE),
     rec_raw = mean(rec_raw[verdict_1p == "YTA"], na.rm = TRUE),
+    rec_se = sd(rec_raw[verdict_1p == "YTA"], na.rm = TRUE) /
+      sqrt(sum(verdict_1p == "YTA" & !is.na(rec_raw), na.rm = TRUE)),
     .groups = "drop"
   ) %>%
   mutate(
     se = sqrt(
       (n_1p_softer + n_3p_softer - (n_1p_softer - n_3p_softer)^2 / n) /
         (4 * n^2)
-    )
+    ),
+    lo = T - 1.96 * se,
+    hi = T + 1.96 * se
   )
+
+# Prompt arm is a subset (n=200) of the shared random free/tool panel (n=400).
+# Figure 5 and all cross-arm mitigation contrasts use this shared dens so free,
+# prompt, and tool are on the same posts. (Larger panel / dens-A fills stay on
+# disk but are not used for the figure.)
+prompt_ids <- front_long %>%
+  filter(arm == "prompt") %>%
+  distinct(model, row_idx)
+
+front_T_shared <- front_long %>%
+  semi_join(prompt_ids, by = c("model", "row_idx")) %>%
+  group_by(model_key, model, arm) %>%
+  summarize(
+    n = sum(landing %in% c("1p_softer", "3p_softer", "same"), na.rm = TRUE),
+    n_1p_softer = sum(landing == "1p_softer", na.rm = TRUE),
+    n_3p_softer = sum(landing == "3p_softer", na.rm = TRUE),
+    n_tie = sum(landing == "same", na.rm = TRUE),
+    T = (n_1p_softer + 0.5 * n_tie) / n,
+    n_rec_yta = sum(verdict_1p == "YTA" & !is.na(rec_raw), na.rm = TRUE),
+    rec_raw = mean(rec_raw[verdict_1p == "YTA"], na.rm = TRUE),
+    rec_se = sd(rec_raw[verdict_1p == "YTA"], na.rm = TRUE) /
+      sqrt(sum(verdict_1p == "YTA" & !is.na(rec_raw), na.rm = TRUE)),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    se = sqrt(
+      (n_1p_softer + n_3p_softer - (n_1p_softer - n_3p_softer)^2 / n) /
+        (4 * n^2)
+    ),
+    lo = T - 1.96 * se,
+    hi = T + 1.96 * se
+  )
+
+# Alias kept so older scratch code still resolves.
+front_T_prompt_matched <- front_T_shared
 
 mu_h <- mean(aita_soc_df$rec_raw[aita_soc_df$speaker == "Human"], na.rm = TRUE)
 sd_h <- sd(aita_soc_df$rec_raw[aita_soc_df$speaker == "Human"], na.rm = TRUE)
@@ -254,7 +336,7 @@ ggsave(
   units = "in"
 )
 
-## Fig 2: Shift Continuous ------------------------------------------------
+## Fig 2: Shift Continuous (n = 808; GPT-5 auxiliary YTA subset) ---------
 
 p_share_cont <- rcpt_trans %>%
   mutate(
@@ -437,19 +519,24 @@ ggsave(
 
 ## Fig 5: Substantive Syc ---------------------------------------------------------
 
-# Drop GPT-5: free 3p often collapses to AITA-"you" voice, so T≈0.5 is not a
-# clean perspective counterfactual. Y-axis = mean rec among 1p=YTA.
+# Shared n=200 AITA dens (prompt subset of the n=400 panel) × model. Free and
+# tool (and prompt in the text tables) are matched on the same posts. Drop
+# GPT-5: free 3p often collapses to AITA-"you" voice, so T≈0.5 is not a clean
+# perspective counterfactual. X = T on all landed posts; Y = mean rec among
+# 1p=YTA only.
 
-df_front <- front_T %>%
+df_front <- front_T_shared %>%
   filter(arm %in% c("free", "tool"), model %in% front_models) %>%
-  select(model_key, model, arm, T, rec_raw) %>%
+  select(model_key, model, arm, T, rec_raw, n, n_rec_yta) %>%
   pivot_wider(
     names_from = arm,
-    values_from = c(T, rec_raw),
+    values_from = c(T, rec_raw, n, n_rec_yta),
     names_glue = "{.value}_{arm}"
   ) %>%
   transmute(
     model,
+    n = n_free,
+    n_rec_yta = n_rec_yta_free,
     T_free = T_free,
     T_mit = T_tool,
     rec_z_free = (rec_raw_free - mu_h) / sd_h,
@@ -467,6 +554,9 @@ df_front <- front_T %>%
     T_end = T_mit - dx * cut_h,
     rec_z_end = rec_z_mit - dy * cut_h
   )
+
+# sanity: shared dens is n=200 per model
+stopifnot(all(df_front$n == 200))
 
 p_front <- ggplot(df_front, aes(color = model, fill = model, shape = model)) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
@@ -596,7 +686,8 @@ aita_verdict_rates_wide
 
 ## Receptiveness and social sycophancy are correlated ----------------------
 
-# Reported in the caption of Figure 1.
+# Reported in the caption of Figure 1. Uses collapsed aita_soc_df (one row per
+# speaker × post); n is unique posts, not dens-duplicated humans.
 
 aita_soc_df %>%
   filter(speaker != "Rewrite") %>%
@@ -637,7 +728,7 @@ oeq_df %>%
     .groups = "drop"
   )
 
-## Receptiveness gain from the transformation ------------------------------
+## Receptiveness gain from the transformation (n = 808) ------------------
 
 # Reported in the text of "Making responses receptive makes them sycophantic."
 
@@ -658,15 +749,9 @@ rcpt_trans %>%
 ## Verdict preservation (listen_once terra rewrites) --------------------
 
 # Reported in the text of "Making responses receptive makes them sycophantic."
-# Paired judge: receptivize_hear_substance on fig1_listen_once pairs.
+# Paired judge: receptivize_hear_substance on fig2 listen_once pairs (n = 808).
 # Verdict_same only; takeaway_same is not reported (post-based listening beat
 # is intentional).
-
-judged_v3 <- read_lines(
-  path("data", "receptiveness_transform_judged.jsonl")
-) %>%
-  keep(~ nzchar(.x)) %>%
-  map(fromJSON, simplifyVector = FALSE)
 
 {
   n <- length(judged_v3)
@@ -697,6 +782,23 @@ exp_items %>%
   mutate(
     lo = est - 1.96 * se,
     hi = est + 1.96 * se
+  )
+
+## Rewrite length change on experimental items, by provenance --------------
+
+# Reported in the text of the experiment design (mean words_rewrite − words_base).
+
+exp_items %>%
+  group_by(origin) %>%
+  summarize(
+    mean_words_delta = mean(words_delta),
+    se = sd(words_delta) / sqrt(n()),
+    n = n(),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    lo = mean_words_delta - 1.96 * se,
+    hi = mean_words_delta + 1.96 * se
   )
 
 ## Experiment sample -------------------------------------------------------
@@ -853,6 +955,107 @@ exp %>%
   mutate(share = n / sum(n)) %>%
   ungroup()
 
+## Length-controlled preference estimates ----------------------------------
+
+# Reported in the technical appendix. OLS of each outcome on rewrite − original
+# word count; the intercept is the estimate at words_delta = 0.
+
+exp_len <- exp %>%
+  left_join(exp_items %>% select(item_id, words_delta), by = "item_id")
+
+exp_len %>%
+  group_by(provenance) %>%
+  group_modify(~ {
+    co <- summary(lm(quality_rewrite_minus_human ~ words_delta, data = .x))$coefficients
+    tibble(
+      est = unname(co[1, 1]),
+      se = unname(co[1, 2]),
+      b_words = unname(co[2, 1]),
+      se_words = unname(co[2, 2]),
+      n = nrow(.x)
+    )
+  }) %>%
+  ungroup() %>%
+  mutate(lo = est - 1.96 * se, hi = est + 1.96 * se)
+
+exp_len %>%
+  filter(verdict_bin == "In the wrong") %>%
+  group_by(provenance) %>%
+  group_modify(~ {
+    co <- summary(lm(quality_rewrite_minus_human ~ words_delta, data = .x))$coefficients
+    tibble(
+      est = unname(co[1, 1]),
+      se = unname(co[1, 2]),
+      b_words = unname(co[2, 1]),
+      se_words = unname(co[2, 2]),
+      n = nrow(.x)
+    )
+  }) %>%
+  ungroup() %>%
+  mutate(lo = est - 1.96 * se, hi = est + 1.96 * se)
+
+exp_len %>%
+  group_by(provenance) %>%
+  group_modify(~ {
+    co <- summary(lm(listen_pref_rewrite ~ words_delta, data = .x))$coefficients
+    tibble(
+      est = unname(co[1, 1]),
+      se = unname(co[1, 2]),
+      b_words = unname(co[2, 1]),
+      se_words = unname(co[2, 2]),
+      n = nrow(.x)
+    )
+  }) %>%
+  ungroup() %>%
+  mutate(lo = est - 1.96 * se, hi = est + 1.96 * se)
+
+exp_len %>%
+  group_by(provenance) %>%
+  group_modify(~ {
+    co <- summary(lm(advice_pref_rewrite ~ words_delta, data = .x))$coefficients
+    tibble(
+      est = unname(co[1, 1]),
+      se = unname(co[1, 2]),
+      b_words = unname(co[2, 1]),
+      se_words = unname(co[2, 2]),
+      n = nrow(.x)
+    )
+  }) %>%
+  ungroup() %>%
+  mutate(lo = est - 1.96 * se, hi = est + 1.96 * se)
+
+exp_len %>%
+  filter(verdict_bin == "In the wrong") %>%
+  group_by(provenance) %>%
+  group_modify(~ {
+    co <- summary(lm(listen_pref_rewrite ~ words_delta, data = .x))$coefficients
+    tibble(
+      est = unname(co[1, 1]),
+      se = unname(co[1, 2]),
+      b_words = unname(co[2, 1]),
+      se_words = unname(co[2, 2]),
+      n = nrow(.x)
+    )
+  }) %>%
+  ungroup() %>%
+  mutate(lo = est - 1.96 * se, hi = est + 1.96 * se)
+
+exp_len %>%
+  filter(verdict_bin == "In the wrong") %>%
+  group_by(provenance) %>%
+  group_modify(~ {
+    co <- summary(lm(advice_pref_rewrite ~ words_delta, data = .x))$coefficients
+    tibble(
+      est = unname(co[1, 1]),
+      se = unname(co[1, 2]),
+      b_words = unname(co[2, 1]),
+      se_words = unname(co[2, 2]),
+      n = nrow(.x)
+    )
+  }) %>%
+  ungroup() %>%
+  mutate(lo = est - 1.96 * se, hi = est + 1.96 * se)
+
 ## Preference gap against the original's receptiveness --------------------
 
 # Reported with Figure 3. Item-level, so each point is one of the 100
@@ -888,34 +1091,85 @@ exp %>%
 # sycophancy definition under a 1p/3p manipulation, so 0.5 is invariance.
 # "free" is the unprompted model, "prompt" the receptiveness system prompt,
 # and "tool" the inference-time self-probe. rec_z is mean among 1p=YTA.
+#
+# Free / prompt / tool: same shared dens (n=200 posts × model).
 
-front_T %>%
-  filter(model %in% front_models) %>%
-  select(model_key, model, arm, T, rec_raw, n_rec_yta) %>%
+front_T_shared %>%
+  filter(model %in% front_models, arm %in% c("free", "tool")) %>%
+  select(model_key, model, arm, T, se, lo, hi, rec_raw, rec_se, n_rec_yta, n) %>%
   pivot_wider(
     names_from = arm,
-    values_from = c(T, rec_raw, n_rec_yta),
+    values_from = c(T, se, lo, hi, rec_raw, rec_se, n_rec_yta, n),
     names_glue = "{.value}_{arm}"
   ) %>%
   transmute(
     model,
+    n = n_free,
     T_free,
-    T_prompt,
+    se_T_free = se_free,
+    lo_T_free = lo_free,
+    hi_T_free = hi_free,
     T_tool,
+    se_T_tool = se_tool,
+    lo_T_tool = lo_tool,
+    hi_T_tool = hi_tool,
     n_rec_yta_free,
     rec_z_free = (rec_raw_free - mu_h) / sd_h,
-    rec_z_prompt = (rec_raw_prompt - mu_h) / sd_h,
+    se_rec_z_free = rec_se_free / sd_h,
+    lo_rec_z_free = rec_z_free - 1.96 * se_rec_z_free,
+    hi_rec_z_free = rec_z_free + 1.96 * se_rec_z_free,
     rec_z_tool = (rec_raw_tool - mu_h) / sd_h,
-    dz_prompt = rec_z_prompt - rec_z_free,
-    dz_tool = rec_z_tool - rec_z_free
+    se_rec_z_tool = rec_se_tool / sd_h,
+    lo_rec_z_tool = rec_z_tool - 1.96 * se_rec_z_tool,
+    hi_rec_z_tool = rec_z_tool + 1.96 * se_rec_z_tool,
+    dz_tool = rec_z_tool - rec_z_free,
+    se_dz_tool = sqrt(se_rec_z_free^2 + se_rec_z_tool^2),
+    lo_dz_tool = dz_tool - 1.96 * se_dz_tool,
+    hi_dz_tool = dz_tool + 1.96 * se_dz_tool
   )
 
-# T decomposed into its counts, for the two models carried through the
-# mitigation. T = 1/2 + (n_1p_softer - n_3p_softer) / 2n, so ties drop out;
-# the standard error is the multinomial one for that contrast.
+front_T_shared %>%
+  filter(model %in% front_models, arm %in% c("free", "prompt")) %>%
+  select(model_key, model, arm, T, se, lo, hi, rec_raw, rec_se, n_rec_yta, n) %>%
+  pivot_wider(
+    names_from = arm,
+    values_from = c(T, se, lo, hi, rec_raw, rec_se, n_rec_yta, n),
+    names_glue = "{.value}_{arm}"
+  ) %>%
+  transmute(
+    model,
+    n = n_prompt,
+    T_free,
+    se_T_free = se_free,
+    lo_T_free = lo_free,
+    hi_T_free = hi_free,
+    T_prompt,
+    se_T_prompt = se_prompt,
+    lo_T_prompt = lo_prompt,
+    hi_T_prompt = hi_prompt,
+    n_rec_yta_free,
+    rec_z_free = (rec_raw_free - mu_h) / sd_h,
+    se_rec_z_free = rec_se_free / sd_h,
+    lo_rec_z_free = rec_z_free - 1.96 * se_rec_z_free,
+    hi_rec_z_free = rec_z_free + 1.96 * se_rec_z_free,
+    rec_z_prompt = (rec_raw_prompt - mu_h) / sd_h,
+    se_rec_z_prompt = rec_se_prompt / sd_h,
+    lo_rec_z_prompt = rec_z_prompt - 1.96 * se_rec_z_prompt,
+    hi_rec_z_prompt = rec_z_prompt + 1.96 * se_rec_z_prompt,
+    dz_prompt = rec_z_prompt - rec_z_free,
+    se_dz_prompt = sqrt(se_rec_z_free^2 + se_rec_z_prompt^2),
+    lo_dz_prompt = dz_prompt - 1.96 * se_dz_prompt,
+    hi_dz_prompt = dz_prompt + 1.96 * se_dz_prompt
+  )
 
-front_T %>%
-  filter(model_key %in% c("sonnet5", "gemini_flash")) %>%
+# T counts for Sonnet / Flash on the shared dens (free / prompt / tool).
+# T = 1/2 + (n_1p_softer - n_3p_softer) / 2n.
+
+front_T_shared %>%
+  filter(
+    model_key %in% c("sonnet5", "gemini_flash"),
+    arm %in% c("free", "prompt", "tool")
+  ) %>%
   transmute(
     model,
     arm,
@@ -924,8 +1178,11 @@ front_T %>%
     n_3p_softer,
     n_tie,
     T_hat = 0.5 + (n_1p_softer - n_3p_softer) / (2 * n),
-    se
+    se,
+    lo = T_hat - 1.96 * se,
+    hi = T_hat + 1.96 * se
   )
+
 
 ## Receptiveness measure, validation against the package -------------------
 
@@ -983,6 +1240,228 @@ hear_train %>%
     r_package = cor(pred_package, receptive_human),
     n = n()
   )
+
+# Table S7: Length Controls -----------------------------------------------
+
+exp_part <- read_csv(path("data", "experiment", "participants.csv"))
+
+MANUAL_PARAPHRASE_FAIL <- "6a0c93436c009b0e6c8a3fda"
+
+paraphrase_fails <- function(x) {
+  is.na(x) | trimws(x) == "" | nchar(trimws(x)) < 10L
+}
+
+prereg_exclude_pids <- exp_part %>%
+  filter(
+    paraphrase_fails(outro_paraphrase) |
+      prolific_pid == MANUAL_PARAPHRASE_FAIL
+  ) %>%
+  pull(prolific_pid)
+
+exp_prereg <- exp %>%
+  filter(!prolific_pid %in% prereg_exclude_pids)
+
+exp_len_prereg <- exp_prereg %>%
+  left_join(exp_items %>% select(item_id, words_delta), by = "item_id")
+
+fmt_ci_latex <- function(est, lo, hi) {
+  fmt_bound <- function(x) {
+    s <- sprintf("%.2f", x)
+    if (startsWith(s, "-")) {
+      paste0("$", s, "$")
+    } else {
+      s
+    }
+  }
+  paste0(
+    sprintf("%.2f", est),
+    " [",
+    fmt_bound(lo),
+    ", ",
+    fmt_bound(hi),
+    "]"
+  )
+}
+
+mean_ci_by_prov <- function(df, outcome_var, yta_only = FALSE) {
+  if (yta_only) {
+    df <- dplyr::filter(df, verdict_bin == "In the wrong")
+  }
+  df %>%
+    dplyr::group_by(provenance) %>%
+    dplyr::summarize(
+      est = mean(.data[[outcome_var]], na.rm = TRUE),
+      se = sd(.data[[outcome_var]], na.rm = TRUE) / sqrt(n()),
+      n = dplyr::n(),
+      .groups = "drop"
+    ) %>%
+    dplyr::mutate(
+      lo = est - 1.96 * se,
+      hi = est + 1.96 * se
+    )
+}
+
+length_int_by_prov <- function(df, outcome_var, yta_only = FALSE) {
+  if (yta_only) {
+    df <- dplyr::filter(df, verdict_bin == "In the wrong")
+  }
+  df %>%
+    dplyr::group_by(provenance) %>%
+    dplyr::group_modify(\(d, ...) {
+      fit <- lm(
+        as.formula(paste0(outcome_var, " ~ words_delta")),
+        data = d
+      )
+      co <- summary(fit)$coefficients
+      tibble(
+        est = unname(co[1, 1]),
+        se = unname(co[1, 2]),
+        n = nrow(d)
+      )
+    }) %>%
+    ungroup() %>%
+    dplyr::mutate(
+      lo = est - 1.96 * se,
+      hi = est + 1.96 * se
+    )
+}
+
+robustness_row_specs <- tribble(
+  ~outcome_var, ~provenance, ~yta_only, ~latex_label, ~addlinespace_after,
+  "quality_rewrite_minus_human", "Human", FALSE,
+  "Quality $\\Delta$ (human-origin)", FALSE,
+  "quality_rewrite_minus_human", "Model", FALSE,
+  "Quality $\\Delta$ (model-origin)", TRUE,
+  "quality_rewrite_minus_human", "Human", TRUE,
+  "Quality $\\Delta$, YTA only (human-origin)", FALSE,
+  "quality_rewrite_minus_human", "Model", TRUE,
+  "Quality $\\Delta$, YTA only (model-origin)", TRUE,
+  "listen_pref_rewrite", "Human", FALSE,
+  "Listen preference (human-origin)", FALSE,
+  "listen_pref_rewrite", "Model", FALSE,
+  "Listen preference (model-origin)", TRUE,
+  "listen_pref_rewrite", "Human", TRUE,
+  "Listen preference, YTA only (human-origin)", FALSE,
+  "listen_pref_rewrite", "Model", TRUE,
+  "Listen preference, YTA only (model-origin)", TRUE,
+  "advice_pref_rewrite", "Human", FALSE,
+  "Advice preference (human-origin)", FALSE,
+  "advice_pref_rewrite", "Model", FALSE,
+  "Advice preference (model-origin)", TRUE,
+  "advice_pref_rewrite", "Human", TRUE,
+  "Advice preference, YTA only (human-origin)", FALSE,
+  "advice_pref_rewrite", "Model", TRUE,
+  "Advice preference, YTA only (model-origin)", FALSE
+)
+
+robustness_cells <- function(df, outcome_var, provenance, yta_only) {
+  mean_ci_by_prov(df, outcome_var, yta_only) %>%
+    dplyr::filter(provenance == !!provenance)
+}
+
+robustness_len_cells <- function(df, outcome_var, provenance, yta_only) {
+  length_int_by_prov(df, outcome_var, yta_only) %>%
+    dplyr::filter(provenance == !!provenance)
+}
+
+exp_robustness_table <- purrr::pmap_dfr(
+  robustness_row_specs,
+  \(outcome_var, provenance, yta_only, latex_label, addlinespace_after) {
+    n200 <- robustness_cells(exp, outcome_var, provenance, yta_only)
+    n196 <- robustness_cells(exp_prereg, outcome_var, provenance, yta_only)
+    len200 <- robustness_len_cells(
+      exp_len, outcome_var, provenance, yta_only
+    )
+    len196 <- robustness_len_cells(
+      exp_len_prereg, outcome_var, provenance, yta_only
+    )
+    tibble(
+      latex_label = latex_label,
+      addlinespace_after = addlinespace_after,
+      n200 = fmt_ci_latex(n200$est, n200$lo, n200$hi),
+      n196 = fmt_ci_latex(n196$est, n196$lo, n196$hi),
+      length200 = fmt_ci_latex(len200$est, len200$lo, len200$hi),
+      length196 = fmt_ci_latex(len196$est, len196$lo, len196$hi)
+    )
+  }
+)
+
+write_exp_robustness_tex <- function(tab, out_path) {
+  row_lines <- purrr::pmap_chr(
+    tab,
+    \(latex_label, n200, n196, length200, length196, addlinespace_after) {
+      line <- paste0(
+        latex_label,
+        "\n    & ", n200,
+        "\n    & ", n196,
+        "\n    & ", length200,
+        "\n    & ", length196,
+        " \\\\"
+      )
+      if (isTRUE(addlinespace_after)) {
+        paste0(line, "\n\\addlinespace")
+      } else {
+        line
+      }
+    }
+  )
+  lines <- c(
+    "\\begin{table*}[t]",
+    "\\centering",
+    "\\small",
+    "\\caption{Human-study robustness and length-controlled estimates. Point estimates",
+    "are reported with 95\\% confidence intervals in brackets.}",
+    "\\label{tab:length_controls}",
+    "\\begin{tabular}{@{}lcccc@{}}",
+    "\\toprule",
+    "& Main text",
+    "& Preregistered exclusions",
+    "& \\multicolumn{2}{c}{Length controlled} \\\\",
+    "& ($n=200$)",
+    "& ($n=196$)",
+    "& ($n=200$)",
+    "& ($n=196$) \\\\",
+    "\\midrule",
+    row_lines,
+    "\\bottomrule",
+    "\\multicolumn{5}{@{}p{0.96\\textwidth}@{}}{\\footnotesize",
+    "\\textit{Note.} The preregistered-exclusion specification removes four",
+    "participants who failed the end-of-survey response-quality check. The",
+    "length-controlled estimates are intercepts from",
+    "$\\Delta Y = \\alpha + \\beta\\,\\Delta\\mathrm{Words} + \\epsilon$, estimated on the",
+    "full sample ($n=200$) and on the preregistered-exclusion sample ($n=196$).}",
+    "\\end{tabular}",
+    "\\end{table*}"
+  )
+  writeLines(lines, out_path)
+}
+
+dir_create(path("tables"))
+
+exp_robustness_csv <- exp_robustness_table %>%
+  dplyr::transmute(
+    Outcome = latex_label,
+    `Main text (n=200)` = n200,
+    `Prereg exclusion (n=196)` = n196,
+    `Length-controlled (n=200)` = length200,
+    `Length-controlled (n=196)` = length196
+  )
+
+readr::write_csv(
+  exp_robustness_csv,
+  path("tables", "exp_human_robustness.csv")
+)
+
+write_exp_robustness_tex(
+  exp_robustness_table,
+  path("tables", "exp_human_robustness.tex")
+)
+
+message(
+  "Wrote tables/exp_human_robustness.{csv,tex} (prereg paraphrase exclusions: ",
+  length(prereg_exclude_pids), " participants)."
+)
+print(exp_robustness_csv)
 
 # Appendix  ---------------------------------------------------------------
 
@@ -1476,5 +1955,149 @@ ggsave(
   height = 3.3,
   units = "in"
 )
+
+
+## Robustness checks -------------------------------------------------------
+
+# Supplement: expanded fig2 panel (n = 1,892) and framing-prompt sensitivity
+# (contaminated framing_v2 vs corrected framing vs omit framing).
+
+rcpt_trans_expanded <- rcpt_trans_all %>%
+  mutate(
+    rec_z = (rec_raw - mean(rec_raw[speaker == "Human"])) /
+      sd(rec_raw[speaker == "Human"])
+  )
+
+## Expanded fig2 panel (n = 1,892) -----------------------------------------
+
+# Receptiveness gain on the full eligible human-comment panel.
+rcpt_trans_expanded %>%
+  select(row_idx, speaker, rec_z) %>%
+  pivot_wider(names_from = speaker, values_from = rec_z) %>%
+  mutate(delta = Rewrite - Human) %>%
+  summarize(
+    panel = "fig2_expanded",
+    est = mean(delta),
+    se = sd(delta) / sqrt(n()),
+    n = n(),
+    .groups = "drop"
+  ) %>%
+  mutate(lo = est - 1.96 * se, hi = est + 1.96 * se)
+
+# Verdict preservation on the expanded panel.
+{
+  n <- length(judged_v3_all)
+  k <- sum(vapply(
+    judged_v3_all,
+    function(j) as.integer(j$verdict_same),
+    integer(1)
+  ))
+  bt <- binom.test(k, n, conf.level = 0.95)
+  tibble(
+    panel = "fig2_expanded",
+    k = k,
+    n = n,
+    est = as.numeric(bt$estimate),
+    lo = bt$conf.int[1],
+    hi = bt$conf.int[2]
+  )
+}
+
+## Framing-prompt sensitivity ----------------------------------------------
+
+# AITA-YTA (collapsed aita_soc_df; same estimand as Figure 1 correlation).
+aita_soc_df %>%
+  filter(speaker != "Rewrite") %>%
+  mutate(
+    total_syc_v3 = validation + indirectness + positivity + framing,
+    total_syc_v2 = validation + indirectness + positivity + framing_v2,
+    total_syc_nof = validation + indirectness + positivity
+  ) %>%
+  summarize(
+    corpus = "aita_yta",
+    n = n(),
+    r_v3 = cor(total_syc_v3, rec_z, use = "complete.obs"),
+    r_v2 = cor(total_syc_v2, rec_z, use = "complete.obs"),
+    r_nof = cor(total_syc_nof, rec_z, use = "complete.obs")
+  )
+
+# OEQ cross-domain panel.
+oeq_df %>%
+  mutate(
+    total_syc_v3 = validation + indirectness + positivity + framing,
+    total_syc_v2 = validation + indirectness + positivity + framing_v2,
+    total_syc_nof = validation + indirectness + positivity
+  ) %>%
+  summarize(
+    corpus = "oeq",
+    n = n(),
+    r_v3 = cor(total_syc_v3, rec_z, use = "complete.obs"),
+    r_v2 = cor(total_syc_v2, rec_z, use = "complete.obs"),
+    r_nof = cor(total_syc_nof, rec_z, use = "complete.obs")
+  )
+
+# Paired rewrite Δ total social sycophancy (human → rewrite), by framing spec.
+bind_rows(
+  tibble(framing_col = "framing", panel = "fig2_main"),
+  tibble(framing_col = "framing_v2", panel = "fig2_main"),
+  tibble(framing_col = "omit", panel = "fig2_main")
+) %>%
+  pmap_dfr(function(framing_col, panel) {
+    rcpt_trans %>%
+      select(row_idx, speaker, validation, indirectness, positivity, framing,
+             framing_v2) %>%
+      mutate(
+        total_syc = if (framing_col == "omit") {
+          validation + indirectness + positivity
+        } else if (framing_col == "framing") {
+          validation + indirectness + positivity + framing
+        } else {
+          validation + indirectness + positivity + framing_v2
+        }
+      ) %>%
+      select(row_idx, speaker, total_syc) %>%
+      pivot_wider(names_from = speaker, values_from = total_syc) %>%
+      mutate(delta = Rewrite - Human) %>%
+      summarize(
+        panel = panel,
+        framing = framing_col,
+        est = mean(delta),
+        se = sd(delta) / sqrt(n()),
+        n = n(),
+        .groups = "drop"
+      )
+  })
+
+# Same rewrite Δ syc on the expanded n = 1,892 panel.
+bind_rows(
+  tibble(framing_col = "framing", panel = "fig2_expanded"),
+  tibble(framing_col = "framing_v2", panel = "fig2_expanded"),
+  tibble(framing_col = "omit", panel = "fig2_expanded")
+) %>%
+  pmap_dfr(function(framing_col, panel) {
+    rcpt_trans_expanded %>%
+      select(row_idx, speaker, validation, indirectness, positivity, framing,
+             framing_v2) %>%
+      mutate(
+        total_syc = if (framing_col == "omit") {
+          validation + indirectness + positivity
+        } else if (framing_col == "framing") {
+          validation + indirectness + positivity + framing
+        } else {
+          validation + indirectness + positivity + framing_v2
+        }
+      ) %>%
+      select(row_idx, speaker, total_syc) %>%
+      pivot_wider(names_from = speaker, values_from = total_syc) %>%
+      mutate(delta = Rewrite - Human) %>%
+      summarize(
+        panel = panel,
+        framing = framing_col,
+        est = mean(delta),
+        se = sd(delta) / sqrt(n()),
+        n = n(),
+        .groups = "drop"
+      )
+  })
 
 

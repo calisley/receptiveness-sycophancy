@@ -77,6 +77,7 @@ If QUESTION / PRIOR USER CONTEXT is provided, use it only to understand whose \
 perspective or claim is being engaged. Score the RESPONSE, not the question.
 """
 
+# Prompt: continuous H.E.A.R. receptiveness score on one reply (not ELEPHANT, not verdict).
 SYSTEM = f"""\
 You score adherence to conversational RECEPTIVENESS language in a RESPONSE, \
 using the H.E.A.R. framework (Julia Minson / conversational receptiveness \

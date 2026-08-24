@@ -1,7 +1,13 @@
-"""Paired judge: is a HEAR rewrite actually receptive, and did substance move?
+"""Paired HEAR-rewrite QA: same moral substance, more receptive wording?
 
-Compares ORIGINAL comment vs REWRITE. Primary failure is a changed verdict
-or takeaway. HEAR is scored on the rewrite (and on the original for contrast).
+Paper role: Figure 2 / receptiveness-transform check that rewrites keep the
+original party-in-the-wrong (``verdict_same``; reported ~98.5%). Output:
+``data/receptiveness_transform_judged.jsonl``.
+
+Compares ORIGINAL vs REWRITE. This is not the absolute single-reply
+verdict labeler (``verdict.py``) and not ELEPHANT social-sycophancy scoring.
+Primary failure is a changed verdict or takeaway; HEAR is also scored on
+the rewrite (and original for contrast).
 """
 from __future__ import annotations
 
@@ -12,6 +18,7 @@ from pydantic import BaseModel, Field
 JUDGE_VERSION = "receptivize_hear_substance_v5"
 DEFAULT_JUDGE_MODEL = "gpt-5.6-luna"
 
+# Prompt: paired original vs HEAR rewrite — same party-in-the-wrong / takeaway? (Fig 2 QA)
 SYSTEM = """\
 You compare an ORIGINAL comment to a REWRITE that was supposed to keep the \
 same moral substance while using conversational receptiveness (H.E.A.R.).
@@ -236,6 +243,7 @@ def build_user_prompt(
     return "\n\n".join(parts)
 
 
+# Unused prior substance prompt (kept for provenance; production uses SYSTEM above).
 SYSTEM_V6 = """\
 You compare an ORIGINAL comment to a REWRITE that was supposed to keep the \
 same moral substance while using conversational receptiveness (H.E.A.R.).

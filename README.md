@@ -1,24 +1,36 @@
 # Reproduction package for *Receptiveness, Not Sycophancy: Distinguishing Engagement from Deference in Language Models*
 
-Prompts live in the Python files that use them. `analysis.R` builds every plot and reported statistic from the CSVs under `data/`.
+Prompts live next to the code that uses them. `analysis.R` rebuilds plots and reported statistics from the CSVs under `data/`.
 
-```
-analysis.R
-scripts/
-src/
-data/aita/AITA-YTA.csv
-data/aita_sycophancy_scores.csv
-data/aita_verdicts_1p.csv
-data/receptiveness_transform.csv
-data/receptiveness_transform_judged.jsonl
-data/hear/
-data/mitigation/transform.csv
-data/mitigation/frontier.csv
-data/experiment/responses.csv
-data/experiment/items.json
-data/robustness/oeq/oeq_long.csv
-plots/
-```
+### Prompts (what each one does)
+
+Generation, rewrite, and scoring prompts are different jobs. Do not treat them as one “judge.”
+
+**Generate replies** (`scripts/gen_aita.py`)
+
+| Prompt | Role |
+| --- | --- |
+| *(none)* | Default free reply to the AITA post (paper mainline gens). |
+| `HEAR_SYSTEM` | System-prompt mitigation: answer with H.E.A.R. language, still give a view. |
+| `REWRITE_3P` | Rewrite the post into third person (“Person A… Did Person A act wrongly?”) for the 1p-vs-3p arm. |
+
+**Rewrite an existing draft** (`scripts/rewrite_hear.py`)
+
+| Prompt | Role |
+| --- | --- |
+| `LISTEN_ONCE` | Figure 2: Terra rewrites a *human* top comment to be more receptive; keep verdict/reasons; extra scaffolding for blockquotes, dunks, thin comments. |
+| `OWN_DRAFT` | Mitigation tool: each model rewrites *its own* 1p draft with H.E.A.R.; shorter; same verdict/reasons. |
+
+**Score / label** (not interchangeable)
+
+| Prompt | Code | Role |
+| --- | --- | --- |
+| ELEPHANT validation / indirectness / framing | `scripts/judge_elephant.py` | Social-sycophancy-style binary labels on one reply. Framing uses `FRAMING_USER_PIN` + full ELEPHANT example bank (`PROMPT_VERSION=elephant_social_user_v3_framing_20260824`); validation still uses the empathy `USER_PIN`. Contaminated main-text framing labels are archived as `framing_v2` in the analysis CSVs; current `framing` is the corrected rejudge (`data/gens/framing_v3/`). |
+| HEAR receptiveness rubric | `src/hear.py` (`SYSTEM`) | Continuous receptiveness score (H.E.A.R. + related dims). |
+| Sharma positivity | `scripts/judge_positivity.py` (`SHARMA_SYSTEM`) | Pairwise: which of two replies is more positive. |
+| `VERDICT_SYSTEM` | `src/verdict.py` | Absolute landing of **one** reply: YTA / NTA / mixed / other. Builds dens and 1p/3p labels. |
+| `COMPARE_SYSTEM` | `src/verdict.py` → `scripts/judge_softness.py` | Pairwise 1p vs 3p: same fault on the asked act, or 1p/3p softer. Mitigation substantive deference. |
+| Substance `SYSTEM` | `src/substance.py` → `scripts/judge_substance.py` | Pairwise original vs HEAR rewrite: same party-in-the-wrong / takeaway? Figure 2 “verdict preserved” check. |
 
 ## Setup
 
@@ -41,7 +53,19 @@ source .venv/bin/activate
 Rscript analysis.R
 ```
 
-Plots land in `plots/`.
+Outputs:
+
+- **Figures:** `plots/` (main text and appendix PDFs)
+- **Robustness table:** `tables/exp_human_robustness.{csv,tex}` (human-study prereg exclusions and length controls; compare the `.tex` to the supplement by hand)
+- **Inline statistics:** printed to the console throughout `analysis.R` (Fig 2 gain, verdict preservation, framing sensitivity, mitigation \(T\), etc.)
+
+To regenerate only the human-study robustness table:
+
+```bash
+Rscript scripts/run_exp_robustness_table.R
+```
+
+All inputs live under `data/`; no API keys are required for this path.
 
 ---
 
@@ -126,7 +150,7 @@ python scripts/compile_fig2.py --human data/gens/human.jsonl --rewrite data/gens
   --out data/receptiveness_transform.csv
 ```
 
-Check that rewrites preserve the original verdict:
+Paired substance check (original vs rewrite; not the absolute verdict labeler):
 
 ```bash
 python scripts/judge_substance.py --target data/gens/rewrites.jsonl \
