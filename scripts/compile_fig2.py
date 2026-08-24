@@ -143,7 +143,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--elephant", type=Path, required=True)
     p.add_argument("--positivity", type=Path, required=True)
     p.add_argument("--hear", type=Path, required=True)
-    p.add_argument("--model", default="GPT-5.6 Terra", help="Rewriter / dens label.")
+    p.add_argument("--model", default="GPT-5.6 Terra", help="Rewriter / panel label.")
     p.add_argument("--out", type=Path, default=ROOT / "data/receptiveness_transform.csv")
     return p.parse_args()
 
