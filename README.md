@@ -196,22 +196,12 @@ System-prompt HEAR arm (no rewrite): `gen_aita.py --system hear`.
 
 ### OEQ robustness
 
-Rescore shipped OEQ texts (see `data/robustness/README.md`):
-
-```bash
-python scripts/export_elephant_pairs.py \
-  --csv data/robustness/oeq/OEQ_full_results.csv --corpus oeq \
-  --speakers human,gpt5 --out-dir data/robustness/oeq
-```
+Shipped analysis table: `data/robustness/oeq/oeq_long.csv`.
 
 ### Human experiment
-
-Shipped analysis inputs (no raw Qualtrics export):
 
 - `data/experiment/items.json` — 100 survey items (post + base + rewrite)
 - `data/experiment/responses.csv` — participant × item ratings
 - `data/experiment/participants.csv` — one row per participant (+ QC flags)
-- `data/experiment/questions.json` — survey question / consent wording
-- `data/experiment/cleaning_notes.md` — how the analysis tables were built
 
 Then run `Rscript analysis.R`.

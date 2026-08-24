@@ -3,7 +3,7 @@
 
 Author-side utility: raw Qualtrics exports are **not** shipped in the public
 deposit. Released analysis uses data/experiment/{responses,participants}.csv
-plus items.json / questions.json.
+plus items.json.
 
 Reads a raw Qualtrics CSV (3 header rows), drops experimenter self-tests,
 reshapes to one row per (participant × item), and maps A/B labels onto

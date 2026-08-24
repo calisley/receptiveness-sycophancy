@@ -23,7 +23,7 @@ from lib import MODELS  # noqa: E402
 FIG1_COLS = [
     "row_idx",
     "corpus",
-    "dens",
+    "panel",
     "source",
     "speaker",
     "validation",
