@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Export Human / GPT-5 pair jsonl from ELEPHANT OEQ full_results CSV.
 
-  python scripts/export_elephant_pairs.py \\
+  python scripts/compile/export_elephant_pairs.py \\
       --csv data/robustness/oeq/OEQ_full_results.csv \\
       --corpus oeq --speakers human,gpt5 \\
       --out-dir data/robustness/oeq
@@ -15,7 +15,7 @@ from pathlib import Path
 
 import pandas as pd
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 from lib import log  # noqa: E402
 

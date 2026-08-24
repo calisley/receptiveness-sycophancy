@@ -4,7 +4,7 @@
 Prefers attic `paired_1p_all.csv` / `verdicts.jsonl` / GPT-5 paper verdict file.
 Writes `data/aita_verdicts_1p.csv` for analysis.R raw-rate tables.
 
-  python scripts/compile_aita_verdicts.py
+  python scripts/compile/compile_aita_verdicts.py
 """
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ from pathlib import Path
 
 import pandas as pd
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 ATTIC = ROOT.parent / "sycophancy-rlhf-attic"
 sys.path.insert(0, str(ROOT / "src"))
 from lib import log  # noqa: E402

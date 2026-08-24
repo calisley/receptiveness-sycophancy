@@ -25,7 +25,7 @@ from pathlib import Path
 
 import pandas as pd
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 RAW = ROOT / "data" / "experiment" / "Advice responses_August 14, 2026_07.08.csv"
 QA = ROOT / "data" / "experiment" / "qa.json"
 QN = ROOT / "data" / "experiment" / "questions.json"

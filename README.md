@@ -60,7 +60,7 @@ python scripts/gen_aita.py --model terra --arm 1p \
 Export model and human top-comment pairs:
 
 ```bash
-python scripts/export_pairs.py --gens data/gens/terra_gens.jsonl \
+python scripts/compile/export_pairs.py --gens data/gens/terra_gens.jsonl \
   --source terra --speaker "GPT-5.6 Terra" \
   --out-model data/gens/terra.jsonl --out-human data/gens/human.jsonl
 ```
@@ -77,7 +77,7 @@ python scripts/judge_positivity.py --a data/gens/human.jsonl --b data/gens/terra
 Compile the Figure 1 table:
 
 ```bash
-python scripts/compile_fig1.py --pairs-dir data/gens \
+python scripts/compile/compile_fig1.py --pairs-dir data/gens \
   --elephant data/gens/elephant.jsonl \
   --positivity data/gens/positivity.jsonl --hear data/gens/hear.jsonl \
   --out data/aita_sycophancy_scores.csv
@@ -106,7 +106,7 @@ python scripts/judge_positivity.py --a data/gens/human.jsonl --b data/gens/rewri
 Compile Figure 2:
 
 ```bash
-python scripts/compile_fig2.py --human data/gens/human.jsonl --rewrite data/gens/rewrites.jsonl \
+python scripts/compile/compile_fig2.py --human data/gens/human.jsonl --rewrite data/gens/rewrites.jsonl \
   --elephant data/gens/elephant_rw.jsonl --positivity data/gens/positivity_rw.jsonl \
   --hear data/gens/hear_rw.jsonl --model "GPT-5.6 Terra" \
   --out data/receptiveness_transform.csv
@@ -139,7 +139,7 @@ python scripts/rewrite_hear.py --style own_draft --target data/mitigation/gens.j
 Merge HEAR rewrites onto the generations:
 
 ```bash
-python scripts/merge_hear.py --gens data/mitigation/gens.jsonl \
+python scripts/compile/merge_hear.py --gens data/mitigation/gens.jsonl \
   --rewrites data/mitigation/hear_1p.jsonl --out data/mitigation/gens_with_hear.jsonl
 ```
 
@@ -158,7 +158,7 @@ Score HEAR receptiveness on free 1p replies. **On macOS/Linux:**
 
 ```bash
 for mk in terra gpt5 sonnet5 gemini_flash scout; do
-  python scripts/export_pairs.py --gens data/mitigation/gens.jsonl \
+  python scripts/compile/export_pairs.py --gens data/mitigation/gens.jsonl \
     --source "$mk" --speaker "$mk" --only-model "$mk" --keep-verdict "" \
     --out-model "data/mitigation/${mk}.jsonl"
   python scripts/judge_hear.py --target "data/mitigation/${mk}.jsonl" \
@@ -170,7 +170,7 @@ done
 
 ```powershell
 foreach ($mk in "terra","gpt5","sonnet5","gemini_flash","scout") {
-  python scripts/export_pairs.py --gens data/mitigation/gens.jsonl `
+  python scripts/compile/export_pairs.py --gens data/mitigation/gens.jsonl `
     --source $mk --speaker $mk --only-model $mk --keep-verdict "" `
     --out-model "data/mitigation/$mk.jsonl"
   python scripts/judge_hear.py --target "data/mitigation/$mk.jsonl" `
@@ -184,11 +184,11 @@ Score HEAR on the rewrites and compile tables:
 python scripts/judge_hear.py --target data/mitigation/hear_1p.jsonl \
   --out data/mitigation/hear.jsonl
 
-python scripts/compile_mitigation.py \
+python scripts/compile/compile_mitigation.py \
   --softness data/mitigation/softness.jsonl --hear data/mitigation/hear.jsonl \
   --out data/mitigation/transform.csv
 
-python scripts/compile_frontier.py --gens data/mitigation/gens.jsonl \
+python scripts/compile/compile_frontier.py --gens data/mitigation/gens.jsonl \
   --hear data/mitigation/hear.jsonl --out data/mitigation/frontier.csv
 ```
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Join robustness pair + ELEPHANT + HEAR (+ optional positivity) into long CSV.
 
-  python scripts/compile_robustness.py \\
+  python scripts/compile/compile_robustness.py \\
       --pairs-dir data/robustness/oeq \\
       --elephant data/robustness/oeq/elephant.jsonl \\
       --hear data/robustness/oeq/hear.jsonl \\
@@ -17,7 +17,7 @@ from pathlib import Path
 
 import pandas as pd
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 from lib import load_jsonl, load_pairs, log, pairwise_dummy  # noqa: E402
 

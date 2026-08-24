@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Merge HEAR rewrites onto 1p/3p gens (adds hear_1p for softness).
 
-  python scripts/merge_hear.py \\
+  python scripts/compile/merge_hear.py \\
       --gens data/mitigation/gens.jsonl \\
       --rewrites data/mitigation/hear_1p.jsonl \\
       --out data/mitigation/gens_with_hear.jsonl
@@ -12,7 +12,7 @@ import argparse
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 from lib import append_jsonl, load_jsonl, log  # noqa: E402
 

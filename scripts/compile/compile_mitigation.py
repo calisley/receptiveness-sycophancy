@@ -4,14 +4,14 @@
 Writes a long CSV: one row per (model, post, arm). Softness votes are reduced
 to a plurality landing here; T, SEs, and mean receptiveness are computed in R.
 
-  python scripts/compile_mitigation.py \\
+  python scripts/compile/compile_mitigation.py \\
       --softness data/mitigation/softness.jsonl \\
       --hear data/mitigation/hear.jsonl \\
       --out data/mitigation/transform.csv
 
 Optional prompt arm (HEAR system prompt vs unprompted 3p):
 
-  python scripts/compile_mitigation.py \\
+  python scripts/compile/compile_mitigation.py \\
       --softness data/mitigation/softness.jsonl \\
       --hear data/mitigation/hear.jsonl \\
       --prompt-softness data/mitigation/prompt_softness.jsonl \\
@@ -27,7 +27,7 @@ import sys
 from collections import Counter, defaultdict
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 from lib import MODELS, load_jsonl, log  # noqa: E402
 

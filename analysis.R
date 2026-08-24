@@ -64,7 +64,7 @@ aita_verdicts_1p <- read_csv(path("data", "aita_verdicts_1p.csv")) %>%
 # Fig 2 receptive-rewrite panels (receptiveness_transform.csv).
 # Expanded (n = 1,892): every distinct row_idx with complete Human + Rewrite
 # rows — i.e. AITA human top comment, successful listen-once rewrite, and
-# non-missing ELEPHANT + HEAR + positivity scores (see scripts/compile_fig2.py).
+# non-missing ELEPHANT + HEAR + positivity scores (see scripts/compile/compile_fig2.py).
 # Main text (n = 808): expanded panel ∩ GPT-5 auxiliary 1p verdict = YTA.
 rcpt_trans_all <- read_csv(
   path("data", "receptiveness_transform.csv")

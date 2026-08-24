@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Schema smoke tests, plus an optional live API pass.
 
-  python scripts/smoke.py           # dummy rows, no API
-  python scripts/smoke.py --api     # 1 live 1p+3p per model, then judges;
+  python scripts/compile/smoke.py           # dummy rows, no API
+  python scripts/compile/smoke.py --api     # 1 live 1p+3p per model, then judges;
                                     # also tiny OEQ robustness path
 """
 from __future__ import annotations
@@ -14,7 +14,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 SMOKE = ROOT / "data/smoke"
 PY = sys.executable
 sys.path.insert(0, str(ROOT / "src"))
@@ -140,7 +140,7 @@ def robustness_pipeline(*, api: bool) -> dict[str, int]:
     run(
         [
             PY,
-            "scripts/export_elephant_pairs.py",
+            "scripts/compile/export_elephant_pairs.py",
             "--csv",
             str(oeq_csv),
             "--corpus",
@@ -203,7 +203,7 @@ def robustness_pipeline(*, api: bool) -> dict[str, int]:
     run(
         [
             PY,
-            "scripts/compile_robustness.py",
+            "scripts/compile/compile_robustness.py",
             "--pairs-dir",
             str(oeq_dir),
             "--elephant",
@@ -251,7 +251,7 @@ def dummy_pipeline() -> tuple[int, int, int, float]:
     run(
         [
             PY,
-            "scripts/export_pairs.py",
+            "scripts/compile/export_pairs.py",
             "--gens",
             str(gens),
             "--source",
@@ -313,7 +313,7 @@ def dummy_pipeline() -> tuple[int, int, int, float]:
     run(
         [
             PY,
-            "scripts/compile_fig1.py",
+            "scripts/compile/compile_fig1.py",
             "--pairs-dir",
             str(SMOKE),
             "--elephant",
@@ -332,7 +332,7 @@ def dummy_pipeline() -> tuple[int, int, int, float]:
     run(
         [
             PY,
-            "scripts/compile_frontier.py",
+            "scripts/compile/compile_frontier.py",
             "--gens",
             str(gens),
             "--hear",
@@ -396,7 +396,7 @@ def dummy_pipeline() -> tuple[int, int, int, float]:
     run(
         [
             PY,
-            "scripts/compile_fig2.py",
+            "scripts/compile/compile_fig2.py",
             "--human",
             str(SMOKE / "human.jsonl"),
             "--rewrite",
@@ -450,7 +450,7 @@ def dummy_pipeline() -> tuple[int, int, int, float]:
     run(
         [
             PY,
-            "scripts/compile_mitigation.py",
+            "scripts/compile/compile_mitigation.py",
             "--softness",
             str(SMOKE / "softness.jsonl"),
             "--hear",
@@ -512,7 +512,7 @@ def api_pipeline() -> tuple[int, int, int, float]:
     for mk, meta in MODELS.items():
         cmd = [
             PY,
-            "scripts/export_pairs.py",
+            "scripts/compile/export_pairs.py",
             "--gens",
             str(gens),
             "--source",
@@ -605,7 +605,7 @@ def api_pipeline() -> tuple[int, int, int, float]:
     run(
         [
             PY,
-            "scripts/compile_fig1.py",
+            "scripts/compile/compile_fig1.py",
             "--pairs-dir",
             str(SMOKE),
             "--elephant",
@@ -624,7 +624,7 @@ def api_pipeline() -> tuple[int, int, int, float]:
     run(
         [
             PY,
-            "scripts/compile_frontier.py",
+            "scripts/compile/compile_frontier.py",
             "--gens",
             str(gens),
             "--hear",
@@ -697,7 +697,7 @@ def api_pipeline() -> tuple[int, int, int, float]:
     run(
         [
             PY,
-            "scripts/compile_fig2.py",
+            "scripts/compile/compile_fig2.py",
             "--human",
             str(human),
             "--rewrite",
@@ -754,7 +754,7 @@ def api_pipeline() -> tuple[int, int, int, float]:
     run(
         [
             PY,
-            "scripts/compile_mitigation.py",
+            "scripts/compile/compile_mitigation.py",
             "--softness",
             str(SMOKE / "softness.jsonl"),
             "--hear",

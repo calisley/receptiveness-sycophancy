@@ -275,17 +275,6 @@ def rewrite_key(row: dict, out_id: str) -> str:
     return f"{base}|rewrite" if base == out_id else base
 
 
-def user_message(
-    style: str, question: str, draft: str, *, row_idx: int | None = None
-) -> str:
-    _, tpl = prompt_parts(style)
-    q, d = question.strip(), draft.strip()
-    if style == "listen_once_v3":
-        idx = int(row_idx if row_idx is not None else 0)
-        hint = LISTEN_ONCE_PHRASING_HINTS[idx % len(LISTEN_ONCE_PHRASING_HINTS)]
-        return fill_prompt_template(tpl, post=q, response=d, phrasing_hint=hint)
-    return fill_prompt_template(tpl, post=q, response=d)
-
 
 async def worker(client, sem, job: dict) -> dict:
     meta = MODELS[job["model"]]

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Join human vs rewrite scores into receptiveness_transform.csv.
 
-  python scripts/compile_fig2.py --human ... --rewrite ... \\
+  python scripts/compile/compile_fig2.py --human ... --rewrite ... \\
       --out data/receptiveness_transform.csv
 """
 from __future__ import annotations
@@ -13,7 +13,7 @@ from pathlib import Path
 
 import pandas as pd
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 from lib import load_jsonl, load_pairs, log, pairwise_dummy  # noqa: E402
 

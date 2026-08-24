@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build pair jsonl from AITA gens (crowd-YTA ∩ model-1p-YTA sample) plus human top comments.
 
-  python scripts/export_pairs.py --gens data/gens/terra.jsonl --source terra \\
+  python scripts/compile/export_pairs.py --gens data/gens/terra.jsonl --source terra \\
       --speaker "GPT-5.6 Terra" --out-model data/gens/terra.jsonl \\
       --out-human data/gens/human.jsonl
 """
@@ -12,7 +12,7 @@ import json
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 from lib import append_jsonl, load_aita, load_jsonl, log  # noqa: E402
 

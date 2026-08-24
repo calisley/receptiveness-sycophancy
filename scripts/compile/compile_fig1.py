@@ -4,7 +4,7 @@
 Each model panel is crowd-YTA ∩ that model's 1p=YTA. Human rows are the top
 comment on the same posts.
 
-  python scripts/compile_fig1.py --pairs-dir data/gens/aita \\
+  python scripts/compile/compile_fig1.py --pairs-dir data/gens/aita \\
       --out data/aita_sycophancy_scores.csv
 """
 from __future__ import annotations
@@ -16,7 +16,7 @@ from pathlib import Path
 
 import pandas as pd
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 from lib import load_jsonl, load_pairs, log, pairwise_dummy  # noqa: E402
 

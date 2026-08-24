@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Join 1p/3p gens + HEAR into frontier.csv.
 
-  python scripts/compile_frontier.py --gens data/mitigation/gens.jsonl \\
+  python scripts/compile/compile_frontier.py --gens data/mitigation/gens.jsonl \\
       --hear data/mitigation/hear.jsonl --out data/mitigation/frontier.csv
 """
 from __future__ import annotations
@@ -12,7 +12,7 @@ from pathlib import Path
 
 import pandas as pd
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 from lib import MODELS, load_jsonl, log  # noqa: E402
 

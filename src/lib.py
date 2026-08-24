@@ -13,6 +13,15 @@ from dotenv import load_dotenv
 from openai import AsyncOpenAI
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def fill_prompt_template(template: str, **values: str) -> str:
+    out = template
+    for key, val in values.items():
+        out = out.replace("{" + key + "}", val)
+    return out
+
+
 load_dotenv(ROOT / ".env")
 sys.path.insert(0, str(ROOT / "src"))
 import usage as usage_tracker  # noqa: E402
@@ -191,7 +200,7 @@ def load_jsonl_by_key(path: Path, key: str = "key") -> dict[str, dict]:
 def append_jsonl(path: Path, row: dict) -> None:
     """Append one JSONL row and fsync so a mid-run wifi drop keeps finished work.
 
-    Uses an advisory flock so parallel writers can share the same file.
+    Uses an advisory flock so parallel dens-A workers can share the same file.
     """
     path.parent.mkdir(parents=True, exist_ok=True)
     line = json.dumps(row, ensure_ascii=False) + "\n"
@@ -308,12 +317,13 @@ async def run_jobs(
     *,
     concurrency: int,
     label: str,
+    provider: str = "openai",
 ) -> tuple[int, int]:
     pending = [j for j in jobs if j["key"] not in done]
     log(f"[{label}] jobs={len(jobs)} done={len(done)} pending={len(pending)}")
     if not pending:
         return 0, 0
-    client = tracked_client()
+    client = gen_client(provider)
     sem = asyncio.Semaphore(concurrency)
     lock = asyncio.Lock()
     ok = fail = 0
