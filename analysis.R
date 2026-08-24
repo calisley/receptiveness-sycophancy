@@ -1126,17 +1126,18 @@ ggsave(
   units = "in"
 )
 
-## Quality distributions ----------------------------------------
+## Quality distributions by participant verdict ----------------------------
 
-p_quality_dist <- exp_qual %>%
-  count(provenance, speaker, quality = quality_f) %>%
-  complete(provenance, speaker, quality, fill = list(n = 0)) %>% 
-  group_by(provenance, speaker) %>%
+p_quality_by_verdict <- exp_qual %>%
+  count(provenance, speaker, verdict_bin, quality = quality_f) %>%
+  complete(provenance, speaker, quality, verdict_bin, fill = list(n = 0)) %>%
+  group_by(provenance, speaker, verdict_bin) %>%
   mutate(share = n / sum(n)) %>%
   ungroup() %>%
+  filter(verdict_bin != "Unsure") %>%
   ggplot(aes(x = quality, y = share, fill = speaker)) +
-  facet_wrap(~ provenance) +
   geom_col(position = position_dodge(width = 0.9), width = 0.85) +
+  facet_grid(provenance ~ verdict_bin) +
   scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
   scale_x_discrete(drop = FALSE) +
   labs(
@@ -1146,114 +1147,17 @@ p_quality_dist <- exp_qual %>%
   ) +
   theme(
     legend.position = "inside",
-    legend.position.inside = c(0.2, 0.85),
-    legend.background = element_blank()
+    legend.position.inside = c(0.1, 0.85),
+    legend.background = element_blank(),
+    strip.background = element_blank()
   ) +
   scale_fill_discrete(limits = c("Original", "Rewrite"))
 
 ggsave(
-  path("plots", "appendix", "advice_quality_dist.pdf"),
-  p_quality_dist,
+  path("plots", "appendix", "quality_by_verdict.pdf"),
+  p_quality_by_verdict,
   width = 6.6,
-  height = 3.3,
-  units = "in"
-)
-
-
-## Quality scatter ---------------------------------------------------------
-
-p_quality_scatter <- exp %>%
-  group_by(item_id, provenance) %>%
-  summarize(
-    quality_human = mean(quality_human),
-    quality_rewrite = mean(quality_rewrite)
-  ) %>%
-  ggplot(aes(x = quality_human, y = quality_rewrite)) +
-  geom_jitter(width = 0.15, height = 0.15, alpha = 0.45) +
-  geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "grey40") +
-  facet_wrap(~ provenance) +
-  coord_equal(xlim = c(1, 7), ylim = c(1, 7), expand = FALSE) +
-  scale_x_continuous(breaks = 1:7) +
-  scale_y_continuous(breaks = 1:7) +
-  labs(
-    x = "Quality - Original",
-    y = "Quality - Rewrite"
-  )
-
-ggsave(
-  path("plots", "appendix", "advice_quality_scatter.pdf"),
-  p_quality_scatter,
-  width = 6.6,
-  height = 3.3,
-  units = "in"
-)
-
-
-## Social Sycophancy Moves with Receptiveness HIST --------------------
-
-p_corr_hist <- aita_soc_df %>%
-  mutate(no_syc = !any_syc) %>%
-  pivot_longer(
-    cols = c(
-      validation, indirectness, positivity, any_syc, any_elephant, no_syc,
-      framing_v2
-    ), 
-  ) %>% 
-  filter(value != 0) %>% 
-  group_by(name, speaker, value) %>%
-  summarize(
-    rec_z_est = mean(rec_z),
-    se_z = sd(rec_z) / sqrt(n()),
-    n = n()
-  ) %>%
-  ungroup() %>%
-  complete(
-    name, speaker,
-    fill = list(rec_z_est = NA, se_z = NA, n = 0)
-  ) %>% 
-  filter(speaker != "GPT-5", speaker != "Rewrite") %>%
-  mutate(
-    name = factor(
-      name,
-      labels = c("None", "Framing", "Indirectness", "Validation",
-                 "Any\nELEPHANT", "Sharma\nPositivity", "Any"),
-      levels = c("no_syc", "framing_v2", "indirectness", "validation", 
-                 "any_elephant", "positivity", "any_syc")
-    )
-  ) %>% 
-  ggplot(aes(x = name, y = rec_z_est, fill = speaker)) +
-  geom_col(position = "dodge") +
-  geom_errorbar(
-    aes(ymin = rec_z_est - (2 * se_z), ymax = rec_z_est + (2 * se_z)),
-    position = position_dodge(width = 0.9),
-    color = "black",
-    width = .1
-  ) + 
-  labs(
-    y = "Receptiveness",
-    x = "Social Sycophancy Measure",
-    fill = NULL
-  ) +
-  theme( 
-    legend.position = "inside",
-    legend.position.inside = c(0.7, 0.15),
-    legend.background = element_blank(),
-    
-  ) +
-  scale_fill_discrete(
-    limits = c("Human", "GPT-5", "Rewrite", "Gemini 3.7 Flash",
-               "Claude Sonnet 5", "GPT-5.6 Terra", "Llama 4 Scout"),
-    breaks = c("Human","Gemini 3.7 Flash",
-               "Claude Sonnet 5", "GPT-5.6 Terra", "Llama 4 Scout")
-  ) +
-  scale_y_continuous(limits = c(-1, 3)) +
-  guides(fill = guide_legend(nrow = 2))
-
-ggsave(
-  path("plots", "appendix", "corr_hist.pdf"),
-  p_corr_hist,
-  width = 6.6,
-  height = 3.3,
+  height = 4.5,
   units = "in"
 )
 
