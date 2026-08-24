@@ -27,7 +27,13 @@ Replication materials for an anonymous submission.
 
 To regenerate only the robustness table: `Rscript scripts/run_exp_robustness_table.R`
 
-At the end of `analysis.R`, a comparison to the `politeness` package calls `politeness::receptiveness()`, which needs spaCy. If that step is skipped, all figures and main statistics still run. To include it, run once in R: `spacyr::spacy_install()`.
+**Optional:** At the very end, `analysis.R` compares our HEAR rubric to `politeness::receptiveness()`, which needs spaCy. All figures and main statistics run without it; only that one comparison is skipped. To include it, run once **interactively in R** (not `Rscript -e` — it may need to download Miniconda and prompt for confirmation):
+
+```r
+spacyr::spacy_install()
+```
+
+Then rerun `analysis.R`. The download is about 1–2 GB and can take several minutes.
 
 ## Optional: regenerate LLM outputs
 
