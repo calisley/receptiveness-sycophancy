@@ -11,21 +11,14 @@ groundhog.library(
 dir_create(path("plots"))
 dir_create(path("plots", "appendix"))
 
-
-theme_set(
-  theme_bw(base_size = 9)
-)
-
 # Data --------------------------------------------------------------------
 
-# Long CSV duplicates each human once per model dens (column `dens`) because positivity is
-# pairwise vs that model. Collapse to unique (speaker, row_idx) for Figure 1 /
-# correlations: mean over copies (ELEPHANT/rec are constant; positivity is
-# the partner-average, then thresholded at 0.5 for the binary total).
 aita_soc_df <- read_csv(
   path("data", "aita_sycophancy_scores.csv")
 ) %>%
+  filter(speaker != "GPT-5") %>%
   group_by(speaker, row_idx) %>%
+  # Aggregate average human positivity in comparison to models
   summarize(
     across(
       c(validation, indirectness, framing, framing_v2, positivity, rec_raw),
@@ -34,6 +27,7 @@ aita_soc_df <- read_csv(
     .groups = "drop"
   ) %>%
   mutate(
+    # make it binary so bins stay categorical
     positivity = as.integer(positivity >= 0.5),
     speaker = factor(speaker,
                      levels = c("Human", "GPT-5", "Rewrite", "Gemini 3.7 Flash",
@@ -46,9 +40,7 @@ aita_soc_df <- read_csv(
     any_syc = validation | indirectness | framing | positivity
   )
 
-# Per-post Luna 1p verdicts (YTA / NTA / mixed / other) over the full corpus.
-# Used for raw verdict-rate tables; aita_soc_df is the clear-YTA
-# ∩ usable-human subset for Figure 1, not the raw YTA rate.
+
 aita_verdicts_1p <- read_csv(path("data", "aita_verdicts_1p.csv")) %>%
   mutate(
     model = factor(
@@ -162,9 +154,6 @@ exp_items <- fromJSON(path("data", "experiment", "items.json")) %>%
     model_label = model_label
   )
 
-# Figure 5: free baseline for Sonnet, Flash, Terra, Scout; tool mitigation for
-# Sonnet and Flash only. All four use the same n=200 post subset (Sonnet/Flash
-# prompt arm defines row_idx; Terra/Scout free rows in transform.csv are n=200).
 front_models <- c(
   "GPT-5.6 Terra", "Claude Sonnet 5", "Gemini 3.7 Flash", "Llama 4 Scout"
 )
@@ -208,10 +197,11 @@ front_T_shared <- front_long %>%
     hi = T + 1.96 * se
   )
 
+
 mu_h <- mean(aita_soc_df$rec_raw[aita_soc_df$speaker == "Human"], na.rm = TRUE)
 sd_h <- sd(aita_soc_df$rec_raw[aita_soc_df$speaker == "Human"], na.rm = TRUE)
 
-# ELEPHANT OEQ robustness long table (public).
+# ELEPHANT OEQ robustness long table 
 oeq_df <- read_csv(path("data", "robustness", "oeq", "oeq_long.csv")) %>%
   mutate(
     speaker = factor(speaker, levels = c("Human", "GPT-5")),
@@ -273,6 +263,7 @@ exp_item <- exp %>%
 ## Fig 1: Social Sycophancy Continuous ------------------------------------
 
 p_corr_cont <- aita_soc_df %>%
+  filter(speaker != "GPT-5", speaker != "Rewrite") %>%
   mutate(
     total_syc = validation + indirectness + positivity + framing
   ) %>% 
@@ -294,14 +285,14 @@ p_corr_cont <- aita_soc_df %>%
   ) +
   theme( 
     legend.position = "inside",
-    legend.position.inside = c(0.8, 0.25),
+    legend.position.inside = c(0.8, 0.275),
     legend.background = element_blank(),
     legend.key = element_blank()
   ) +
   scale_color_discrete(
     limits = c("Human", "GPT-5", "Rewrite", "Gemini 3.7 Flash",
                "Claude Sonnet 5", "GPT-5.6 Terra", "Llama 4 Scout"),
-    breaks = c("Human", "GPT-5","Gemini 3.7 Flash",
+    breaks = c("Human","Gemini 3.7 Flash",
                "Claude Sonnet 5", "GPT-5.6 Terra", "Llama 4 Scout")
   ) +
   guides(
@@ -312,7 +303,7 @@ ggsave(
   path("plots", "corr_cont.pdf"),
   p_corr_cont,
   width = 3.3,
-  height = 3.3,
+  height = 2.5,
   units = "in"
 )
 
@@ -357,7 +348,7 @@ ggsave(
   path("plots", "shift_cont.pdf"),
   p_share_cont,
   width = 3.3,
-  height = 3.3,
+  height = 2.5,
   units = "in"
 )
 
@@ -376,14 +367,17 @@ p_pref_vs_rec <- ggplot(exp_item, aes(x = rec_z_base, y = pref_gap)) +
   ) +
   theme(
     legend.position = "inside",
-    legend.position.inside = c(0.875, 0.9),
+    legend.position.inside = c(0.875, 0.325),
     legend.background = element_rect(
-      color = "black",       
-      linewidth = 0.5,       
-      fill = NA         
+      color = "black",
+      linewidth = 0.5,
+      fill = NA
     ),
-    legend.margin = margin(0, 4, 0, 0),
-    legend.box.margin = margin(0, 4, 0, 0),
+    legend.key.size = unit(0.8, "lines"),
+    legend.key.spacing.y = unit(1, "pt"),
+    legend.text = element_text(margin = margin(l = 1)),
+    legend.margin = margin(2, 2, 2, 2),
+    legend.box.margin = margin(0, 0, 0, 0),
     legend.key = element_blank(),
     strip.background = element_blank(),
     strip.text = element_text(size = 9, margin = margin(t = 1, b = 1)),
@@ -393,7 +387,7 @@ ggsave(
   path("plots", "pref_vs_rec.pdf"),
   p_pref_vs_rec,
   width = 3.3,
-  height = 3.3,
+  height = 2.5,
   units = "in"
 )
 
@@ -494,16 +488,13 @@ p_combined <- plot_grid(
 ggsave(
   path("plots", "advice_listen_combined.pdf"),
   p_combined,
-  width = 6.6, height = 3.3, units = "in"
+  width = 6.6, height = 2.5, units = "in"
 )
 
 ## Fig 5: Substantive Syc ---------------------------------------------------------
 
-# Shared n=200 AITA dens × four models. Free baseline for all; tool arrows for
-# Sonnet / Flash only. X = T on all landed posts; Y = mean rec among 1p=YTA.
-
 df_front <- front_T_shared %>%
-  filter(arm %in% c("free", "tool")) %>%
+  filter(arm %in% c("free", "tool"), model %in% front_models) %>%
   select(model_key, model, arm, T, rec_raw, n, n_rec_yta) %>%
   pivot_wider(
     names_from = arm,
@@ -532,7 +523,6 @@ df_front <- front_T_shared %>%
     rec_z_end = rec_z_mit - dy * cut_h
   )
 
-# sanity: shared dens is n=200 per model
 stopifnot(all(df_front$n == 200))
 
 p_front <- ggplot(df_front, aes(color = model, fill = model, shape = model)) +
@@ -561,7 +551,7 @@ p_front <- ggplot(df_front, aes(color = model, fill = model, shape = model)) +
   ) +
   labs(
     x = expression(Syc(pi)),
-    y = "Receptiveness (1p = YTA)",
+    y = "Receptiveness | 1p == In the wrong",
     color = NULL,
     fill = NULL,
     shape = NULL
@@ -578,189 +568,125 @@ p_front <- ggplot(df_front, aes(color = model, fill = model, shape = model)) +
     values = c(22, 24, 23, 25),
     limits = front_models,
     drop = FALSE
-  )
+  ) 
 
 ggsave(
   path("plots", "frontier.pdf"),
   p_front, 
   width = 3.3,
-  height = 3.3,
+  height = 2.5,
   units = "in"
 )
 
-# Statistics --------------------------------------------------------------
 
-# Manuscript statistics ---------------------------------------------------
+# Main text statistics ----------------------------------------------------
 
-## Raw 1p verdict rates (YTA / NTA / mixed / other) ------------------------
+## Receptiveness measure, validation against the package -------------------
 
-# Reported in the text on model YTA / mixed rates. Denominator for shares is
-# n_judged (posts with a Luna verdict). pct_*_of_2000 uses the fixed corpus
-# size N = 2000. n_fig1_sample is nrow(aita_soc_df) for that model — the
-# Figure 1 clear-YTA ∩ usable-human filter — and understates raw clear YTA.
+set.seed(0)
 
-N_aita <- 2000L
-
-fig1_n_by_model <- aita_soc_df %>%
-  filter(speaker != "Human", speaker != "Rewrite") %>%
-  count(model = speaker, name = "n_fig1_sample")
-
-aita_verdict_rates <- aita_verdicts_1p %>%
-  count(model, verdict, name = "n") %>%
-  complete(model, verdict, fill = list(n = 0L)) %>%
-  group_by(model) %>%
-  mutate(
-    n_judged = sum(n),
-    share_of_judged = n / n_judged,
-    share_of_2000 = n / N_aita
-  ) %>%
-  ungroup()
-
-aita_verdict_rates_wide <- aita_verdict_rates %>%
-  select(model, verdict, n, share_of_judged, share_of_2000) %>%
-  pivot_wider(
-    names_from = verdict,
-    values_from = c(n, share_of_judged, share_of_2000),
-    names_glue = "{verdict}_{.value}"
-  ) %>%
-  mutate(n_judged = YTA_n + NTA_n + mixed_n + other_n) %>%
-  left_join(fig1_n_by_model, by = "model") %>%
+hear_train <- stream_in(
+  file(path("data", "hear", "hear_v5_signed_scores.jsonl")),
+  verbose = FALSE
+) %>%
+  as_tibble() %>%
   transmute(
-    model,
-    n_judged,
-    YTA = YTA_n,
-    NTA = NTA_n,
-    mixed = mixed_n,
-    other = other_n,
-    pct_YTA = YTA_share_of_judged,
-    pct_NTA = NTA_share_of_judged,
-    pct_mixed = mixed_share_of_judged,
-    pct_other = other_share_of_judged,
-    pct_YTA_of_2000 = YTA_share_of_2000,
-    n_fig1_sample,
-    fig1_share_of_2000 = n_fig1_sample / N_aita
+    id,
+    receptive_human,
+    text = politeness::receptive_train$text[id],
+    hedging,
+    emphasize_agreement,
+    acknowledge_perspective,
+    reframe_positive,
+    invite_curiosity,
+    negation,
+    adverb_limiter,
+    disagreement,
+    negative_emotion,
+    confrontational_questioning
   )
 
-message("\n=== Raw Luna 1p verdict rates by model (AITA corpus, N=2000) ===")
-aita_verdict_rates_wide
+hear_features <- setdiff(
+  names(hear_train),
+  c("id", "receptive_human", "text")
+)
 
+hear_folds <- sample(rep(1:5, length.out = nrow(hear_train)))
+hear_train$pred_cv <- NA_real_
 
-## Receptiveness and social sycophancy are correlated ----------------------
+for (k in 1:5) {
+  fit <- lm(
+    reformulate(hear_features, "receptive_human"),
+    data = hear_train[hear_folds != k, ]
+  )
+  hear_train$pred_cv[hear_folds == k] <- predict(
+    fit,
+    newdata = hear_train[hear_folds == k, ]
+  )
+}
 
-# Reported in the caption of Figure 1. Uses collapsed aita_soc_df (one row per
-# speaker × post); n is unique posts, not dens-duplicated humans.
+message("\n=== Main text: HEAR rubric CV correlation with human scores ===")
+hear_train %>%
+  summarize(
+    r_rubric_cv = cor(pred_cv, receptive_human),
+    n = n()
+  )
 
-message("\n=== Figure 1 caption: pooled r(total social sycophancy, receptiveness), AITA-YTA ===")
-aita_soc_df %>%
-    filter(speaker != "Rewrite") %>%
-    mutate(total_syc = validation + indirectness + positivity + framing) %>%
-    summarize(
-      r_pooled = cor(total_syc, rec_z, use = "complete.obs"),
-      n = n()
+tryCatch(
+  {
+    message("\n=== Main text: politeness package correlation (in-sample) ===")
+    hear_train %>%
+      mutate(pred_package = politeness::receptiveness(text)) %>%
+      summarize(r_package = cor(pred_package, receptive_human))
+  },
+  error = function(e) {
+    message(
+      "Skipping politeness::receptiveness() (spaCy not installed). ",
+      "Optional one-time fix in R: spacyr::spacy_install(); then rerun."
     )
+    invisible(NULL)
+  }
+)
 
 
-message("\n=== Figure 1 caption: r(total social sycophancy, receptiveness) by speaker, AITA-YTA ===")
+## Figure 1: receptiveness vs social sycophancy (AITA-YTA) -----------------
+
+message("\n=== Main text: pooled r(total social sycophancy, receptiveness), AITA-YTA ===")
 aita_soc_df %>%
-    filter(speaker != "Rewrite") %>%
-    mutate(total_syc = validation + indirectness + positivity + framing) %>%
-    group_by(speaker) %>%
-    summarize(
-      r = cor(total_syc, rec_z, use = "complete.obs"),
-      n = n(),
-      .groups = "drop"
-    )
+  filter(speaker != "Rewrite") %>%
+  mutate(total_syc = validation + indirectness + positivity + framing) %>%
+  summarize(
+    r_pooled = cor(total_syc, rec_z, use = "complete.obs"),
+    n = n()
+  )
 
 
 ## Cross-domain: OEQ -------------------------------------------------------
 
-# Reported in the text after Figure 1. Same estimand as above: correlation of
-# total social-sycophancy count with receptiveness. OEQ includes positivity.
-
 message("\n=== Main text: pooled r(total social sycophancy, receptiveness), OEQ ===")
 oeq_df %>%
-    mutate(total_syc = validation + indirectness + positivity + framing) %>%
-    summarize(
-      r_pooled = cor(total_syc, rec_z, use = "complete.obs"),
-      n = n()
-    )
-
-
-message("\n=== Main text: r(total social sycophancy, receptiveness) by speaker, OEQ ===")
-oeq_df %>%
-    mutate(total_syc = validation + indirectness + positivity + framing) %>%
-    group_by(speaker) %>%
-    summarize(
-      r = cor(total_syc, rec_z, use = "complete.obs"),
-      n = n(),
-      .groups = "drop"
-    )
-
-
-p_oeq <- oeq_df %>%
   mutate(total_syc = validation + indirectness + positivity + framing) %>%
-  group_by(speaker, total_syc) %>%
   summarize(
-    rec_z_est = mean(rec_z),
-    n = n(),
-    .groups = "drop"
-  ) %>%
-  ungroup() %>%
-  ggplot(aes(x = total_syc, y = rec_z_est, group = speaker, color = speaker)) +
-  geom_line() +
-  geom_point(aes(size = n)) +
-  labs(
-    y = "Receptiveness",
-    x = "Total Social Sycophancy",
-    color = NULL,
-    size = "N"
-  ) +
-  theme(
-    legend.position = "inside",
-    legend.position.inside = c(0.8, 0.275),
-    legend.background = element_blank(),
-    legend.key = element_blank()
-  ) +
-  scale_color_discrete(
-    limits = c("Human", "GPT-5", "Rewrite", "Gemini 3.7 Flash",
-               "Claude Sonnet 5", "GPT-5.6 Terra", "Llama 4 Scout"),
-    breaks = c("Human", "GPT-5")
-  ) +
-  guides(size = "none")
+    r_pooled = cor(total_syc, rec_z, use = "complete.obs"),
+    n = n()
+  )
 
-ggsave(
-  path("plots", "appendix", "corr_cont_oeq.pdf"),
-  p_oeq,
-  width = 3.3,
-  height = 3.3,
-  units = "in"
-)
 
-## Receptiveness gain from the transformation (n = 808) ------------------
+## Figure 2: receptiveness rewrite (n = 808) --------------------------------
 
-# Reported in the text of "Making responses receptive makes them sycophantic."
-
-message("\n=== Fig 2 text: receptiveness gain from listen_once rewrite (n=808, GPT-5 YTA subset) ===")
+message("\n=== Main text: receptiveness gain from listen_once rewrite (n=808) ===")
 rcpt_trans %>%
-    select(row_idx, speaker, rec_z) %>%
-    pivot_wider(names_from = speaker, values_from = rec_z) %>%
-    mutate(delta = Rewrite - Human) %>%
-    summarize(
-      est = mean(delta),
-      se = sd(delta) / sqrt(n()),
-      n = n()
-    ) %>%
-    mutate(lo = est - 1.96 * se, hi = est + 1.96 * se)
+  select(row_idx, speaker, rec_z) %>%
+  pivot_wider(names_from = speaker, values_from = rec_z) %>%
+  mutate(delta = Rewrite - Human) %>%
+  summarize(
+    est = mean(delta),
+    se = sd(delta) / sqrt(n()),
+    n = n()
+  ) %>%
+  mutate(lo = est - 1.96 * se, hi = est + 1.96 * se)
 
-
-## Verdict preservation (listen_once terra rewrites) --------------------
-
-# Reported in the text of "Making responses receptive makes them sycophantic."
-# Paired judge: receptivize_hear_substance on fig2 listen_once pairs (n = 808).
-# Verdict_same only; takeaway_same is not reported (post-based listening beat
-# is intentional).
-
-message("\n=== Fig 2 text: verdict preservation rate (substance judge, n=808) ===")
+message("\n=== Main text: verdict preservation rate (substance judge, n=808) ===")
 {
   n <- length(judged_v3)
   k <- sum(vapply(judged_v3, function(j) as.integer(j$verdict_same), integer(1)))
@@ -775,74 +701,42 @@ message("\n=== Fig 2 text: verdict preservation rate (substance judge, n=808) ==
 }
 
 
-## Receptiveness gain of the experimental items, by provenance -------------
+## Human experiment design -------------------------------------------------
 
-# Reported in the text of the experiment design. Items were selected for the
-# survey, so these gains are larger than the corpus-wide gain above.
-
-message("\n=== Human experiment design: mean receptiveness gain on survey items, by origin ===")
+message("\n=== Main text: mean receptiveness gain on survey items, by origin ===")
 exp_items %>%
-    group_by(origin) %>%
-    summarize(
-      est = mean(rec_delta),
-      se = sd(rec_delta) / sqrt(n()),
-      n = n(),
-      .groups = "drop"
-    ) %>%
-    mutate(lo = est - 1.96 * se, hi = est + 1.96 * se)
+  group_by(origin) %>%
+  summarize(
+    est = mean(rec_delta),
+    se = sd(rec_delta) / sqrt(n()),
+    n = n(),
+    .groups = "drop"
+  ) %>%
+  mutate(lo = est - 1.96 * se, hi = est + 1.96 * se)
 
-
-## Rewrite length change on experimental items, by provenance --------------
-
-# Reported in the text of the experiment design (mean words_rewrite − words_base).
-
-message("\n=== Human experiment design: mean rewrite length change (words), by origin ===")
+message("\n=== Main text: mean rewrite length change (words), by origin ===")
 exp_items %>%
-    group_by(origin) %>%
-    summarize(
-      mean_words_delta = mean(words_delta),
-      se = sd(words_delta) / sqrt(n()),
-      n = n(),
-      .groups = "drop"
-    ) %>%
-    mutate(
-      lo = mean_words_delta - 1.96 * se,
-      hi = mean_words_delta + 1.96 * se
-    )
-
-
-## Experiment sample -------------------------------------------------------
-
-message("\n=== Human experiment: sample sizes (ratings, participants, items) ===")
-exp %>%
-    summarize(
-      n_ratings = n(),
-      n_participants = n_distinct(prolific_pid),
-      n_items = n_distinct(item_id)
-    )
-
-
-## Prolific share NTA (not in the wrong) -----------------------------------
-
-# Reported with the supplement verdicts bar plot. NTA is verdict <= 2
-# ("Definitely" / "Probably not in the wrong"), matching verdict_bin.
-
-message("\n=== Supplement: share judging asker not in the wrong (verdict <= 2) ===")
-{
-  n <- nrow(exp)
-  k <- sum(exp$verdict <= 2)
-  bt <- binom.test(k, n, conf.level = 0.95)
-  tibble(
-    k = k,
-    n = n,
-    est = as.numeric(bt$estimate),
-    lo = bt$conf.int[1],
-    hi = bt$conf.int[2]
+  group_by(origin) %>%
+  summarize(
+    mean_words_delta = mean(words_delta),
+    se = sd(words_delta) / sqrt(n()),
+    n = n(),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    lo = mean_words_delta - 1.96 * se,
+    hi = mean_words_delta + 1.96 * se
   )
-}
 
+message("\n=== Main text: experiment sample sizes ===")
+exp %>%
+  summarize(
+    n_ratings = n(),
+    n_participants = n_distinct(prolific_pid),
+    n_items = n_distinct(item_id)
+  )
 
-message("\n=== Supplement: share judging asker in the wrong (verdict >= 4) ===")
+message("\n=== Main text: share judging asker in the wrong (verdict >= 4) ===")
 {
   n <- nrow(exp)
   k <- sum(exp$verdict >= 4)
@@ -857,13 +751,9 @@ message("\n=== Supplement: share judging asker in the wrong (verdict >= 4) ===")
 }
 
 
+## Figure 3: preference vs baseline receptiveness --------------------------
 
-## Preference gap against the original's receptiveness --------------------
-
-# Reported with Figure 3. Item-level, so each point is one of the 100
-# scenarios; the slope is per standard deviation of original receptiveness.
-
-message("\n=== Figure 3: preference gap slope vs original receptiveness (item-level) ===")
+message("\n=== Main text: preference gap slope vs original receptiveness (item-level) ===")
 exp %>%
   group_by(item_id, provenance, rec_z_base) %>%
   summarize(
@@ -871,11 +761,7 @@ exp %>%
     advice = mean(advice_pref_rewrite),
     .groups = "drop"
   ) %>%
-  pivot_longer(
-    cols = c(listen, advice),
-    names_to = "item",
-    values_to = "pref"
-  ) %>%
+  pivot_longer(cols = c(listen, advice), names_to = "item", values_to = "pref") %>%
   group_by(item) %>%
   summarize(
     slope = coef(lm(pref ~ rec_z_base))[2],
@@ -883,22 +769,17 @@ exp %>%
     n = n(),
     .groups = "drop"
   ) %>%
-  mutate(
-    lo = slope - 1.96 * se,
-    hi = slope + 1.96 * se
-  )
+  mutate(lo = slope - 1.96 * se, hi = slope + 1.96 * se)
 
-## Mitigations: substantive deference and receptiveness --------------------
 
-# Reported in the text of the mitigation section (Figure 5). Free baseline for
-# all four models; tool mitigation contrast for Sonnet / Flash only.
+## Figure 5: mitigation ----------------------------------------------------
 
-message("\n=== Mitigation: T and receptiveness (free baseline, all models) ===")
+message("\n=== Main text: mitigation free baseline (n=200, all models) ===")
 front_T_shared %>%
   filter(arm == "free") %>%
   select(model, T, se, lo, hi, rec_raw, rec_se, n_rec_yta, n)
 
-message("\n=== Mitigation: T and receptiveness (free vs tool, Sonnet / Flash) ===")
+message("\n=== Main text: mitigation free vs tool (Sonnet / Flash) ===")
 front_T_shared %>%
   filter(model %in% front_models_mit, arm %in% c("free", "tool")) %>%
   select(model_key, model, arm, T, se, lo, hi, rec_raw, rec_se, n_rec_yta, n) %>%
@@ -933,6 +814,355 @@ front_T_shared %>%
     hi_dz_tool = dz_tool + 1.96 * se_dz_tool
   )
 
+# Appendix ----------------------------------------------------------------
+
+## OEQ correlation (supplement) --------------------------------------------
+
+p_oeq <- oeq_df %>%
+  mutate(total_syc = validation + indirectness + positivity + framing) %>%
+  group_by(speaker, total_syc) %>%
+  summarize(
+    rec_z_est = mean(rec_z),
+    n = n(),
+    .groups = "drop"
+  ) %>% 
+  ungroup() %>% 
+  ggplot(aes(x = total_syc, y = rec_z_est, group = speaker, color = speaker)) +
+  geom_line() +
+  geom_point(aes(size = n)) +
+  labs(
+    y = "Receptiveness",
+    x = "Total Social Sycophancy",
+    color = NULL,
+    size = "N"
+  ) +
+  theme( 
+    legend.position = "inside",
+    legend.position.inside = c(0.8, 0.275),
+    legend.background = element_blank(),
+    legend.key = element_blank()
+  ) +
+  scale_color_discrete(
+    limits = c("Human", "GPT-5", "Rewrite", "Gemini 3.7 Flash",
+               "Claude Sonnet 5", "GPT-5.6 Terra", "Llama 4 Scout"),
+    breaks = c("Human","GPT-5")
+  ) +
+  guides(
+    size = "none"
+  )
+
+ggsave(
+  path("plots", "appendix", "corr_cont_oeq.pdf"),
+  p_oeq,
+  width = 3.3,
+  height = 3.3,
+  units = "in"
+)
+
+
+---------------------------------------------------------------
+
+## Quality distributions ----------------------------------------
+
+p_quality_dist <- exp_qual %>%
+  count(provenance, speaker, quality = quality_f) %>%
+  complete(provenance, speaker, quality, fill = list(n = 0)) %>% 
+  group_by(provenance, speaker) %>%
+  mutate(share = n / sum(n)) %>%
+  ungroup() %>%
+  ggplot(aes(x = quality, y = share, fill = speaker)) +
+  facet_wrap(~ provenance) +
+  geom_col(position = position_dodge(width = 0.9), width = 0.85) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  scale_x_discrete(drop = FALSE) +
+  labs(
+    y = "Share of ratings",
+    x = "Quality (1 = Very bad, 7 = Very good)",
+    fill = NULL
+  ) +
+  theme(
+    legend.position = "inside",
+    legend.position.inside = c(0.2, 0.85),
+    legend.background = element_blank()
+  ) +
+  scale_fill_discrete(limits = c("Original", "Rewrite"))
+
+ggsave(
+  path("plots", "appendix", "advice_quality_dist.pdf"),
+  p_quality_dist,
+  width = 6.6,
+  height = 3.3,
+  units = "in"
+)
+
+
+## Quality scatter ---------------------------------------------------------
+
+p_quality_scatter <- exp %>%
+  group_by(item_id, provenance) %>%
+  summarize(
+    quality_human = mean(quality_human),
+    quality_rewrite = mean(quality_rewrite)
+  ) %>%
+  ggplot(aes(x = quality_human, y = quality_rewrite)) +
+  geom_jitter(width = 0.15, height = 0.15, alpha = 0.45) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "grey40") +
+  facet_wrap(~ provenance) +
+  coord_equal(xlim = c(1, 7), ylim = c(1, 7), expand = FALSE) +
+  scale_x_continuous(breaks = 1:7) +
+  scale_y_continuous(breaks = 1:7) +
+  labs(
+    x = "Quality - Original",
+    y = "Quality - Rewrite"
+  )
+
+ggsave(
+  path("plots", "appendix", "advice_quality_scatter.pdf"),
+  p_quality_scatter,
+  width = 6.6,
+  height = 3.3,
+  units = "in"
+)
+
+
+## Social Sycophancy Moves with Receptiveness HIST --------------------
+
+p_corr_hist <- aita_soc_df %>%
+  mutate(no_syc = !any_syc) %>%
+  pivot_longer(
+    cols = c(
+      validation, indirectness, positivity, any_syc, any_elephant, no_syc,
+      framing
+    ), 
+  ) %>% 
+  filter(value != 0) %>% 
+  group_by(name, speaker, value) %>%
+  summarize(
+    rec_z_est = mean(rec_z),
+    se_z = sd(rec_z) / sqrt(n()),
+    n = n()
+  ) %>%
+  ungroup() %>%
+  complete(
+    name, speaker,
+    fill = list(rec_z_est = NA, se_z = NA, n = 0)
+  ) %>% 
+  filter(speaker != "GPT-5", speaker != "Rewrite") %>%
+  mutate(
+    name = factor(
+      name,
+      labels = c("None", "Framing", "Indirectness", "Validation",
+                 "Any\nELEPHANT", "Sharma\nPositivity", "Any"),
+      levels = c("no_syc", "framing", "indirectness", "validation", 
+                 "any_elephant", "positivity", "any_syc")
+    )
+  ) %>% 
+  ggplot(aes(x = name, y = rec_z_est, fill = speaker)) +
+  geom_col(position = "dodge") +
+  geom_errorbar(
+    aes(ymin = rec_z_est - (2 * se_z), ymax = rec_z_est + (2 * se_z)),
+    position = position_dodge(width = 0.9),
+    color = "black",
+    width = .1
+  ) + 
+  labs(
+    y = "Receptiveness",
+    x = "Social Sycophancy Measure",
+    fill = NULL
+  ) +
+  theme( 
+    legend.position = "inside",
+    legend.position.inside = c(0.7, 0.15),
+    legend.background = element_blank(),
+    
+  ) +
+  scale_fill_discrete(
+    limits = c("Human", "GPT-5", "Rewrite", "Gemini 3.7 Flash",
+               "Claude Sonnet 5", "GPT-5.6 Terra", "Llama 4 Scout"),
+    breaks = c("Human","Gemini 3.7 Flash",
+               "Claude Sonnet 5", "GPT-5.6 Terra", "Llama 4 Scout")
+  ) +
+  scale_y_continuous(limits = c(-1, 3)) +
+  guides(fill = guide_legend(nrow = 2))
+
+ggsave(
+  path("plots", "appendix", "corr_hist.pdf"),
+  p_corr_hist,
+  width = 6.6,
+  height = 3.3,
+  units = "in"
+)
+
+
+## Receptiveness Transforms Cause Social Syco --------------------
+
+p_share <- rcpt_trans %>%
+  mutate(no_syc = !any_syc) %>%
+  pivot_longer(
+    cols = c(
+      validation, indirectness, positivity, any_syc, any_elephant, no_syc,
+      framing
+    )
+  ) %>%
+  group_by(name, speaker) %>%
+  summarize(
+    share = mean(value),
+    se = sqrt(share * (1 - share) / n()),
+    n = n()
+  ) %>%
+  ungroup() %>%
+  complete(
+    name, speaker,
+    fill = list(share = 0, se = 0, n = 0)
+  ) %>%
+  filter(speaker != "GPT-5") %>%
+  mutate(
+    name = factor(
+      name,
+      labels = c("None", "Framing", "Indirectness", "Validation",
+                 "Any\nELEPHANT", "Sharma\nPositivity", "Any"),
+      levels = c("no_syc", "framing", "indirectness", "validation",
+                 "any_elephant", "positivity", "any_syc")
+    )
+  ) %>%
+  ggplot(aes(x = name, y = share, fill = speaker)) +
+  geom_col(position = "dodge") +
+  geom_errorbar(
+    aes(ymin = share - 2 * se, ymax = share + 2 * se),
+    position = position_dodge(width = 0.9),
+    color = "black",
+    width = .1
+  ) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  labs(
+    y = "Share of comments",
+    x = "Social Sycophancy Measure",
+    fill = NULL
+  ) +
+  theme(
+    legend.position = "inside",
+    legend.position.inside = c(.1, .8),
+    legend.background = element_blank()
+  ) +
+  scale_fill_discrete(
+    limits = c("Human", "GPT-5", "Rewrite"),
+    breaks = c("Human", "Rewrite")
+  )
+
+ggsave(
+  path("plots", "appendix", "shift.pdf"),
+  p_share,
+  width = 6.6,
+  height = 3.3,
+  units = "in"
+)
+
+
+## Does prolific think YTA? ------------------------------------------------
+
+p_verdicts <- exp %>%
+  count(verdict_label) %>%
+  group_by(verdict_label) %>%
+  mutate(verdict_label = factor(
+    verdict_label,
+    levels = c("Definitely not in the wrong", "Probably not in the wrong",
+               "Unsure", "Probably in the wrong",
+               "Definitely in the wrong"),
+    labels = c("Definitely not\nin the wrong", "Probably not\nin the wrong",
+               "Unsure", "Probably in\nthe wrong",
+               "Definitely in\nthe wrong")
+  )) %>% 
+  ungroup() %>%
+  mutate(share = n / sum(n)) %>%
+  ungroup() %>%
+  ggplot(aes(x = verdict_label, y = share)) +
+  geom_col(position = "dodge") +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  scale_x_discrete(drop = FALSE) +
+  labs(
+    y = "Share of ratings",
+    x = "Prolfic judgements",
+    fill = NULL
+  ) +
+  theme(
+    legend.position ="inside",
+    legend.position.inside = c(.2, .8),
+    legend.background = element_blank(),
+    legend.key = element_blank(),
+    axis.text.x = element_text(size = 9, angle = 45, hjust = 1)
+  )
+
+ggsave(
+  path("plots", "appendix", "verdicts_dist.pdf"),
+  p_verdicts,
+  width = 3.3,
+  height = 3.3,
+  units = "in"
+)
+
+# Appendix statistics -----------------------------------------------------
+
+## Raw 1p verdict rates (YTA / NTA / mixed / other) ------------------------
+
+N_aita <- 2000L
+
+dens_by_model <- aita_soc_df %>%
+  filter(speaker != "Human", speaker != "Rewrite") %>%
+  count(model = speaker, name = "dens_clear_yta")
+
+aita_verdict_rates <- aita_verdicts_1p %>%
+  count(model, verdict, name = "n") %>%
+  complete(model, verdict, fill = list(n = 0L)) %>%
+  group_by(model) %>%
+  mutate(
+    n_judged = sum(n),
+    share_of_judged = n / n_judged,
+    share_of_2000 = n / N_aita
+  ) %>%
+  ungroup()
+
+aita_verdict_rates_wide <- aita_verdict_rates %>%
+  select(model, verdict, n, share_of_judged, share_of_2000) %>%
+  pivot_wider(
+    names_from = verdict,
+    values_from = c(n, share_of_judged, share_of_2000),
+    names_glue = "{verdict}_{.value}"
+  ) %>%
+  mutate(n_judged = YTA_n + NTA_n + mixed_n + other_n) %>%
+  left_join(dens_by_model, by = "model") %>%
+  transmute(
+    model,
+    n_judged,
+    YTA = YTA_n,
+    NTA = NTA_n,
+    mixed = mixed_n,
+    other = other_n,
+    pct_YTA = YTA_share_of_judged,
+    pct_NTA = NTA_share_of_judged,
+    pct_mixed = mixed_share_of_judged,
+    pct_other = other_share_of_judged,
+    pct_YTA_of_2000 = YTA_share_of_2000,
+    dens_clear_yta,
+    dens_over_2000 = dens_clear_yta / N_aita
+  )
+
+message("\n=== Supplement: raw Luna 1p verdict rates by model (N=2000) ===")
+aita_verdict_rates_wide
+
+
+message("\n=== Supplement: share judging asker not in the wrong (verdict <= 2) ===")
+{
+  n <- nrow(exp)
+  k <- sum(exp$verdict <= 2)
+  bt <- binom.test(k, n, conf.level = 0.95)
+  tibble(
+    k = k,
+    n = n,
+    est = as.numeric(bt$estimate),
+    lo = bt$conf.int[1],
+    hi = bt$conf.int[2]
+  )
+}
 
 # Table S7: Length Controls -----------------------------------------------
 
@@ -1160,198 +1390,6 @@ message(
 message("\n=== Table S7: human experiment robustness (raw + length-controlled, n=200 and n=196) ===")
 print(exp_robustness_csv)
 
-# Appendix  ---------------------------------------------------------------
-
-## Fig 3: Quality distributions ----------------------------------------
-
-p_quality_dist <- exp_qual %>%
-  count(provenance, speaker, quality = quality_f) %>%
-  complete(provenance, speaker, quality, fill = list(n = 0)) %>% 
-  group_by(provenance, speaker) %>%
-  mutate(share = n / sum(n)) %>%
-  ungroup() %>%
-  ggplot(aes(x = quality, y = share, fill = speaker)) +
-  facet_wrap(~ provenance) +
-  geom_col(position = position_dodge(width = 0.9), width = 0.85) +
-  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
-  scale_x_discrete(drop = FALSE) +
-  labs(
-    y = "Share of ratings",
-    x = "Quality (1 = Very bad, 7 = Very good)",
-    fill = NULL
-  ) +
-  theme(
-    legend.position = "inside",
-    legend.position.inside = c(0.2, 0.85),
-    legend.background = element_blank()
-  ) +
-  scale_fill_discrete(limits = c("Original", "Rewrite"))
-
-ggsave(
-  path("plots", "appendix", "advice_quality_dist.pdf"),
-  p_quality_dist,
-  width = 6.6,
-  height = 3.3,
-  units = "in"
-)
-
-
-## Quality scatter ---------------------------------------------------------
-
-p_quality_scatter <- exp %>%
-  ggplot(aes(x = quality_human, y = quality_rewrite)) +
-  geom_jitter(width = 0.15, height = 0.15, alpha = 0.45) +
-  geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "grey40") +
-  facet_wrap(~ provenance) +
-  coord_equal(xlim = c(1, 7), ylim = c(1, 7), expand = FALSE) +
-  scale_x_continuous(breaks = 1:7) +
-  scale_y_continuous(breaks = 1:7) +
-  labs(
-    x = "Quality - Original",
-    y = "Quality - Rewrite"
-  )
-ggsave(
-  path("plots", "appendix", "advice_quality_scatter.pdf"),
-  p_quality_scatter,
-  width = 6.6,
-  height = 3.3,
-  units = "in"
-)
-
-
-## Receptiveness transforms cause social sycophancy (appendix) ------------
-
-p_share <- rcpt_trans %>%
-  mutate(no_syc = !any_syc) %>%
-  pivot_longer(
-    cols = c(
-      validation, indirectness, positivity, any_syc, any_elephant, no_syc,
-      framing
-    )
-  ) %>%
-  group_by(name, speaker) %>%
-  summarize(
-    share = mean(value),
-    se = sqrt(share * (1 - share) / n()),
-    n = n()
-  ) %>%
-  ungroup() %>%
-  complete(
-    name, speaker,
-    fill = list(share = 0, se = 0, n = 0)
-  ) %>%
-  filter(speaker != "GPT-5") %>%
-  mutate(
-    name = factor(
-      name,
-      labels = c("None", "Framing", "Indirectness", "Validation",
-                 "Any\nELEPHANT", "Sharma\nPositivity", "Any"),
-      levels = c("no_syc", "framing", "indirectness", "validation",
-                 "any_elephant", "positivity", "any_syc")
-    )
-  ) %>%
-  ggplot(aes(x = name, y = share, fill = speaker)) +
-  geom_col(position = "dodge") +
-  geom_errorbar(
-    aes(ymin = share - 2 * se, ymax = share + 2 * se),
-    position = position_dodge(width = 0.9),
-    color = "black",
-    width = .1
-  ) +
-  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
-  labs(
-    y = "Share of comments",
-    x = "Social Sycophancy Measure",
-    fill = NULL
-  ) +
-  theme(
-    legend.position = "inside",
-    legend.position.inside = c(.1, .8),
-    legend.background = element_blank()
-  ) +
-  scale_fill_discrete(
-    limits = c("Human", "GPT-5", "Rewrite"),
-    breaks = c("Human", "Rewrite")
-  )
-
-ggsave(
-  path("plots", "appendix", "shift.pdf"),
-  p_share,
-  width = 5.3,
-  height = 3.3,
-  units = "in"
-)
-
-## Qual dist by verdict ----------------------------------------------------
-
-p_quality_dist_verdict <- exp_qual %>%
-  count(speaker, verdict_bin, quality = quality_f) %>%
-  complete(speaker, quality, verdict_bin, fill = list(n = 0)) %>% 
-  group_by(speaker, verdict_bin) %>%
-  mutate(share = n / sum(n)) %>%
-  ungroup() %>%
-  filter(verdict_bin != "Unsure") %>%
-  ggplot(aes(x = quality, y = share, fill = speaker)) +
-  geom_col(position = position_dodge(width = 0.9), width = 0.85) + 
-  facet_wrap(~ verdict_bin) +
-  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
-  scale_x_discrete(drop = FALSE) +
-  labs(
-    y = "Share of ratings",
-    x = "Quality (1 = Very bad, 7 = Very good)",
-    fill = NULL
-  ) +
-  theme(
-    legend.position = "inside",
-    legend.position.inside = c(0.1, 0.85),
-    legend.background = element_blank()
-  ) +
-  scale_fill_discrete(limits = c("Human", "Rewrite"))
-
-ggsave(
-  path("plots", "appendix", "quality_by_verdict.pdf"),
-  p_quality_dist_verdict,
-  width = 5.3,
-  height = 3.3,
-  units = "in"
-)
-
-## Does prolific think YTA? ------------------------------------------------
-
-p_verdicts <- exp %>%
-  count(verdict_label) %>%
-  group_by(verdict_label) %>%
-  mutate(verdict_label = factor(
-    verdict_label,
-    levels = c("Definitely not in the wrong", "Probably not in the wrong",
-               "Unsure", "Probably in the wrong",
-               "Definitely in the wrong"),
-    labels = c("Definitely not\nin the wrong", "Probably not\nin the wrong",
-               "Unsure", "Probably in\nthe wrong",
-               "Definitely in\nthe wrong")
-  )) %>% 
-  ungroup() %>%
-  mutate(share = n / sum(n)) %>%
-  ungroup() %>%
-  ggplot(aes(x = verdict_label, y = share)) +
-  geom_col() +
-  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
-  scale_x_discrete(drop = FALSE) +
-  labs(
-    y = "Share of ratings",
-    x = "Prolfic judgements",
-    fill = NULL
-  ) 
-
-ggsave(
-  path("plots", "appendix", "verdicts_dist.pdf"),
-  p_verdicts,
-  width = 3.3,
-  height = 3.3,
-  units = "in"
-)
-
-
 ## Robustness checks -------------------------------------------------------
 
 # Supplement: expanded fig2 panel (n = 1,892) and framing-prompt sensitivity
@@ -1366,7 +1404,7 @@ rcpt_trans_expanded <- rcpt_trans_all %>%
 ## Expanded fig2 panel (n = 1,892) -----------------------------------------
 
 # Receptiveness gain on the full eligible human-comment panel.
-message("\n=== Robustness: receptiveness gain, expanded fig2 panel (n=1,892) ===")
+message("\n=== Supplement: receptiveness gain, expanded fig2 panel (n=1,892) ===")
 rcpt_trans_expanded %>%
   select(row_idx, speaker, rec_z) %>%
   pivot_wider(names_from = speaker, values_from = rec_z) %>%
@@ -1381,7 +1419,7 @@ rcpt_trans_expanded %>%
   mutate(lo = est - 1.96 * se, hi = est + 1.96 * se)
 
 # Verdict preservation on the expanded panel.
-message("\n=== Robustness: verdict preservation, expanded fig2 panel (n=1,892) ===")
+message("\n=== Supplement: verdict preservation, expanded fig2 panel (n=1,892) ===")
 {
   n <- length(judged_v3_all)
   k <- sum(vapply(
@@ -1403,7 +1441,7 @@ message("\n=== Robustness: verdict preservation, expanded fig2 panel (n=1,892) =
 ## Framing-prompt sensitivity ----------------------------------------------
 
 # AITA-YTA (collapsed aita_soc_df; same estimand as Figure 1 correlation).
-message("\n=== Robustness: framing-prompt sensitivity, AITA-YTA correlations ===")
+message("\n=== Supplement: framing-prompt sensitivity, AITA-YTA correlations ===")
 aita_soc_df %>%
   filter(speaker != "Rewrite") %>%
   mutate(
@@ -1420,7 +1458,7 @@ aita_soc_df %>%
   )
 
 # OEQ cross-domain panel.
-message("\n=== Robustness: framing-prompt sensitivity, OEQ correlations ===")
+message("\n=== Supplement: framing-prompt sensitivity, OEQ correlations ===")
 oeq_df %>%
   mutate(
     total_syc_v3 = validation + indirectness + positivity + framing,
@@ -1436,7 +1474,7 @@ oeq_df %>%
   )
 
 # Paired rewrite Δ total social sycophancy (human → rewrite), by framing spec.
-message("\n=== Robustness: rewrite Δ total sycophancy by framing spec (fig2 main panel) ===")
+message("\n=== Supplement: rewrite Δ total sycophancy by framing spec (fig2 main) ===")
 bind_rows(
   tibble(framing_col = "framing", panel = "fig2_main"),
   tibble(framing_col = "framing_v2", panel = "fig2_main"),
@@ -1469,7 +1507,7 @@ bind_rows(
   })
 
 # Same rewrite Δ syc on the expanded n = 1,892 panel.
-message("\n=== Robustness: rewrite Δ total sycophancy by framing spec (fig2 expanded panel) ===")
+message("\n=== Supplement: rewrite Δ total sycophancy by framing spec (fig2 expanded) ===")
 bind_rows(
   tibble(framing_col = "framing", panel = "fig2_expanded"),
   tibble(framing_col = "framing_v2", panel = "fig2_expanded"),
@@ -1500,80 +1538,3 @@ bind_rows(
         .groups = "drop"
       )
   })
-
-
-## Receptiveness measure, validation against the package -------------------
-
-# Reported in the setup. The deployed score is the HEAR rubric linear map, so
-# this refits that map (no embeddings) and scores the same texts with the
-# politeness package for comparison. The package number is in-sample for the
-# package, since receptive_train is what it was fit on.
-#
-# politeness::receptiveness() needs spaCy via spacyr. If that backend is not
-# installed, we still print the rubric CV correlation and skip r_package.
-
-set.seed(0)
-
-hear_train <- stream_in(
-  file(path("data", "hear", "hear_v5_signed_scores.jsonl")),
-  verbose = FALSE
-) %>%
-  as_tibble() %>%
-  transmute(
-    id,
-    receptive_human,
-    text = politeness::receptive_train$text[id],
-    hedging,
-    emphasize_agreement,
-    acknowledge_perspective,
-    reframe_positive,
-    invite_curiosity,
-    negation,
-    adverb_limiter,
-    disagreement,
-    negative_emotion,
-    confrontational_questioning
-  )
-
-hear_features <- setdiff(
-  names(hear_train),
-  c("id", "receptive_human", "text")
-)
-
-hear_folds <- sample(rep(1:5, length.out = nrow(hear_train)))
-hear_train$pred_cv <- NA_real_
-
-for (k in 1:5) {
-  fit <- lm(
-    reformulate(hear_features, "receptive_human"),
-    data = hear_train[hear_folds != k, ]
-  )
-  hear_train$pred_cv[hear_folds == k] <- predict(
-    fit,
-    newdata = hear_train[hear_folds == k, ]
-  )
-}
-
-message("\n=== HEAR validation: rubric CV correlation with human scores ===")
-hear_train %>%
-  summarize(
-    r_rubric_cv = cor(pred_cv, receptive_human),
-    n = n()
-  )
-
-tryCatch(
-  {
-    message("\n=== HEAR validation: politeness package correlation (in-sample) ===")
-    hear_train %>%
-      mutate(pred_package = politeness::receptiveness(text)) %>%
-      summarize(r_package = cor(pred_package, receptive_human))
-  },
-  error = function(e) {
-    message(
-      "Skipping politeness::receptiveness() (spaCy not installed). ",
-      "Optional one-time fix in R: spacyr::spacy_install(); then rerun."
-    )
-    invisible(NULL)
-  }
-)
-
