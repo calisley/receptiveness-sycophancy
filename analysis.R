@@ -5,7 +5,7 @@ library(groundhog)
 
 groundhog.library(
   c("fs", "tidyverse", "cowplot", "jsonlite", "patchwork", "politeness"),
-  date = "2026-08-24"
+  date = "2026-08-22"
 )
 
 theme_set(
