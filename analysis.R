@@ -1188,63 +1188,6 @@ front_T_shared %>%
   )
 
 
-## Receptiveness measure, validation against the package -------------------
-
-# Reported in the setup. The deployed score is the HEAR rubric linear map, so
-# this refits that map (no embeddings) and scores the same texts with the
-# politeness package for comparison. The package number is in-sample for the
-# package, since receptive_train is what it was fit on.
-
-set.seed(0)
-
-hear_train <- stream_in(
-  file(path("data", "hear", "hear_v5_signed_scores.jsonl")),
-  verbose = FALSE
-) %>%
-  as_tibble() %>%
-  transmute(
-    id,
-    receptive_human,
-    text = politeness::receptive_train$text[id],
-    hedging,
-    emphasize_agreement,
-    acknowledge_perspective,
-    reframe_positive,
-    invite_curiosity,
-    negation,
-    adverb_limiter,
-    disagreement,
-    negative_emotion,
-    confrontational_questioning
-  )
-
-hear_features <- setdiff(
-  names(hear_train),
-  c("id", "receptive_human", "text")
-)
-
-hear_folds <- sample(rep(1:5, length.out = nrow(hear_train)))
-hear_train$pred_cv <- NA_real_
-
-for (k in 1:5) {
-  fit <- lm(
-    reformulate(hear_features, "receptive_human"),
-    data = hear_train[hear_folds != k, ]
-  )
-  hear_train$pred_cv[hear_folds == k] <- predict(
-    fit,
-    newdata = hear_train[hear_folds == k, ]
-  )
-}
-
-hear_train %>%
-  mutate(pred_package = politeness::receptiveness(text)) %>%
-  summarize(
-    r_rubric_cv = cor(pred_cv, receptive_human),
-    r_package = cor(pred_package, receptive_human),
-    n = n()
-  )
-
 # Table S7: Length Controls -----------------------------------------------
 
 exp_part <- read_csv(path("data", "experiment", "participants.csv"))
@@ -2104,4 +2047,77 @@ bind_rows(
       )
   })
 
+
+## Receptiveness measure, validation against the package -------------------
+
+# Reported in the setup. The deployed score is the HEAR rubric linear map, so
+# this refits that map (no embeddings) and scores the same texts with the
+# politeness package for comparison. The package number is in-sample for the
+# package, since receptive_train is what it was fit on.
+#
+# politeness::receptiveness() needs spaCy via spacyr. If that backend is not
+# installed, we still print the rubric CV correlation and skip r_package.
+
+set.seed(0)
+
+hear_train <- stream_in(
+  file(path("data", "hear", "hear_v5_signed_scores.jsonl")),
+  verbose = FALSE
+) %>%
+  as_tibble() %>%
+  transmute(
+    id,
+    receptive_human,
+    text = politeness::receptive_train$text[id],
+    hedging,
+    emphasize_agreement,
+    acknowledge_perspective,
+    reframe_positive,
+    invite_curiosity,
+    negation,
+    adverb_limiter,
+    disagreement,
+    negative_emotion,
+    confrontational_questioning
+  )
+
+hear_features <- setdiff(
+  names(hear_train),
+  c("id", "receptive_human", "text")
+)
+
+hear_folds <- sample(rep(1:5, length.out = nrow(hear_train)))
+hear_train$pred_cv <- NA_real_
+
+for (k in 1:5) {
+  fit <- lm(
+    reformulate(hear_features, "receptive_human"),
+    data = hear_train[hear_folds != k, ]
+  )
+  hear_train$pred_cv[hear_folds == k] <- predict(
+    fit,
+    newdata = hear_train[hear_folds == k, ]
+  )
+}
+
+hear_train %>%
+  summarize(
+    r_rubric_cv = cor(pred_cv, receptive_human),
+    n = n()
+  )
+
+tryCatch(
+  {
+    hear_train %>%
+      mutate(pred_package = politeness::receptiveness(text)) %>%
+      summarize(r_package = cor(pred_package, receptive_human))
+  },
+  error = function(e) {
+    message(
+      "Skipping politeness::receptiveness() (spaCy not installed). ",
+      "Optional one-time fix in R: spacyr::spacy_install(); then rerun."
+    )
+    invisible(NULL)
+  }
+)
 

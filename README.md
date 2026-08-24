@@ -26,6 +26,8 @@ Replication materials for an anonymous submission.
 
 To regenerate only the robustness table: `Rscript scripts/run_exp_robustness_table.R`
 
+At the end of `analysis.R`, a comparison to the `politeness` package calls `politeness::receptiveness()`, which needs spaCy. If that step is skipped, all figures and main statistics still run. To include it, run once in R: `spacyr::spacy_install()`.
+
 ## Optional: regenerate LLM outputs
 
 Requires **Python 3.12+**, a virtual environment, and API keys. LLM outputs will not match the paper cell-for-cell.
