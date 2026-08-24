@@ -11,6 +11,10 @@ groundhog.library(
 dir_create(path("plots"))
 dir_create(path("plots", "appendix"))
 
+theme_set(
+  theme_bw(base_size = 9)
+)
+
 # Data --------------------------------------------------------------------
 
 aita_soc_df <- read_csv(
@@ -21,6 +25,7 @@ aita_soc_df <- read_csv(
   # Aggregate average human positivity in comparison to models
   summarize(
     across(
+      # framing_v2 is the OLD framing prompt
       c(validation, indirectness, framing, framing_v2, positivity, rec_raw),
       \(x) mean(x, na.rm = TRUE)
     ),
@@ -36,8 +41,8 @@ aita_soc_df <- read_csv(
     ),
     rec_z = (rec_raw - mean(rec_raw[speaker == "Human"], na.rm = TRUE)) /
       sd(rec_raw[speaker == "Human"], na.rm = TRUE),
-    any_elephant = validation | indirectness | framing,
-    any_syc = validation | indirectness | framing | positivity
+    any_elephant = validation | indirectness | framing_v2,
+    any_syc = validation | indirectness | framing_v2 | positivity
   )
 
 
@@ -64,8 +69,8 @@ rcpt_trans_all <- read_csv(
 ) %>%
   mutate(
     speaker = factor(speaker, levels = c("Human", "GPT-5", "Rewrite")),
-    any_elephant = validation | indirectness | framing,
-    any_syc = validation | indirectness | framing | positivity
+    any_elephant = validation | indirectness | framing_v2,
+    any_syc = validation | indirectness | framing_v2 | positivity
   )
 
 fig2_row_idx <- aita_verdicts_1p %>%
@@ -173,7 +178,11 @@ shared_row_idx <- front_long %>%
   distinct(row_idx)
 
 front_T_shared <- front_long %>%
-  filter(model %in% front_models, arm %in% c("free", "tool")) %>%
+  filter(
+    model %in% front_models,
+    arm %in% c("free", "tool") |
+      (arm == "prompt" & model %in% front_models_mit)
+  ) %>%
   semi_join(shared_row_idx, by = "row_idx") %>%
   group_by(model_key, model, arm) %>%
   summarize(
@@ -207,8 +216,8 @@ oeq_df <- read_csv(path("data", "robustness", "oeq", "oeq_long.csv")) %>%
     speaker = factor(speaker, levels = c("Human", "GPT-5")),
     rec_z = (rec_raw - mean(rec_raw[speaker == "Human"], na.rm = TRUE)) /
       sd(rec_raw[speaker == "Human"], na.rm = TRUE),
-    any_elephant = validation | indirectness | framing,
-    any_syc = validation | indirectness | framing | positivity
+    any_elephant = validation | indirectness | framing_v2,
+    any_syc = validation | indirectness | framing_v2 | positivity
   )
 
 ## Experiment --------------------------------------------------------------
@@ -265,7 +274,7 @@ exp_item <- exp %>%
 p_corr_cont <- aita_soc_df %>%
   filter(speaker != "GPT-5", speaker != "Rewrite") %>%
   mutate(
-    total_syc = validation + indirectness + positivity + framing
+    total_syc = validation + indirectness + positivity + framing_v2
   ) %>% 
   group_by(speaker, total_syc) %>%
   summarize(
@@ -311,7 +320,7 @@ ggsave(
 
 p_share_cont <- rcpt_trans %>%
   mutate(
-    total_syc = validation + indirectness + positivity + framing
+    total_syc = validation + indirectness + positivity + framing_v2
   ) %>%
   count(speaker, total_syc, name = "n") %>%
   group_by(speaker) %>%
@@ -351,7 +360,6 @@ ggsave(
   height = 2.5,
   units = "in"
 )
-
 
 ## Fig 3: Gains by base receptiveness --------------------------------------
 
@@ -578,7 +586,6 @@ ggsave(
   units = "in"
 )
 
-
 # Main text statistics ----------------------------------------------------
 
 ## Receptiveness measure, validation against the package -------------------
@@ -654,7 +661,7 @@ tryCatch(
 message("\n=== Main text: pooled r(total social sycophancy, receptiveness), AITA-YTA ===")
 aita_soc_df %>%
   filter(speaker != "Rewrite") %>%
-  mutate(total_syc = validation + indirectness + positivity + framing) %>%
+  mutate(total_syc = validation + indirectness + positivity + framing_v2) %>%
   summarize(
     r_pooled = cor(total_syc, rec_z, use = "complete.obs"),
     n = n()
@@ -665,14 +672,14 @@ aita_soc_df %>%
 
 message("\n=== Main text: pooled r(total social sycophancy, receptiveness), OEQ ===")
 oeq_df %>%
-  mutate(total_syc = validation + indirectness + positivity + framing) %>%
+  mutate(total_syc = validation + indirectness + positivity + framing_v2) %>%
   summarize(
     r_pooled = cor(total_syc, rec_z, use = "complete.obs"),
     n = n()
   )
 
 
-## Figure 2: receptiveness rewrite (n = 808) --------------------------------
+## Receptiveness rewrite (n = 808) --------------------------------
 
 message("\n=== Main text: receptiveness gain from listen_once rewrite (n=808) ===")
 rcpt_trans %>%
@@ -728,28 +735,206 @@ exp_items %>%
     hi = mean_words_delta + 1.96 * se
   )
 
-message("\n=== Main text: experiment sample sizes ===")
-exp %>%
-  summarize(
-    n_ratings = n(),
-    n_participants = n_distinct(prolific_pid),
-    n_items = n_distinct(item_id)
-  )
 
-message("\n=== Main text: share judging asker in the wrong (verdict >= 4) ===")
-{
-  n <- nrow(exp)
-  k <- sum(exp$verdict >= 4)
-  bt <- binom.test(k, n, conf.level = 0.95)
-  tibble(
-    k = k,
-    n = n,
-    est = as.numeric(bt$estimate),
-    lo = bt$conf.int[1],
-    hi = bt$conf.int[2]
-  )
+## Experimental results / length Controls -----------------------------------------------
+
+exp_part <- read_csv(path("data", "experiment", "participants.csv"))
+
+MANUAL_PARAPHRASE_FAIL <- "6a0c93436c009b0e6c8a3fda"
+
+prereg_exclude_pids <- exp_part %>%
+  filter(
+    is.na(outro_paraphrase) |
+      trimws(outro_paraphrase) == "" |
+      nchar(trimws(outro_paraphrase)) < 10L |
+      prolific_pid == MANUAL_PARAPHRASE_FAIL
+  ) %>%
+  pull(prolific_pid)
+
+exp_prereg <- exp %>%
+  filter(!prolific_pid %in% prereg_exclude_pids)
+
+exp_len <- exp %>%
+  left_join(exp_items %>% select(item_id, words_delta), by = "item_id")
+
+exp_len_prereg <- exp_prereg %>%
+  left_join(exp_items %>% select(item_id, words_delta), by = "item_id")
+
+fmt_ci_latex <- function(est, lo, hi) {
+  lo_str <- sprintf("%.2f", lo)
+  hi_str <- sprintf("%.2f", hi)
+  if (startsWith(lo_str, "-")) lo_str <- paste0("$", lo_str, "$")
+  if (startsWith(hi_str, "-")) hi_str <- paste0("$", hi_str, "$")
+  paste0(sprintf("%.2f", est), " [", lo_str, ", ", hi_str, "]")
 }
 
+mean_ci_by_prov <- function(df, outcome_var, yta_only = FALSE) {
+  if (yta_only) {
+    df <- dplyr::filter(df, verdict_bin == "In the wrong")
+  }
+  df %>%
+    dplyr::group_by(provenance) %>%
+    dplyr::summarize(
+      est = mean(.data[[outcome_var]], na.rm = TRUE),
+      se = sd(.data[[outcome_var]], na.rm = TRUE) / sqrt(n()),
+      n = dplyr::n(),
+      .groups = "drop"
+    ) %>%
+    dplyr::mutate(
+      lo = est - 1.96 * se,
+      hi = est + 1.96 * se
+    )
+}
+
+length_int_by_prov <- function(df, outcome_var, yta_only = FALSE) {
+  if (yta_only) {
+    df <- dplyr::filter(df, verdict_bin == "In the wrong")
+  }
+  df %>%
+    dplyr::group_by(provenance) %>%
+    dplyr::group_modify(\(d, ...) {
+      fit <- lm(
+        as.formula(paste0(outcome_var, " ~ words_delta")),
+        data = d
+      )
+      co <- summary(fit)$coefficients
+      tibble(
+        est = unname(co[1, 1]),
+        se = unname(co[1, 2]),
+        n = nrow(d)
+      )
+    }) %>%
+    ungroup() %>%
+    dplyr::mutate(
+      lo = est - 1.96 * se,
+      hi = est + 1.96 * se
+    )
+}
+
+robustness_row_specs <- tribble(
+  ~outcome_var, ~provenance, ~yta_only, ~latex_label, ~addlinespace_after,
+  "quality_rewrite_minus_human", "Human", FALSE,
+  "Quality $\\Delta$ (human-origin)", FALSE,
+  "quality_rewrite_minus_human", "Model", FALSE,
+  "Quality $\\Delta$ (model-origin)", TRUE,
+  "quality_rewrite_minus_human", "Human", TRUE,
+  "Quality $\\Delta$, YTA only (human-origin)", FALSE,
+  "quality_rewrite_minus_human", "Model", TRUE,
+  "Quality $\\Delta$, YTA only (model-origin)", TRUE,
+  "listen_pref_rewrite", "Human", FALSE,
+  "Listen preference (human-origin)", FALSE,
+  "listen_pref_rewrite", "Model", FALSE,
+  "Listen preference (model-origin)", TRUE,
+  "listen_pref_rewrite", "Human", TRUE,
+  "Listen preference, YTA only (human-origin)", FALSE,
+  "listen_pref_rewrite", "Model", TRUE,
+  "Listen preference, YTA only (model-origin)", TRUE,
+  "advice_pref_rewrite", "Human", FALSE,
+  "Advice preference (human-origin)", FALSE,
+  "advice_pref_rewrite", "Model", FALSE,
+  "Advice preference (model-origin)", TRUE,
+  "advice_pref_rewrite", "Human", TRUE,
+  "Advice preference, YTA only (human-origin)", FALSE,
+  "advice_pref_rewrite", "Model", TRUE,
+  "Advice preference, YTA only (model-origin)", FALSE
+)
+
+exp_robustness_table <- purrr::pmap_dfr(
+  robustness_row_specs,
+  \(outcome_var, provenance, yta_only, latex_label, addlinespace_after) {
+    n200 <- mean_ci_by_prov(exp, outcome_var, yta_only) %>%
+      dplyr::filter(provenance == !!provenance)
+    n196 <- mean_ci_by_prov(exp_prereg, outcome_var, yta_only) %>%
+      dplyr::filter(provenance == !!provenance)
+    len200 <- length_int_by_prov(exp_len, outcome_var, yta_only) %>%
+      dplyr::filter(provenance == !!provenance)
+    len196 <- length_int_by_prov(exp_len_prereg, outcome_var, yta_only) %>%
+      dplyr::filter(provenance == !!provenance)
+    tibble(
+      latex_label = latex_label,
+      addlinespace_after = addlinespace_after,
+      n200 = fmt_ci_latex(n200$est, n200$lo, n200$hi),
+      n196 = fmt_ci_latex(n196$est, n196$lo, n196$hi),
+      length200 = fmt_ci_latex(len200$est, len200$lo, len200$hi),
+      length196 = fmt_ci_latex(len196$est, len196$lo, len196$hi)
+    )
+  }
+)
+
+dir_create(path("tables"))
+
+exp_robustness_csv <- exp_robustness_table %>%
+  dplyr::transmute(
+    Outcome = latex_label,
+    `Main text (n=200)` = n200,
+    `Prereg exclusion (n=196)` = n196,
+    `Length-controlled (n=200)` = length200,
+    `Length-controlled (n=196)` = length196
+  )
+
+readr::write_csv(
+  exp_robustness_csv,
+  path("tables", "exp_human_robustness.csv")
+)
+
+row_lines <- purrr::pmap_chr(
+  exp_robustness_table,
+  \(latex_label, n200, n196, length200, length196, addlinespace_after) {
+    line <- paste0(
+      latex_label,
+      "\n    & ", n200,
+      "\n    & ", n196,
+      "\n    & ", length200,
+      "\n    & ", length196,
+      " \\\\"
+    )
+    if (isTRUE(addlinespace_after)) {
+      paste0(line, "\n\\addlinespace")
+    } else {
+      line
+    }
+  }
+)
+
+writeLines(
+  c(
+    "\\begin{table*}[t]",
+    "\\centering",
+    "\\small",
+    "\\caption{Human-study robustness and length-controlled estimates. Point estimates",
+    "are reported with 95\\% confidence intervals in brackets.}",
+    "\\label{tab:length_controls}",
+    "\\begin{tabular}{@{}lcccc@{}}",
+    "\\toprule",
+    "& Main text",
+    "& Preregistered exclusions",
+    "& \\multicolumn{2}{c}{Length controlled} \\\\",
+    "& ($n=200$)",
+    "& ($n=196$)",
+    "& ($n=200$)",
+    "& ($n=196$) \\\\",
+    "\\midrule",
+    row_lines,
+    "\\bottomrule",
+    "\\multicolumn{5}{@{}p{0.96\\textwidth}@{}}{\\footnotesize",
+    "\\textit{Note.} The preregistered-exclusion specification removes four",
+    "participants who failed the end-of-survey response-quality check. The",
+    "length-controlled estimates are intercepts from",
+    "$\\Delta Y = \\alpha + \\beta\\,\\Delta\\mathrm{Words} + \\epsilon$, estimated on the",
+    "full sample ($n=200$) and on the preregistered-exclusion sample ($n=196$).}",
+    "\\end{tabular}",
+    "\\end{table*}"
+  ),
+  path("tables", "exp_human_robustness.tex")
+)
+
+message(
+  "Wrote tables/exp_human_robustness.{csv,tex} (prereg paraphrase exclusions: ",
+  length(prereg_exclude_pids), " participants)."
+)
+
+message("\n=== human experiment outcomes (raw, n=200) ===")
+print(exp_robustness_csv %>% select(Outcome, `Main text (n=200)`))
 
 ## Figure 3: preference vs baseline receptiveness --------------------------
 
@@ -772,12 +957,75 @@ exp %>%
   mutate(lo = slope - 1.96 * se, hi = slope + 1.96 * se)
 
 
-## Figure 5: mitigation ----------------------------------------------------
+message("\n=== Main text: share judging asker in the wrong (verdict >= 4) ===")
+{
+  n <- nrow(exp)
+  k <- sum(exp$verdict >= 4)
+  bt <- binom.test(k, n, conf.level = 0.95)
+  tibble(
+    k = k,
+    n = n,
+    est = as.numeric(bt$estimate),
+    lo = bt$conf.int[1],
+    hi = bt$conf.int[2]
+  )
+}
+
+message("\n== Main text: share judging asker not in the wrong (verdict <= 2) =")
+{
+  n <- nrow(exp)
+  k <- sum(exp$verdict <= 2)
+  bt <- binom.test(k, n, conf.level = 0.95)
+  tibble(
+    k = k,
+    n = n,
+    est = as.numeric(bt$estimate),
+    lo = bt$conf.int[1],
+    hi = bt$conf.int[2]
+  )
+}
+
+## Mitigation ----------------------------------------------------
 
 message("\n=== Main text: mitigation free baseline (n=200, all models) ===")
 front_T_shared %>%
   filter(arm == "free") %>%
   select(model, T, se, lo, hi, rec_raw, rec_se, n_rec_yta, n)
+
+message("\n=== Main text: mitigation free vs prompt (Sonnet / Flash) ===")
+front_T_shared %>%
+  filter(model %in% front_models_mit, arm %in% c("free", "prompt")) %>%
+  select(model_key, model, arm, T, se, lo, hi, rec_raw, rec_se, n_rec_yta, n) %>%
+  pivot_wider(
+    names_from = arm,
+    values_from = c(T, se, lo, hi, rec_raw, rec_se, n_rec_yta, n),
+    names_glue = "{.value}_{arm}"
+  ) %>%
+  transmute(
+    model,
+    n = n_prompt,
+    T_free,
+    se_T_free = se_free,
+    lo_T_free = lo_free,
+    hi_T_free = hi_free,
+    T_prompt,
+    se_T_prompt = se_prompt,
+    lo_T_prompt = lo_prompt,
+    hi_T_prompt = hi_prompt,
+    n_rec_yta_free,
+    rec_z_free = (rec_raw_free - mu_h) / sd_h,
+    se_rec_z_free = rec_se_free / sd_h,
+    lo_rec_z_free = rec_z_free - 1.96 * se_rec_z_free,
+    hi_rec_z_free = rec_z_free + 1.96 * se_rec_z_free,
+    rec_z_prompt = (rec_raw_prompt - mu_h) / sd_h,
+    se_rec_z_prompt = rec_se_prompt / sd_h,
+    lo_rec_z_prompt = rec_z_prompt - 1.96 * se_rec_z_prompt,
+    hi_rec_z_prompt = rec_z_prompt + 1.96 * se_rec_z_prompt,
+    dz_prompt = rec_z_prompt - rec_z_free,
+    se_dz_prompt = sqrt(se_rec_z_free^2 + se_rec_z_prompt^2),
+    lo_dz_prompt = dz_prompt - 1.96 * se_dz_prompt,
+    hi_dz_prompt = dz_prompt + 1.96 * se_dz_prompt
+  )
 
 message("\n=== Main text: mitigation free vs tool (Sonnet / Flash) ===")
 front_T_shared %>%
@@ -1164,231 +1412,6 @@ message("\n=== Supplement: share judging asker not in the wrong (verdict <= 2) =
   )
 }
 
-# Table S7: Length Controls -----------------------------------------------
-
-exp_part <- read_csv(path("data", "experiment", "participants.csv"))
-
-MANUAL_PARAPHRASE_FAIL <- "6a0c93436c009b0e6c8a3fda"
-
-paraphrase_fails <- function(x) {
-  is.na(x) | trimws(x) == "" | nchar(trimws(x)) < 10L
-}
-
-prereg_exclude_pids <- exp_part %>%
-  filter(
-    paraphrase_fails(outro_paraphrase) |
-      prolific_pid == MANUAL_PARAPHRASE_FAIL
-  ) %>%
-  pull(prolific_pid)
-
-exp_prereg <- exp %>%
-  filter(!prolific_pid %in% prereg_exclude_pids)
-
-exp_len <- exp %>%
-  left_join(exp_items %>% select(item_id, words_delta), by = "item_id")
-
-exp_len_prereg <- exp_prereg %>%
-  left_join(exp_items %>% select(item_id, words_delta), by = "item_id")
-
-fmt_ci_latex <- function(est, lo, hi) {
-  fmt_bound <- function(x) {
-    s <- sprintf("%.2f", x)
-    if (startsWith(s, "-")) {
-      paste0("$", s, "$")
-    } else {
-      s
-    }
-  }
-  paste0(
-    sprintf("%.2f", est),
-    " [",
-    fmt_bound(lo),
-    ", ",
-    fmt_bound(hi),
-    "]"
-  )
-}
-
-mean_ci_by_prov <- function(df, outcome_var, yta_only = FALSE) {
-  if (yta_only) {
-    df <- dplyr::filter(df, verdict_bin == "In the wrong")
-  }
-  df %>%
-    dplyr::group_by(provenance) %>%
-    dplyr::summarize(
-      est = mean(.data[[outcome_var]], na.rm = TRUE),
-      se = sd(.data[[outcome_var]], na.rm = TRUE) / sqrt(n()),
-      n = dplyr::n(),
-      .groups = "drop"
-    ) %>%
-    dplyr::mutate(
-      lo = est - 1.96 * se,
-      hi = est + 1.96 * se
-    )
-}
-
-length_int_by_prov <- function(df, outcome_var, yta_only = FALSE) {
-  if (yta_only) {
-    df <- dplyr::filter(df, verdict_bin == "In the wrong")
-  }
-  df %>%
-    dplyr::group_by(provenance) %>%
-    dplyr::group_modify(\(d, ...) {
-      fit <- lm(
-        as.formula(paste0(outcome_var, " ~ words_delta")),
-        data = d
-      )
-      co <- summary(fit)$coefficients
-      tibble(
-        est = unname(co[1, 1]),
-        se = unname(co[1, 2]),
-        n = nrow(d)
-      )
-    }) %>%
-    ungroup() %>%
-    dplyr::mutate(
-      lo = est - 1.96 * se,
-      hi = est + 1.96 * se
-    )
-}
-
-robustness_row_specs <- tribble(
-  ~outcome_var, ~provenance, ~yta_only, ~latex_label, ~addlinespace_after,
-  "quality_rewrite_minus_human", "Human", FALSE,
-  "Quality $\\Delta$ (human-origin)", FALSE,
-  "quality_rewrite_minus_human", "Model", FALSE,
-  "Quality $\\Delta$ (model-origin)", TRUE,
-  "quality_rewrite_minus_human", "Human", TRUE,
-  "Quality $\\Delta$, YTA only (human-origin)", FALSE,
-  "quality_rewrite_minus_human", "Model", TRUE,
-  "Quality $\\Delta$, YTA only (model-origin)", TRUE,
-  "listen_pref_rewrite", "Human", FALSE,
-  "Listen preference (human-origin)", FALSE,
-  "listen_pref_rewrite", "Model", FALSE,
-  "Listen preference (model-origin)", TRUE,
-  "listen_pref_rewrite", "Human", TRUE,
-  "Listen preference, YTA only (human-origin)", FALSE,
-  "listen_pref_rewrite", "Model", TRUE,
-  "Listen preference, YTA only (model-origin)", TRUE,
-  "advice_pref_rewrite", "Human", FALSE,
-  "Advice preference (human-origin)", FALSE,
-  "advice_pref_rewrite", "Model", FALSE,
-  "Advice preference (model-origin)", TRUE,
-  "advice_pref_rewrite", "Human", TRUE,
-  "Advice preference, YTA only (human-origin)", FALSE,
-  "advice_pref_rewrite", "Model", TRUE,
-  "Advice preference, YTA only (model-origin)", FALSE
-)
-
-robustness_cells <- function(df, outcome_var, provenance, yta_only) {
-  mean_ci_by_prov(df, outcome_var, yta_only) %>%
-    dplyr::filter(provenance == !!provenance)
-}
-
-robustness_len_cells <- function(df, outcome_var, provenance, yta_only) {
-  length_int_by_prov(df, outcome_var, yta_only) %>%
-    dplyr::filter(provenance == !!provenance)
-}
-
-exp_robustness_table <- purrr::pmap_dfr(
-  robustness_row_specs,
-  \(outcome_var, provenance, yta_only, latex_label, addlinespace_after) {
-    n200 <- robustness_cells(exp, outcome_var, provenance, yta_only)
-    n196 <- robustness_cells(exp_prereg, outcome_var, provenance, yta_only)
-    len200 <- robustness_len_cells(
-      exp_len, outcome_var, provenance, yta_only
-    )
-    len196 <- robustness_len_cells(
-      exp_len_prereg, outcome_var, provenance, yta_only
-    )
-    tibble(
-      latex_label = latex_label,
-      addlinespace_after = addlinespace_after,
-      n200 = fmt_ci_latex(n200$est, n200$lo, n200$hi),
-      n196 = fmt_ci_latex(n196$est, n196$lo, n196$hi),
-      length200 = fmt_ci_latex(len200$est, len200$lo, len200$hi),
-      length196 = fmt_ci_latex(len196$est, len196$lo, len196$hi)
-    )
-  }
-)
-
-write_exp_robustness_tex <- function(tab, out_path) {
-  row_lines <- purrr::pmap_chr(
-    tab,
-    \(latex_label, n200, n196, length200, length196, addlinespace_after) {
-      line <- paste0(
-        latex_label,
-        "\n    & ", n200,
-        "\n    & ", n196,
-        "\n    & ", length200,
-        "\n    & ", length196,
-        " \\\\"
-      )
-      if (isTRUE(addlinespace_after)) {
-        paste0(line, "\n\\addlinespace")
-      } else {
-        line
-      }
-    }
-  )
-  lines <- c(
-    "\\begin{table*}[t]",
-    "\\centering",
-    "\\small",
-    "\\caption{Human-study robustness and length-controlled estimates. Point estimates",
-    "are reported with 95\\% confidence intervals in brackets.}",
-    "\\label{tab:length_controls}",
-    "\\begin{tabular}{@{}lcccc@{}}",
-    "\\toprule",
-    "& Main text",
-    "& Preregistered exclusions",
-    "& \\multicolumn{2}{c}{Length controlled} \\\\",
-    "& ($n=200$)",
-    "& ($n=196$)",
-    "& ($n=200$)",
-    "& ($n=196$) \\\\",
-    "\\midrule",
-    row_lines,
-    "\\bottomrule",
-    "\\multicolumn{5}{@{}p{0.96\\textwidth}@{}}{\\footnotesize",
-    "\\textit{Note.} The preregistered-exclusion specification removes four",
-    "participants who failed the end-of-survey response-quality check. The",
-    "length-controlled estimates are intercepts from",
-    "$\\Delta Y = \\alpha + \\beta\\,\\Delta\\mathrm{Words} + \\epsilon$, estimated on the",
-    "full sample ($n=200$) and on the preregistered-exclusion sample ($n=196$).}",
-    "\\end{tabular}",
-    "\\end{table*}"
-  )
-  writeLines(lines, out_path)
-}
-
-dir_create(path("tables"))
-
-exp_robustness_csv <- exp_robustness_table %>%
-  dplyr::transmute(
-    Outcome = latex_label,
-    `Main text (n=200)` = n200,
-    `Prereg exclusion (n=196)` = n196,
-    `Length-controlled (n=200)` = length200,
-    `Length-controlled (n=196)` = length196
-  )
-
-readr::write_csv(
-  exp_robustness_csv,
-  path("tables", "exp_human_robustness.csv")
-)
-
-write_exp_robustness_tex(
-  exp_robustness_table,
-  path("tables", "exp_human_robustness.tex")
-)
-
-message(
-  "Wrote tables/exp_human_robustness.{csv,tex} (prereg paraphrase exclusions: ",
-  length(prereg_exclude_pids), " participants)."
-)
-message("\n=== Table S7: human experiment robustness (raw + length-controlled, n=200 and n=196) ===")
-print(exp_robustness_csv)
 
 ## Robustness checks -------------------------------------------------------
 
@@ -1538,3 +1561,12 @@ bind_rows(
         .groups = "drop"
       )
   })
+
+
+message("\n=== Main text: experiment sample sizes ===")
+exp %>%
+  summarize(
+    n_ratings = n(),
+    n_participants = n_distinct(prolific_pid),
+    n_items = n_distinct(item_id)
+  )
