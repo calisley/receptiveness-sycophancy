@@ -949,6 +949,13 @@ message(
 message("\n=== human experiment outcomes (raw, n=200) ===")
 print(exp_robustness_csv %>% select(Outcome, `Main text (n=200)`))
 
+
+## Receptiveness sds -------------------------------------------------------
+
+message("\n=== Base experimental receptiveness diff ===")
+mean(exp$rec_z_base[exp$provenance == "Model"]) -
+  mean(exp$rec_z_base[exp$provenance == "Human"]) 
+
 ## Preference vs baseline receptiveness --------------------------
 
 message("\n=== Main text: preference gap slope vs original receptiveness (item-level) ===")
