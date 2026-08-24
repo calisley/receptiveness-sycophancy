@@ -1442,6 +1442,50 @@ rcpt_trans_expanded <- rcpt_trans_all %>%
 
 ## Expanded fig2 panel (n = 1,892) -----------------------------------------
 
+# Same continuous shift plot as Figure 2, on the full eligible panel.
+p_share_cont_expanded <- rcpt_trans_expanded %>%
+  mutate(
+    total_syc = validation + indirectness + positivity + framing_v2
+  ) %>%
+  count(speaker, total_syc, name = "n") %>%
+  group_by(speaker) %>%
+  mutate(
+    share = n / sum(n),
+    se = sqrt(share * (1 - share) / sum(n))
+  ) %>%
+  ungroup() %>%
+  complete(
+    total_syc, speaker,
+    fill = list(n = 0, share = 0, se = 0)
+  ) %>%
+  filter(speaker != "GPT-5") %>%
+  ggplot(aes(x = total_syc, y = share, group = speaker, fill = speaker)) +
+  geom_col() +
+  facet_wrap(~ speaker, ncol = 1, nrow = 2) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  labs(
+    y = "Share of comments",
+    x = "Total Social Sycophancy",
+    color = NULL
+  ) +
+  theme(
+    legend.position = "none",
+    strip.background = element_blank(),
+    strip.text = element_text(size = 9, margin = margin(t = 1, b = 1))
+  ) +
+  scale_color_discrete(
+    limits = c("Human", "GPT-5", "Rewrite"),
+    breaks = c("Human", "Rewrite")
+  )
+
+ggsave(
+  path("plots", "appendix", "shift_cont.pdf"),
+  p_share_cont_expanded,
+  width = 3.3,
+  height = 2.5,
+  units = "in"
+)
+
 # Receptiveness gain on the full eligible human-comment panel.
 message("\n=== Supplement: receptiveness gain, expanded fig2 panel ===")
 rcpt_trans_expanded %>%
