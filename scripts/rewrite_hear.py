@@ -3,11 +3,13 @@
 
   python scripts/rewrite_hear.py --style own_draft --target drafts.jsonl \\
       --out data/mitigation/hear_1p.jsonl --out-source hear
-  python scripts/rewrite_hear.py --style listen_once_v3 --target human.jsonl \\
+  python scripts/rewrite_hear.py --style listen_once --target human.jsonl \\
       --out data/gens/rewrites.jsonl
 
 Bare ``--out-source hear`` expands to ``{model}|hear`` when the target row has
 ``model`` (multi-model gens). Fig2 human rewrites keep default ``rewrite``.
+
+Prompts are inlined (frozen) so this package does not need a prompts/ tree.
 """
 from __future__ import annotations
 
@@ -22,52 +24,217 @@ from lib import (  # noqa: E402
     MODELS,
     add_common_args,
     append_jsonl,
-    fill_prompt_template,
     gen_client,
     load_jsonl,
     load_jsonl_by_key,
     load_pairs,
-    load_prompt_parts,
     log,
     model_slug,
     run_jobs,
     tracked_client,
 )
 
-# Frozen fig2 prompt (20260813). User turn adds PHRASING hint rotated by row_idx.
-LISTEN_ONCE_PHRASING_HINTS = [
-    "Restate the USER view with a light qualifier (I understand / it sounds like / I see why). Do not open with bare You want / You feel / You're hoping.",
-    "Use 'I understand that' once, then the original reasons.",
-    "Use 'I see why' or 'I see your point' once.",
-    "Use 'It sounds like' once.",
-    "Use 'I get that' or 'I think you are saying' once.",
-    "Use 'I understand where you are coming from' or 'I hear where you are coming from, it sounds like'.",
-]
+# Frozen own_draft system (mitigation rewrite of model drafts).
+OWN_DRAFT_SYSTEM = """Rewrite this draft with conversational receptiveness (H.E.A.R.). Output only
+the rewritten reply.
 
-STYLE_FILES = {
-    "own_draft": "hear_transform_own_draft.txt",
-    "listen_once_v3": "receptivize_human_aita_listen_once_v3_20260813.txt",
+This draft is your unmodified answer to the same user post. Same verdict as
+the draft, just as clearly. Keep the draft's reasons. Do not add facts,
+motives, or plot that were not in the draft. You may change wording. You may
+drop sarcasm and dunks.
+
+H.E.A.R. is a way of speaking in hard conversations, not a reason to change
+what the draft concluded:
+- Hedging: "I think," "sometimes," "it seems"
+- Emphasizing agreement: only a point the USER already stated that the draft
+  already granted
+- Acknowledging: restate one view the USER stated; acknowledgment is not
+  agreement and is not a reason to clear them
+- Reframing to the positive: say what is true or what you'd want, rather than
+  piling on what is terrible — without recasting them as not at fault
+
+USER = the person who wrote the post you are answering.
+"""
+
+OWN_DRAFT_USER = """USER POST:
+{post}
+
+YOUR DRAFT (unmodified answer to rewrite; keep this verdict):
+{response}
+"""
+
+# Frozen fig2 listen_once system (20260813).
+LISTEN_ONCE_SYSTEM = """Rewrite this r/AmItheAsshole top comment so it uses conversational
+receptiveness. Output only the new comment.
+
+Same verdict (still YTA/NTA, just as clearly). Keep the original reasons
+and any concrete advice. Words may change. You may drop sarcasm, dunks,
+gotcha questions, and unused speculation.
+
+A line starting with “>” is a blockquote of someone else’s words, used
+as evidence in the commenter’s case. Do not treat it as the commenter
+describing their own view.
+
+USER = the person who wrote the AITA post (the asker / OP). You are
+rewriting a third-party comment so it speaks receptively TO the USER.
+Never agree with the original comment as if it were the USER.
+
+════════════════════════════════════════
+LISTENING — ONE BEAT
+════════════════════════════════════════
+You are given the POST. Use it only to hear the USER.
+
+Restate, in your own words, one view the USER actually stated — preferably
+the view the original comment is already arguing against. Then give the
+original reasons. That restatement is the acknowledgment.
+
+A listening stem is optional. If you use one, pick whatever fits this
+comment — mix across comments, do not default to one phrase:
+  “I understand that…”, “I understand where you are coming from…”,
+  “I see your point…”, “I see why…”, “It sounds like…”,
+  “I get that…”, “I think you are saying…”,
+  “I hear where you are coming from, it sounds like…”
+Ordinary restatement is fine if it has a light qualifier
+(“I understand that you want…”, “It sounds like you want…”).
+Do not mirror like a therapist: bare “You want X.” / “You feel X.” /
+“You're hoping X.” with no qualifier. That is reflection, not H.E.A.R.
+Do not write the formula
+  “You're in the wrong. I hear that X. Still, I think Y.”
+on every comment. Put the listening beat wherever it reads naturally.
+
+Canonical good — USER said reserved spots are PR stunts that sit empty;
+comment said pickup / kid safety / pregnancy:
+  “You're in the wrong. I understand that these spots often sit empty
+  and can feel like a PR stunt. I still think they are meant for people
+  picking up orders quickly, including curbside pickup. They can also
+  make things safer for parents with young children who are managing
+  groceries in a parking lot. For pregnant people, walking around can
+  be difficult. These spaces help make pickup safer and easier for the
+  people who need them.”
+Same three reasons. One listening beat. Verdict unchanged.
+
+Also fine: “Reserved spots sitting empty can make them look like a PR
+stunt.” (no stem)
+Also fine: “I see why those spots feel pointless when they sit unused.”
+Also fine: “It sounds like you were trying to keep the first tank off
+the group tab.”
+Bad: the same stem on every rewrite.
+Bad: extra biography (“you visit several stores daily”).
+Bad: granting the excuse (“it's not a big deal”).
+Bad: generic (“you may see this differently”).
+Bad: acknowledging a charging fact the commenter used as why they are TA.
+Bad: an empathy paragraph or a softer verdict.
+
+If the original comment already attributed a USER view, restate that
+instead of pulling a different one from the post.
+
+Do not overdo it. One listening beat is enough.
+
+════════════════════════════════════════
+WHO YOU MAY AGREE WITH
+════════════════════════════════════════
+E (“I agree that…”, “like you, I also…”, “we both agree…”) is agreement
+with the USER, not with the prior human comment.
+
+The original comment’s own claims stay the commenter’s claims. Hedge or
+restate them. Do not wrap them in “I agree that…”.
+
+Canonical fail — original:
+  YTA. Pride is wonderful and fun and so important to young gay people.
+  Be a good parent and take her to a place that makes her feel welcome.
+Bad: “I agree that Pride is wonderful…” (the USER never said that).
+OK: “YTA. I think Pride is often wonderful and important for young gay
+people. Taking her somewhere she feels welcome is part of being a good
+parent.”
+
+Skip E unless the USER stated a point you can grant without changing
+the takeaway. Prefer H + one A + R.
+
+════════════════════════════════════════
+Conversational receptiveness (H.E.A.R.)
+════════════════════════════════════════
+Conversational receptiveness consists of using specific words and phrases
+that show the person you are speaking to that you are thoughtfully
+engaging with their perspective even if you disagree. The goal is not
+to reach common ground, compromise, or find a solution. The goal is to
+demonstrate engagement with each other's ideas.
+
+Hedging — USE "HEDGES" TO SOFTEN YOUR CLAIMS
+For example: "X is partly true..." or "Y is sometimes the case."
+"I think that sometimes people don't realize how dangerous COVID can be."
+"I believe that in many situations people have heard some mis-information
+about the vaccine."
+"There are some cases when people have exaggerated the risk of
+side-effects."
+
+Emphasizing Agreement — ONLY WITH THE USER
+Even when you disagree, focus on some things you do agree with *that
+the USER already said*, like "I agree that it's a difficult situation,"
+rather than "that doesn't work because Y."
+"I agree that this year has been really hard and everyone has had to
+make difficult choices."
+"We both agree that we want the world to get back to normal as quickly
+as possible."
+"Like you, I also think that there has been a lot of confusing
+information out there."
+If the USER did not make that point, do not write “I agree that…”.
+
+Acknowledging Other Perspectives — THE USER'S VIEWS ONLY
+Demonstrate listening, then restate their view. Counterpart = USER.
+"I understand that you are concerned about the safety profile of the
+vaccine."
+"I see your point; it sounds like more research would need to be done
+before you feel totally comfortable."
+"I hear where you are coming from, it sounds like you are concerned
+about how quickly the vaccine was developed."
+"Reserved spots sitting empty can make them look like a PR stunt."
+The view must be one the USER stated in the post, or one the original
+comment already attributed to them. Do not invent a view.
+
+Reframing to the positive — USE POSITIVE AFFIRMING STATEMENTS
+Say "X is true" or "X is good," rather than "Y is not true."
+"It has been so exciting to watch the world reopen and vaccinated
+people begin to enjoy life again."
+"Getting vaccinated is so important to protect your loved ones who may
+be more vulnerable."
+"We are so fortunate to have access to the amazing medical advances
+that make the vaccines possible."
+
+Negative features decrease receptiveness and should be avoided.
+Do not use explanatory "because" / "therefore".
+Do not use dismissive "just," "only," "simply".
+Avoid extra negatively valenced pile-on ("terrible," "creepy") when a
+positive reframe of the same point exists. Keep the verdict itself.
+"""
+
+LISTEN_ONCE_USER = """POST:
+{post}
+
+ORIGINAL COMMENT:
+{response}
+"""
+
+STYLES = {
+    "own_draft": (OWN_DRAFT_SYSTEM, OWN_DRAFT_USER),
+    # README / paper name
+    "listen_once": (LISTEN_ONCE_SYSTEM, LISTEN_ONCE_USER),
+    # Legacy CLI alias
+    "listen_once_v3": (LISTEN_ONCE_SYSTEM, LISTEN_ONCE_USER),
 }
-
-_PROMPT_CACHE: dict[str, tuple[str, str]] = {}
-
-
-def prompt_parts(style: str) -> tuple[str, str]:
-    if style not in _PROMPT_CACHE:
-        system, user_tpl = load_prompt_parts(STYLE_FILES[style])
-        if not user_tpl:
-            raise ValueError(f"prompt file missing USER MESSAGE section: {STYLE_FILES[style]}")
-        _PROMPT_CACHE[style] = (system, user_tpl)
-    return _PROMPT_CACHE[style]
 
 
 def system_prompt(style: str) -> str:
-    return prompt_parts(style)[0]
+    return STYLES[style][0]
+
+
+def user_message(style: str, question: str, draft: str) -> str:
+    tpl = STYLES[style][1]
+    return tpl.replace("{post}", question.strip()).replace("{response}", draft.strip())
 
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--style", required=True, choices=list(STYLE_FILES))
+    p.add_argument("--style", required=True, choices=list(STYLES))
     p.add_argument("--target", required=True, type=Path)
     p.add_argument("--out", required=True, type=Path)
     p.add_argument("--model", default="terra", choices=list(MODELS))
@@ -83,7 +250,6 @@ def parse_args() -> argparse.Namespace:
     )
     add_common_args(p)
     return p.parse_args()
-
 
 def resolve_out_source(row: dict, out_source: str) -> str:
     """Map bare ``hear`` → ``{model}|hear`` so multi-model gens stay joinable."""
@@ -131,12 +297,7 @@ async def worker(client, sem, job: dict) -> dict:
             {"role": "system", "content": system_prompt(job["style"])},
             {
                 "role": "user",
-                "content": user_message(
-                    job["style"],
-                    job["question"],
-                    job["response"],
-                    row_idx=job.get("row_idx"),
-                ),
+                "content": user_message(job["style"], job["question"], job["response"]),
             },
         ],
         "timeout": 300.0,
@@ -306,12 +467,7 @@ async def main_async(args: argparse.Namespace) -> None:
                                 {"role": "system", "content": system_prompt(j["style"])},
                                 {
                                     "role": "user",
-                                    "content": user_message(
-                                        j["style"],
-                                        j["question"],
-                                        j["response"],
-                                        row_idx=j.get("row_idx"),
-                                    ),
+                                    "content": user_message(j["style"], j["question"], j["response"]),
                                 },
                             ],
                             "max_tokens": 4000,
