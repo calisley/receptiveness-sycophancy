@@ -177,14 +177,24 @@ def normalize_pair(row: dict, *, idx: int = 0) -> dict | None:
     return out
 
 
+def _read_text_lines(path: Path) -> list[str]:
+    """Decode text files written as UTF-8 or legacy Windows cp1252."""
+    raw = path.read_bytes()
+    for enc in ("utf-8-sig", "utf-8", "cp1252"):
+        try:
+            return raw.decode(enc).splitlines()
+        except UnicodeDecodeError:
+            continue
+    return raw.decode("utf-8", errors="replace").splitlines()
+
+
 def load_jsonl(path: Path) -> list[dict]:
     if not path.is_file():
         return []
     rows = []
-    with path.open(encoding="utf-8") as f:
-        for line in f:
-            if line.strip():
-                rows.append(json.loads(line))
+    for line in _read_text_lines(path):
+        if line.strip():
+            rows.append(json.loads(line))
     return rows
 
 
