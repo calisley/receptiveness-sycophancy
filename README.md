@@ -16,10 +16,10 @@ Replication materials for an anonymous submission.
    Rscript analysis.R
    ```
 
-3. *(Optional)* To include the HEAR-vs-`politeness` package comparison at the end of `analysis.R`, run once **interactively in R** (not `Rscript -e`):
+3. *(Optional)* To include the HEAR-vs-`politeness` package comparison at the end of `analysis.R`:
 
-   ```r
-   spacyr::spacy_install()
+   ```
+   Rscript -e "spacyr::spacy_install()"
    ```
 
    Then rerun `analysis.R`. This downloads a spaCy environment (~1–2 GB) and can take several minutes.
