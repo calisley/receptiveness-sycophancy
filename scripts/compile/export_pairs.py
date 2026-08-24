@@ -45,22 +45,39 @@ def main() -> None:
     seen_m = existing_ids(args.out_model) if args.merge else set()
     seen_h = existing_ids(args.out_human) if args.merge and args.out_human else set()
     n_m = n_h = 0
+    skip: dict[str, int] = {
+        "not_ok": 0,
+        "only_model": 0,
+        "verdict": 0,
+        "no_response": 0,
+        "no_post": 0,
+        "already_seen": 0,
+    }
+    verdict_counts: dict[str, int] = {}
     for rec in load_jsonl(args.gens):
         if not rec.get("ok", True):
+            skip["not_ok"] += 1
             continue
         if args.only_model and str(rec.get("model") or rec.get("source") or "") != args.only_model:
+            skip["only_model"] += 1
             continue
         rid = int(rec["row_idx"])
         verdict = str(rec.get(args.verdict_field) or "").upper()
+        verdict_counts[verdict or "(missing)"] = verdict_counts.get(verdict or "(missing)", 0) + 1
         if keep and verdict != keep:
+            skip["verdict"] += 1
             continue
         text = rec.get(args.response_field) or rec.get("response")
         if not text:
+            skip["no_response"] += 1
             continue
         post = aita.get(rid)
         if not post:
+            skip["no_post"] += 1
             continue
         pid = f"aita:{rid}|{args.source}"
+        if pid in seen_m:
+            skip["already_seen"] += 1
         if pid not in seen_m:
             append_jsonl(
                 args.out_model,
@@ -107,6 +124,22 @@ def main() -> None:
                 seen_h.add(hid)
                 n_h += 1
     log(f"[export_pairs] model +{n_m} human +{n_h}")
+    if n_m == 0 and n_h == 0:
+        log(
+            "[export_pairs] no rows exported — skips: "
+            + ", ".join(f"{k}={v}" for k, v in skip.items() if v)
+            + (f"; {args.verdict_field} counts: {verdict_counts}" if verdict_counts else "")
+        )
+        if skip["verdict"] and verdict_counts.get("(missing)"):
+            log(
+                "[export_pairs] hint: gens rows lack verdict labels — "
+                "re-run gen_aita.py with --judge-verdicts"
+            )
+        elif skip["verdict"]:
+            log(
+                f"[export_pairs] hint: none labeled {keep!r} on {args.verdict_field!r} "
+                f"(paper dens needs crowd-YTA ∩ model-1p-YTA)"
+            )
 
 
 if __name__ == "__main__":
