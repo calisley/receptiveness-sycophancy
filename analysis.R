@@ -163,7 +163,8 @@ exp_items <- fromJSON(path("data", "experiment", "items.json")) %>%
   )
 
 # Figure 5: free baseline for Sonnet, Flash, Terra, Scout; tool mitigation for
-# Sonnet and Flash only. Prompt arm rows (Sonnet/Flash) define the n=200 subset.
+# Sonnet and Flash only. All four use the same n=200 post subset (Sonnet/Flash
+# prompt arm defines row_idx; Terra/Scout free rows in transform.csv are n=200).
 front_models <- c(
   "GPT-5.6 Terra", "Claude Sonnet 5", "Gemini 3.7 Flash", "Llama 4 Scout"
 )

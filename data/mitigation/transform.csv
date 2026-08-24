@@ -1999,405 +1999,205 @@ gpt5,GPT-5,aita_yta:3980,3980,tool,same,0.6269803839523869
 gpt5,GPT-5,aita_yta:3990,3990,tool,same,0.6550104004038817
 gpt5,GPT-5,aita_yta:3997,3997,tool,same,0.5909012638225553
 gpt5,GPT-5,aita_yta:3999,3999,tool,same,0.4133677444036215
-terra,GPT-5.6 Terra,aita_yta:3,3,free,same,0.156479334279087
 terra,GPT-5.6 Terra,aita_yta:10,10,free,same,0.3640652581169394
-terra,GPT-5.6 Terra,aita_yta:24,24,free,same,0.0132395119571535
 terra,GPT-5.6 Terra,aita_yta:60,60,free,same,-0.1721645840124063
-terra,GPT-5.6 Terra,aita_yta:75,75,free,same,-0.0192708829618105
 terra,GPT-5.6 Terra,aita_yta:84,84,free,same,-0.2025485551054187
 terra,GPT-5.6 Terra,aita_yta:88,88,free,same,-0.2870471814400951
 terra,GPT-5.6 Terra,aita_yta:91,91,free,same,0.3805130796101771
-terra,GPT-5.6 Terra,aita_yta:102,102,free,same,0.156479334279087
-terra,GPT-5.6 Terra,aita_yta:112,112,free,same,0.086604249066581
-terra,GPT-5.6 Terra,aita_yta:132,132,free,same,0.2920637490784818
-terra,GPT-5.6 Terra,aita_yta:135,135,free,same,0.4735479726944342
 terra,GPT-5.6 Terra,aita_yta:151,151,free,same,-0.4976939521248697
 terra,GPT-5.6 Terra,aita_yta:179,179,free,same,0.2070159477903461
-terra,GPT-5.6 Terra,aita_yta:182,182,free,same,0.040360170375543
-terra,GPT-5.6 Terra,aita_yta:186,186,free,same,-0.3092290093083878
-terra,GPT-5.6 Terra,aita_yta:192,192,free,same,0.4446908381618569
-terra,GPT-5.6 Terra,aita_yta:200,200,free,same,0.4412937249965887
 terra,GPT-5.6 Terra,aita_yta:213,213,free,same,-0.3593929603530332
-terra,GPT-5.6 Terra,aita_yta:222,222,free,same,-0.1423683268146059
 terra,GPT-5.6 Terra,aita_yta:225,225,free,same,0.273832625407208
-terra,GPT-5.6 Terra,aita_yta:241,241,free,same,0.4939156665412794
 terra,GPT-5.6 Terra,aita_yta:246,246,free,same,-0.2952928597086132
 terra,GPT-5.6 Terra,aita_yta:287,287,free,3p_softer,0.3249184138719263
 terra,GPT-5.6 Terra,aita_yta:290,290,free,3p_softer,0.1893339990725314
-terra,GPT-5.6 Terra,aita_yta:334,334,free,same,-0.196797487298633
 terra,GPT-5.6 Terra,aita_yta:340,340,free,same,0.0440514480672247
 terra,GPT-5.6 Terra,aita_yta:361,361,free,same,0.1293586758606973
-terra,GPT-5.6 Terra,aita_yta:383,383,free,same,-0.3056770964122081
 terra,GPT-5.6 Terra,aita_yta:386,386,free,same,0.8979020644531126
 terra,GPT-5.6 Terra,aita_yta:396,396,free,same,0.4224621842297158
 terra,GPT-5.6 Terra,aita_yta:420,420,free,same,0.197487138609396
-terra,GPT-5.6 Terra,aita_yta:447,447,free,same,0.8553492634537565
-terra,GPT-5.6 Terra,aita_yta:451,451,free,same,0.2777833296042267
-terra,GPT-5.6 Terra,aita_yta:452,452,free,same,0.4832428296161275
-terra,GPT-5.6 Terra,aita_yta:453,453,free,same,0.3765623754131584
-terra,GPT-5.6 Terra,aita_yta:455,455,free,same,-0.0267983378645211
 terra,GPT-5.6 Terra,aita_yta:462,462,free,same,0.1786611621473796
 terra,GPT-5.6 Terra,aita_yta:465,465,free,same,0.2835173359792815
-terra,GPT-5.6 Terra,aita_yta:468,468,free,same,-0.0578697004799295
 terra,GPT-5.6 Terra,aita_yta:473,473,free,same,-0.6754836187649218
-terra,GPT-5.6 Terra,aita_yta:493,493,free,same,0.3951366207323477
 terra,GPT-5.6 Terra,aita_yta:499,499,free,same,0.3951366207323477
-terra,GPT-5.6 Terra,aita_yta:509,509,free,same,-0.4390794177327277
-terra,GPT-5.6 Terra,aita_yta:510,510,free,same,-0.1180499287707421
-terra,GPT-5.6 Terra,aita_yta:524,524,free,same,-0.1079868254607264
 terra,GPT-5.6 Terra,aita_yta:526,526,free,same,-0.988698673759667
-terra,GPT-5.6 Terra,aita_yta:530,530,free,same,-0.1152476683962164
 terra,GPT-5.6 Terra,aita_yta:546,546,free,same,0.1655603484713429
 terra,GPT-5.6 Terra,aita_yta:565,565,free,same,0.1439822169828679
-terra,GPT-5.6 Terra,aita_yta:602,602,free,same,0.4370857253518865
 terra,GPT-5.6 Terra,aita_yta:609,609,free,same,0.1932847032695501
 terra,GPT-5.6 Terra,aita_yta:647,647,free,same,0.4832428296161275
-terra,GPT-5.6 Terra,aita_yta:653,653,free,same,0.2360391300636664
-terra,GPT-5.6 Terra,aita_yta:658,658,free,same,0.0021056227319045
-terra,GPT-5.6 Terra,aita_yta:660,660,free,same,-0.4882552424242949
 terra,GPT-5.6 Terra,aita_yta:671,671,free,same,0.3066872902006524
 terra,GPT-5.6 Terra,aita_yta:674,674,free,same,0.0414573720558961
-terra,GPT-5.6 Terra,aita_yta:685,685,free,same,0.135797135189879
-terra,GPT-5.6 Terra,aita_yta:702,702,free,same,-0.396802025723314
-terra,GPT-5.6 Terra,aita_yta:705,705,free,same,0.3805130796101771
-terra,GPT-5.6 Terra,aita_yta:715,715,free,same,0.2588158107227017
-terra,GPT-5.6 Terra,aita_yta:722,722,free,same,-0.1605994504858798
 terra,GPT-5.6 Terra,aita_yta:727,727,free,same,0.3340128536980206
 terra,GPT-5.6 Terra,aita_yta:748,748,free,same,0.5580465990291106
-terra,GPT-5.6 Terra,aita_yta:749,749,free,same,-0.0578697004799295
-terra,GPT-5.6 Terra,aita_yta:768,768,free,same,0.0537495842731365
-terra,GPT-5.6 Terra,aita_yta:786,786,free,same,0.2960144532755006
 terra,GPT-5.6 Terra,aita_yta:805,805,free,same,-0.4554005776308504
 terra,GPT-5.6 Terra,aita_yta:808,808,free,same,0.4775455029553015
 terra,GPT-5.6 Terra,aita_yta:829,829,free,same,0.3533924211917874
 terra,GPT-5.6 Terra,aita_yta:843,843,free,same,0.3805130796101771
-terra,GPT-5.6 Terra,aita_yta:857,857,free,same,0.2360391300636664
 terra,GPT-5.6 Terra,aita_yta:858,858,free,same,0.3151549349798799
 terra,GPT-5.6 Terra,aita_yta:860,860,free,same,0.0068616491035007
 terra,GPT-5.6 Terra,aita_yta:886,886,free,same,0.2360391300636664
 terra,GPT-5.6 Terra,aita_yta:891,891,free,same,0.5202999297494179
 terra,GPT-5.6 Terra,aita_yta:901,901,free,same,0.1893339990725314
 terra,GPT-5.6 Terra,aita_yta:916,916,free,same,-0.0346997462585586
-terra,GPT-5.6 Terra,aita_yta:921,921,free,same,-0.025015035686485
 terra,GPT-5.6 Terra,aita_yta:923,923,free,same,-0.5114251966456658
-terra,GPT-5.6 Terra,aita_yta:958,958,free,same,0.2334002109984847
 terra,GPT-5.6 Terra,aita_yta:963,963,free,same,0.0021056227319045
 terra,GPT-5.6 Terra,aita_yta:974,974,free,1p_softer,0.4978663707382981
-terra,GPT-5.6 Terra,aita_yta:975,975,free,same,-0.137429496264509
-terra,GPT-5.6 Terra,aita_yta:990,990,free,same,0.1333093800577161
-terra,GPT-5.6 Terra,aita_yta:999,999,free,same,0.1807875859733312
 terra,GPT-5.6 Terra,aita_yta:1017,1017,free,same,0.3805130796101771
-terra,GPT-5.6 Terra,aita_yta:1021,1021,free,same,0.3106379943976711
-terra,GPT-5.6 Terra,aita_yta:1030,1030,free,same,-0.6114793478722054
 terra,GPT-5.6 Terra,aita_yta:1043,1043,free,same,0.6005961207442485
 terra,GPT-5.6 Terra,aita_yta:1049,1049,free,same,-0.430877274508008
-terra,GPT-5.6 Terra,aita_yta:1056,1056,free,same,-0.1032214825695929
 terra,GPT-5.6 Terra,aita_yta:1060,1060,free,same,0.0266289258547469
 terra,GPT-5.6 Terra,aita_yta:1062,1062,free,same,-0.9042000474249904
-terra,GPT-5.6 Terra,aita_yta:1064,1064,free,same,0.1439822169828679
 terra,GPT-5.6 Terra,aita_yta:1083,1083,free,same,-0.3447694192308626
 terra,GPT-5.6 Terra,aita_yta:1084,1084,free,same,0.1020331123633292
-terra,GPT-5.6 Terra,aita_yta:1098,1098,free,same,0.1604300384761057
 terra,GPT-5.6 Terra,aita_yta:1100,1100,free,same,0.3911859165353289
-terra,GPT-5.6 Terra,aita_yta:1138,1138,free,same,0.0677463303484403
-terra,GPT-5.6 Terra,aita_yta:1150,1150,free,same,-0.3213945599305131
-terra,GPT-5.6 Terra,aita_yta:1160,1160,free,same,-0.1246863780967911
 terra,GPT-5.6 Terra,aita_yta:1168,1168,free,same,0.2360391300636664
 terra,GPT-5.6 Terra,aita_yta:1172,1172,free,same,-0.0623695796304072
 terra,GPT-5.6 Terra,aita_yta:1180,1180,free,same,0.3658895384880065
-terra,GPT-5.6 Terra,aita_yta:1185,1185,free,same,0.0021056227319045
 terra,GPT-5.6 Terra,aita_yta:1195,1195,free,same,-0.59652751936016
-terra,GPT-5.6 Terra,aita_yta:1207,1207,free,same,-0.1277447856924354
-terra,GPT-5.6 Terra,aita_yta:1258,1258,free,3p_softer,-0.2642214970932048
 terra,GPT-5.6 Terra,aita_yta:1261,1261,free,same,-0.5821925784595462
-terra,GPT-5.6 Terra,aita_yta:1263,1263,free,same,0.6631954821968709
 terra,GPT-5.6 Terra,aita_yta:1264,1264,free,same,0.2960144532755006
-terra,GPT-5.6 Terra,aita_yta:1266,1266,free,same,0.3577044566950176
-terra,GPT-5.6 Terra,aita_yta:1269,1269,free,same,0.1293586758606973
 terra,GPT-5.6 Terra,aita_yta:1270,1270,free,same,0.3680330237456889
 terra,GPT-5.6 Terra,aita_yta:1272,1272,free,same,-0.0396385768086556
-terra,GPT-5.6 Terra,aita_yta:1284,1284,free,same,-0.2420396692249122
 terra,GPT-5.6 Terra,aita_yta:1287,1287,free,same,0.5556056699607963
 terra,GPT-5.6 Terra,aita_yta:1294,1294,free,same,0.2075651227438053
 terra,GPT-5.6 Terra,aita_yta:1299,1299,free,same,0.203957540194702
-terra,GPT-5.6 Terra,aita_yta:1314,1314,free,same,0.1786611621473796
-terra,GPT-5.6 Terra,aita_yta:1318,1318,free,same,-0.7266665280060568
-terra,GPT-5.6 Terra,aita_yta:1319,1319,free,same,0.2261393680629947
 terra,GPT-5.6 Terra,aita_yta:1323,1323,free,same,0.4832428296161275
 terra,GPT-5.6 Terra,aita_yta:1329,1329,free,same,0.4133677444036215
-terra,GPT-5.6 Terra,aita_yta:1352,1352,free,same,0.3658895384880065
 terra,GPT-5.6 Terra,aita_yta:1363,1363,free,same,0.1893339990725314
-terra,GPT-5.6 Terra,aita_yta:1377,1377,free,same,-0.8130751181138844
-terra,GPT-5.6 Terra,aita_yta:1380,1380,free,same,-0.2904498589102199
-terra,GPT-5.6 Terra,aita_yta:1382,1382,free,same,0.0777147143194654
-terra,GPT-5.6 Terra,aita_yta:1386,1386,free,same,0.1452028009741175
 terra,GPT-5.6 Terra,aita_yta:1389,1389,free,same,0.2360391300636664
-terra,GPT-5.6 Terra,aita_yta:1397,1397,free,same,0.0537495842731365
 terra,GPT-5.6 Terra,aita_yta:1416,1416,free,1p_softer,-0.0998188050994682
-terra,GPT-5.6 Terra,aita_yta:1440,1440,free,same,0.1932847032695501
-terra,GPT-5.6 Terra,aita_yta:1463,1463,free,same,1.1523495455093329
-terra,GPT-5.6 Terra,aita_yta:1467,1467,free,same,-0.0004917325636425
 terra,GPT-5.6 Terra,aita_yta:1480,1480,free,same,-0.0761008241512034
 terra,GPT-5.6 Terra,aita_yta:1484,1484,free,1p_softer,0.0260252294749293
 terra,GPT-5.6 Terra,aita_yta:1485,1485,free,same,0.4832428296161275
 terra,GPT-5.6 Terra,aita_yta:1504,1504,free,same,0.0962889596386546
-terra,GPT-5.6 Terra,aita_yta:1508,1508,free,same,0.3533924211917874
-terra,GPT-5.6 Terra,aita_yta:1510,1510,free,same,-0.0307490420615399
-terra,GPT-5.6 Terra,aita_yta:1512,1512,free,same,-0.2748943340183567
 terra,GPT-5.6 Terra,aita_yta:1513,1513,free,same,0.3911859165353289
 terra,GPT-5.6 Terra,aita_yta:1515,1515,free,same,-0.1994901475097744
-terra,GPT-5.6 Terra,aita_yta:1518,1518,free,same,0.0305796300517656
-terra,GPT-5.6 Terra,aita_yta:1533,1533,free,same,0.156479334279087
-terra,GPT-5.6 Terra,aita_yta:1534,1534,free,same,0.156479334279087
 terra,GPT-5.6 Terra,aita_yta:1545,1545,free,same,0.4978663707382981
 terra,GPT-5.6 Terra,aita_yta:1553,1553,free,same,-0.1468682059650838
 terra,GPT-5.6 Terra,aita_yta:1555,1555,free,same,0.1267197567955156
-terra,GPT-5.6 Terra,aita_yta:1590,1590,free,same,0.452875919954846
 terra,GPT-5.6 Terra,aita_yta:1598,1598,free,same,0.3805130796101771
 terra,GPT-5.6 Terra,aita_yta:1604,1604,free,same,-0.5959238229803423
-terra,GPT-5.6 Terra,aita_yta:1609,1609,free,same,0.4939156665412794
-terra,GPT-5.6 Terra,aita_yta:1612,1612,free,same,0.8520022556365554
 terra,GPT-5.6 Terra,aita_yta:1614,1614,free,same,0.2850441725397167
-terra,GPT-5.6 Terra,aita_yta:1619,1619,free,same,0.1293586758606973
 terra,GPT-5.6 Terra,aita_yta:1632,1632,free,same,0.1087860769348736
-terra,GPT-5.6 Terra,aita_yta:1645,1645,free,same,-0.5412214538434661
 terra,GPT-5.6 Terra,aita_yta:1654,1654,free,same,0.2023791430956445
 terra,GPT-5.6 Terra,aita_yta:1655,1655,free,same,0.156479334279087
 terra,GPT-5.6 Terra,aita_yta:1658,1658,free,same,0.3288691180689451
 terra,GPT-5.6 Terra,aita_yta:1672,1672,free,same,-0.2748943340183567
-terra,GPT-5.6 Terra,aita_yta:1710,1710,free,same,-0.0346997462585586
-terra,GPT-5.6 Terra,aita_yta:1738,1738,free,same,-0.6916989826199883
-terra,GPT-5.6 Terra,aita_yta:1761,1761,free,same,0.1470406245785122
 terra,GPT-5.6 Terra,aita_yta:1773,1773,free,same,0.4629219618331308
 terra,GPT-5.6 Terra,aita_yta:1775,1775,free,same,0.4094170402066028
 terra,GPT-5.6 Terra,aita_yta:1786,1786,free,same,0.2467119669888183
 terra,GPT-5.6 Terra,aita_yta:1788,1788,free,same,-0.3865136187714229
-terra,GPT-5.6 Terra,aita_yta:1789,1789,free,same,-0.141219882992113
-terra,GPT-5.6 Terra,aita_yta:1794,1794,free,same,-0.8147727368898365
-terra,GPT-5.6 Terra,aita_yta:1801,1801,free,same,0.6425452253637871
-terra,GPT-5.6 Terra,aita_yta:1816,1816,free,same,0.4978663707382981
-terra,GPT-5.6 Terra,aita_yta:1820,1820,free,same,0.3288691180689451
 terra,GPT-5.6 Terra,aita_yta:1839,1839,free,same,-0.0103914945643143
-terra,GPT-5.6 Terra,aita_yta:1843,1843,free,same,0.2360391300636664
 terra,GPT-5.6 Terra,aita_yta:1855,1855,free,same,-0.2765230258299824
 terra,GPT-5.6 Terra,aita_yta:1861,1861,free,same,-0.7026042771833114
 terra,GPT-5.6 Terra,aita_yta:1863,1863,free,same,0.4978663707382981
 terra,GPT-5.6 Terra,aita_yta:1870,1870,free,same,-1.3882788794792411
 terra,GPT-5.6 Terra,aita_yta:1881,1881,free,same,0.0266289258547469
-terra,GPT-5.6 Terra,aita_yta:1910,1910,free,same,-0.5968161195817169
 terra,GPT-5.6 Terra,aita_yta:1917,1917,free,same,-0.1302154793928675
 terra,GPT-5.6 Terra,aita_yta:1932,1932,free,3p_softer,-0.0539189962829108
-terra,GPT-5.6 Terra,aita_yta:1933,1933,free,same,0.0296873334503912
-terra,GPT-5.6 Terra,aita_yta:1939,1939,free,same,0.0266289258547469
 terra,GPT-5.6 Terra,aita_yta:1945,1945,free,same,0.2957170094648687
-terra,GPT-5.6 Terra,aita_yta:1946,1946,free,same,-0.025015035686485
 terra,GPT-5.6 Terra,aita_yta:1951,1951,free,same,0.4382523788326753
-terra,GPT-5.6 Terra,aita_yta:1966,1966,free,same,-0.4514498734338317
 terra,GPT-5.6 Terra,aita_yta:1968,1968,free,same,0.0266289258547469
-terra,GPT-5.6 Terra,aita_yta:1970,1970,free,same,-0.5420344713805536
 terra,GPT-5.6 Terra,aita_yta:1973,1973,free,same,0.3066872902006524
 terra,GPT-5.6 Terra,aita_yta:1975,1975,free,same,0.250662671185837
 terra,GPT-5.6 Terra,aita_yta:1977,1977,free,same,-0.1286370822938098
-terra,GPT-5.6 Terra,aita_yta:1978,1978,free,same,-0.5959238229803423
 terra,GPT-5.6 Terra,aita_yta:1981,1981,free,same,0.222188663865976
 terra,GPT-5.6 Terra,aita_yta:1982,1982,free,same,0.3288691180689451
 terra,GPT-5.6 Terra,aita_yta:2019,2019,free,same,-0.3363496677267773
-terra,GPT-5.6 Terra,aita_yta:2026,2026,free,same,-0.9921013512297916
 terra,GPT-5.6 Terra,aita_yta:2056,2056,free,same,0.1661640448511605
 terra,GPT-5.6 Terra,aita_yta:2067,2067,free,same,0.0448600495260208
 terra,GPT-5.6 Terra,aita_yta:2078,2078,free,same,0.398744203281451
-terra,GPT-5.6 Terra,aita_yta:2081,2081,free,same,-0.4506445512592542
 terra,GPT-5.6 Terra,aita_yta:2104,2104,free,same,0.3805130796101771
 terra,GPT-5.6 Terra,aita_yta:2110,2110,free,same,0.1293586758606973
 terra,GPT-5.6 Terra,aita_yta:2126,2126,free,same,0.0021056227319045
-terra,GPT-5.6 Terra,aita_yta:2129,2129,free,same,0.8520022556365554
-terra,GPT-5.6 Terra,aita_yta:2130,2130,free,1p_softer,-0.1718759837908494
 terra,GPT-5.6 Terra,aita_yta:2131,2131,free,same,-0.3612172407241003
 terra,GPT-5.6 Terra,aita_yta:2144,2144,free,same,0.1467844773573937
-terra,GPT-5.6 Terra,aita_yta:2161,2161,free,same,0.0266289258547469
-terra,GPT-5.6 Terra,aita_yta:2171,2171,free,same,0.273832625407208
 terra,GPT-5.6 Terra,aita_yta:2172,2172,free,same,-0.0346997462585586
-terra,GPT-5.6 Terra,aita_yta:2181,2181,free,same,0.4978663707382981
 terra,GPT-5.6 Terra,aita_yta:2189,2189,free,same,0.3658895384880065
 terra,GPT-5.6 Terra,aita_yta:2198,2198,free,1p_softer,-0.3323989635297586
 terra,GPT-5.6 Terra,aita_yta:2203,2203,free,same,0.4832428296161275
-terra,GPT-5.6 Terra,aita_yta:2222,2222,free,1p_softer,0.1932847032695501
 terra,GPT-5.6 Terra,aita_yta:2227,2227,free,same,-0.3175705173286094
-terra,GPT-5.6 Terra,aita_yta:2228,2228,free,same,-1.076599977564468
 terra,GPT-5.6 Terra,aita_yta:2233,2233,free,same,0.7346489645084342
-terra,GPT-5.6 Terra,aita_yta:2234,2234,free,same,-0.0578697004799295
 terra,GPT-5.6 Terra,aita_yta:2237,2237,free,3p_softer,0.2835173359792815
 terra,GPT-5.6 Terra,aita_yta:2251,2251,free,same,-0.0618204046769482
-terra,GPT-5.6 Terra,aita_yta:2263,2263,free,same,0.2631597884820561
 terra,GPT-5.6 Terra,aita_yta:2270,2270,free,same,-0.0618204046769482
-terra,GPT-5.6 Terra,aita_yta:2278,2278,free,same,0.2360391300636664
 terra,GPT-5.6 Terra,aita_yta:2283,2283,free,same,0.2777833296042267
-terra,GPT-5.6 Terra,aita_yta:2300,2300,free,same,-0.2291211867969141
-terra,GPT-5.6 Terra,aita_yta:2301,2301,free,same,0.1293586758606973
-terra,GPT-5.6 Terra,aita_yta:2307,2307,free,same,0.6005961207442485
-terra,GPT-5.6 Terra,aita_yta:2313,2313,free,3p_softer,0.4029466386212968
 terra,GPT-5.6 Terra,aita_yta:2318,2318,free,same,0.398744203281451
-terra,GPT-5.6 Terra,aita_yta:2324,2324,free,same,0.2960144532755006
 terra,GPT-5.6 Terra,aita_yta:2335,2335,free,same,0.2920637490784818
 terra,GPT-5.6 Terra,aita_yta:2366,2366,free,same,0.3658895384880065
-terra,GPT-5.6 Terra,aita_yta:2369,2369,free,same,0.1893339990725314
 terra,GPT-5.6 Terra,aita_yta:2381,2381,free,same,0.3455686707050098
-terra,GPT-5.6 Terra,aita_yta:2420,2420,free,same,-0.909944200149665
 terra,GPT-5.6 Terra,aita_yta:2422,2422,free,same,0.2777833296042267
 terra,GPT-5.6 Terra,aita_yta:2431,2431,free,same,0.250114644458943
 terra,GPT-5.6 Terra,aita_yta:2447,2447,free,same,-0.6412756050700058
 terra,GPT-5.6 Terra,aita_yta:2466,2466,free,same,0.086604249066581
-terra,GPT-5.6 Terra,aita_yta:2472,2472,free,same,0.2592090842850374
 terra,GPT-5.6 Terra,aita_yta:2473,2473,free,same,0.2722964723272356
-terra,GPT-5.6 Terra,aita_yta:2481,2481,free,same,0.4832428296161275
 terra,GPT-5.6 Terra,aita_yta:2486,2486,free,same,0.7346489645084342
 terra,GPT-5.6 Terra,aita_yta:2491,2491,free,same,0.0741071317703621
-terra,GPT-5.6 Terra,aita_yta:2498,2498,free,same,0.4939156665412794
-terra,GPT-5.6 Terra,aita_yta:2506,2506,free,same,0.2467119669888183
 terra,GPT-5.6 Terra,aita_yta:2515,2515,free,same,-0.3599966567328508
-terra,GPT-5.6 Terra,aita_yta:2516,2516,free,3p_softer,-0.3092290093083878
 terra,GPT-5.6 Terra,aita_yta:2522,2522,free,same,0.4874452649559733
-terra,GPT-5.6 Terra,aita_yta:2555,2555,free,same,-0.3758407818462709
 terra,GPT-5.6 Terra,aita_yta:2557,2557,free,same,-0.9814285143046398
-terra,GPT-5.6 Terra,aita_yta:2603,2603,free,same,0.0637956261514216
 terra,GPT-5.6 Terra,aita_yta:2633,2633,free,same,0.1087860769348736
 terra,GPT-5.6 Terra,aita_yta:2640,2640,free,same,-0.305965696633765
 terra,GPT-5.6 Terra,aita_yta:2659,2659,free,same,0.516097494409572
 terra,GPT-5.6 Terra,aita_yta:2668,2668,free,same,0.2960144532755006
-terra,GPT-5.6 Terra,aita_yta:2669,2669,free,same,-0.1146996416693224
-terra,GPT-5.6 Terra,aita_yta:2675,2675,free,same,-0.058761997081304
-terra,GPT-5.6 Terra,aita_yta:2680,2680,free,same,-0.071259114377523
-terra,GPT-5.6 Terra,aita_yta:2689,2689,free,3p_softer,0.0488107537230395
-terra,GPT-5.6 Terra,aita_yta:2700,2700,free,3p_softer,0.1549431811991146
 terra,GPT-5.6 Terra,aita_yta:2710,2710,free,same,-0.4384917038375157
 terra,GPT-5.6 Terra,aita_yta:2713,2713,free,same,-0.0703668177761485
 terra,GPT-5.6 Terra,aita_yta:2716,2716,free,same,0.5367477512426555
-terra,GPT-5.6 Terra,aita_yta:2720,2720,free,same,0.4642753107346025
 terra,GPT-5.6 Terra,aita_yta:2723,2723,free,same,-0.4931940729743919
-terra,GPT-5.6 Terra,aita_yta:2726,2726,free,same,0.1479329211798866
 terra,GPT-5.6 Terra,aita_yta:2740,2740,free,same,0.2884561665293785
-terra,GPT-5.6 Terra,aita_yta:2745,2745,free,same,0.2424775893928481
 terra,GPT-5.6 Terra,aita_yta:2782,2782,free,same,0.2318835207876691
 terra,GPT-5.6 Terra,aita_yta:2795,2795,free,same,0.1208122627614971
-terra,GPT-5.6 Terra,aita_yta:2808,2808,free,same,0.6769096652859361
 terra,GPT-5.6 Terra,aita_yta:2813,2813,free,same,-0.3293405559341145
-terra,GPT-5.6 Terra,aita_yta:2833,2833,free,same,-0.1605994504858798
 terra,GPT-5.6 Terra,aita_yta:2839,2839,free,same,0.0357656096999265
-terra,GPT-5.6 Terra,aita_yta:2853,2853,free,same,0.2467119669888183
-terra,GPT-5.6 Terra,aita_yta:2873,2873,free,same,-0.1575410428902357
-terra,GPT-5.6 Terra,aita_yta:2912,2912,free,same,0.0537495842731365
 terra,GPT-5.6 Terra,aita_yta:2917,2917,free,same,0.8741840835048478
-terra,GPT-5.6 Terra,aita_yta:2918,2918,free,same,0.3658895384880065
 terra,GPT-5.6 Terra,aita_yta:2921,2921,free,same,0.2470732982950297
 terra,GPT-5.6 Terra,aita_yta:2927,2927,free,same,0.4939156665412794
 terra,GPT-5.6 Terra,aita_yta:2936,2936,free,same,0.2631597884820561
-terra,GPT-5.6 Terra,aita_yta:2954,2954,free,same,-0.2970761618866493
 terra,GPT-5.6 Terra,aita_yta:2958,2958,free,same,0.2698819212101893
-terra,GPT-5.6 Terra,aita_yta:2960,2960,free,1p_softer,-0.1006241272740458
-terra,GPT-5.6 Terra,aita_yta:2973,2973,free,same,-0.1303421409879825
 terra,GPT-5.6 Terra,aita_yta:2998,2998,free,same,0.2795666317822629
 terra,GPT-5.6 Terra,aita_yta:3007,3007,free,same,0.3640652581169394
-terra,GPT-5.6 Terra,aita_yta:3012,3012,free,same,-0.4506445512592542
 terra,GPT-5.6 Terra,aita_yta:3018,3018,free,same,-0.6275443605492097
-terra,GPT-5.6 Terra,aita_yta:3028,3028,free,same,0.4078386431075452
-terra,GPT-5.6 Terra,aita_yta:3031,3031,free,same,-0.1191983725932351
-terra,GPT-5.6 Terra,aita_yta:3036,3036,free,same,0.1333093800577161
-terra,GPT-5.6 Terra,aita_yta:3037,3037,free,same,0.5513712923648262
-terra,GPT-5.6 Terra,aita_yta:3045,3045,free,same,0.156479334279087
 terra,GPT-5.6 Terra,aita_yta:3060,3060,free,same,-0.1152476683962164
 terra,GPT-5.6 Terra,aita_yta:3062,3062,free,same,0.086604249066581
-terra,GPT-5.6 Terra,aita_yta:3074,3074,free,3p_softer,-0.9042000474249904
-terra,GPT-5.6 Terra,aita_yta:3085,3085,free,same,0.5580465990291106
-terra,GPT-5.6 Terra,aita_yta:3091,3091,free,same,0.4078386431075452
 terra,GPT-5.6 Terra,aita_yta:3094,3094,free,same,-0.3241968203050389
-terra,GPT-5.6 Terra,aita_yta:3097,3097,free,same,-0.4514498734338317
-terra,GPT-5.6 Terra,aita_yta:3119,3119,free,same,-0.1468682059650838
 terra,GPT-5.6 Terra,aita_yta:3150,3150,free,same,0.0741071317703621
-terra,GPT-5.6 Terra,aita_yta:3151,3151,free,same,0.0759314121414291
-terra,GPT-5.6 Terra,aita_yta:3154,3154,free,same,0.0266289258547469
-terra,GPT-5.6 Terra,aita_yta:3177,3177,free,same,0.516097494409572
 terra,GPT-5.6 Terra,aita_yta:3186,3186,free,same,0.0093664656673945
 terra,GPT-5.6 Terra,aita_yta:3205,3205,free,same,0.4978663707382981
 terra,GPT-5.6 Terra,aita_yta:3208,3208,free,same,0.2920637490784818
-terra,GPT-5.6 Terra,aita_yta:3211,3211,free,same,0.0874095712411586
 terra,GPT-5.6 Terra,aita_yta:3212,3212,free,same,0.5251919342356662
 terra,GPT-5.6 Terra,aita_yta:3221,3221,free,same,0.3805130796101771
-terra,GPT-5.6 Terra,aita_yta:3243,3243,free,same,-0.0876659576777297
-terra,GPT-5.6 Terra,aita_yta:3261,3261,free,same,0.1333093800577161
-terra,GPT-5.6 Terra,aita_yta:3273,3273,free,same,-0.2068435291769179
 terra,GPT-5.6 Terra,aita_yta:3276,3276,free,same,-0.1877201089042695
-terra,GPT-5.6 Terra,aita_yta:3282,3282,free,same,0.5513712923648262
 terra,GPT-5.6 Terra,aita_yta:3284,3284,free,same,0.2613355081109889
 terra,GPT-5.6 Terra,aita_yta:3290,3290,free,same,-0.740946947480312
 terra,GPT-5.6 Terra,aita_yta:3294,3294,free,same,-0.1303421409879825
-terra,GPT-5.6 Terra,aita_yta:3295,3295,free,1p_softer,0.4939156665412794
 terra,GPT-5.6 Terra,aita_yta:3301,3301,free,same,-0.0046473418396398
-terra,GPT-5.6 Terra,aita_yta:3308,3308,free,same,-0.0432461593577588
-terra,GPT-5.6 Terra,aita_yta:3310,3310,free,same,0.3533924211917874
 terra,GPT-5.6 Terra,aita_yta:3317,3317,free,same,-0.0441384559591334
 terra,GPT-5.6 Terra,aita_yta:3329,3329,free,same,-0.4656123622559053
-terra,GPT-5.6 Terra,aita_yta:3346,3346,free,same,0.2409678142641438
-terra,GPT-5.6 Terra,aita_yta:3347,3347,free,same,0.1604300384761057
 terra,GPT-5.6 Terra,aita_yta:3349,3349,free,same,0.2334002109984847
 terra,GPT-5.6 Terra,aita_yta:3383,3383,free,same,0.7443336750805079
-terra,GPT-5.6 Terra,aita_yta:3387,3387,free,1p_softer,-0.1226043293475785
-terra,GPT-5.6 Terra,aita_yta:3393,3393,free,same,0.203957540194702
 terra,GPT-5.6 Terra,aita_yta:3395,3395,free,same,0.2346301115092712
-terra,GPT-5.6 Terra,aita_yta:3398,3398,free,same,-0.1837694047072507
 terra,GPT-5.6 Terra,aita_yta:3418,3418,free,same,-0.3943313320228819
-terra,GPT-5.6 Terra,aita_yta:3437,3437,free,same,-0.1140135411716393
-terra,GPT-5.6 Terra,aita_yta:3468,3468,free,same,0.2360391300636664
-terra,GPT-5.6 Terra,aita_yta:3469,3469,free,3p_softer,0.1531189008280475
-terra,GPT-5.6 Terra,aita_yta:3479,3479,free,same,0.1932847032695501
-terra,GPT-5.6 Terra,aita_yta:3482,3482,free,same,0.0266289258547469
 terra,GPT-5.6 Terra,aita_yta:3507,3507,free,same,0.156479334279087
 terra,GPT-5.6 Terra,aita_yta:3511,3511,free,same,-0.0726981466810786
 terra,GPT-5.6 Terra,aita_yta:3518,3518,free,same,0.2261393680629947
 terra,GPT-5.6 Terra,aita_yta:3521,3521,free,1p_softer,0.273832625407208
 terra,GPT-5.6 Terra,aita_yta:3578,3578,free,same,-0.6275443605492097
-terra,GPT-5.6 Terra,aita_yta:3587,3587,free,same,0.1940900254441276
 terra,GPT-5.6 Terra,aita_yta:3588,3588,free,same,-0.1803667272371261
 terra,GPT-5.6 Terra,aita_yta:3604,3604,free,same,0.4553168490231603
-terra,GPT-5.6 Terra,aita_yta:3625,3625,free,same,-0.5959238229803423
-terra,GPT-5.6 Terra,aita_yta:3637,3637,free,3p_softer,-0.7108064204080311
 terra,GPT-5.6 Terra,aita_yta:3638,3638,free,same,0.2631597884820561
 terra,GPT-5.6 Terra,aita_yta:3643,3643,free,same,-0.2490487810175751
-terra,GPT-5.6 Terra,aita_yta:3648,3648,free,same,-0.084990358898319
-terra,GPT-5.6 Terra,aita_yta:3657,3657,free,same,0.4315988680748954
-terra,GPT-5.6 Terra,aita_yta:3661,3661,free,same,0.1293586758606973
-terra,GPT-5.6 Terra,aita_yta:3676,3676,free,same,-0.084990358898319
-terra,GPT-5.6 Terra,aita_yta:3677,3677,free,same,0.2631597884820561
 terra,GPT-5.6 Terra,aita_yta:3681,3681,free,same,0.086604249066581
-terra,GPT-5.6 Terra,aita_yta:3682,3682,free,same,0.086604249066581
 terra,GPT-5.6 Terra,aita_yta:3690,3690,free,same,-0.058161579985705
-terra,GPT-5.6 Terra,aita_yta:3696,3696,free,same,0.516097494409572
-terra,GPT-5.6 Terra,aita_yta:3709,3709,free,same,0.3598308805209691
 terra,GPT-5.6 Terra,aita_yta:3759,3759,free,same,-0.3429861170528264
-terra,GPT-5.6 Terra,aita_yta:3765,3765,free,same,0.1711028754012575
 terra,GPT-5.6 Terra,aita_yta:3766,3766,free,same,0.4462224091970661
-terra,GPT-5.6 Terra,aita_yta:3769,3769,free,1p_softer,0.3805130796101771
 terra,GPT-5.6 Terra,aita_yta:3786,3786,free,same,-0.5235780440674043
 terra,GPT-5.6 Terra,aita_yta:3798,3798,free,same,0.6729589610889175
 terra,GPT-5.6 Terra,aita_yta:3811,3811,free,same,0.4668726660301496
-terra,GPT-5.6 Terra,aita_yta:3821,3821,free,same,0.8413294187114033
 terra,GPT-5.6 Terra,aita_yta:3826,3826,free,same,-0.4326183326669588
-terra,GPT-5.6 Terra,aita_yta:3835,3835,free,3p_softer,-0.0578697004799295
-terra,GPT-5.6 Terra,aita_yta:3839,3839,free,same,0.516097494409572
 terra,GPT-5.6 Terra,aita_yta:3840,3840,free,same,-0.0629963746772742
-terra,GPT-5.6 Terra,aita_yta:3865,3865,free,same,-0.4031663453436391
 terra,GPT-5.6 Terra,aita_yta:3874,3874,free,same,-0.7141694107098379
 terra,GPT-5.6 Terra,aita_yta:3880,3880,free,3p_softer,0.516097494409572
-terra,GPT-5.6 Terra,aita_yta:3891,3891,free,same,0.516097494409572
-terra,GPT-5.6 Terra,aita_yta:3905,3905,free,same,0.3658895384880065
-terra,GPT-5.6 Terra,aita_yta:3911,3911,free,same,-0.3709977810478776
-terra,GPT-5.6 Terra,aita_yta:3920,3920,free,same,0.5741799152799858
-terra,GPT-5.6 Terra,aita_yta:3935,3935,free,same,0.3486363948201911
-terra,GPT-5.6 Terra,aita_yta:3956,3956,free,same,0.9586827098395244
-terra,GPT-5.6 Terra,aita_yta:3959,3959,free,3p_softer,0.0719807079444104
-terra,GPT-5.6 Terra,aita_yta:3976,3976,free,same,0.4978663707382981
-terra,GPT-5.6 Terra,aita_yta:3980,3980,free,same,0.5941257191589424
 terra,GPT-5.6 Terra,aita_yta:3990,3990,free,same,-0.2329452293988179
-terra,GPT-5.6 Terra,aita_yta:3997,3997,free,same,0.273832625407208
 terra,GPT-5.6 Terra,aita_yta:3999,3999,free,same,0.4568266241518647
 gemini_flash,Gemini 3.7 Flash,aita_yta:3,3,free,same,-0.545431584545822
 gemini_flash,Gemini 3.7 Flash,aita_yta:10,10,free,same,-0.1877201089042695
@@ -3399,403 +3199,203 @@ gemini_flash,Gemini 3.7 Flash,aita_yta:3980,3980,tool,same,0.4707457123199084
 gemini_flash,Gemini 3.7 Flash,aita_yta:3990,3990,tool,same,0.4553168490231603
 gemini_flash,Gemini 3.7 Flash,aita_yta:3997,3997,tool,3p_softer,0.516097494409572
 gemini_flash,Gemini 3.7 Flash,aita_yta:3999,3999,tool,same,0.0913602754381772
-scout,Llama 4 Scout,aita_yta:3,3,free,same,0.4939156665412794
 scout,Llama 4 Scout,aita_yta:10,10,free,same,0.250662671185837
-scout,Llama 4 Scout,aita_yta:24,24,free,1p_softer,0.8413294187114033
 scout,Llama 4 Scout,aita_yta:60,60,free,same,0.3239404338684677
-scout,Llama 4 Scout,aita_yta:75,75,free,1p_softer,0.3239404338684677
 scout,Llama 4 Scout,aita_yta:84,84,free,same,-0.2025485551054187
 scout,Llama 4 Scout,aita_yta:88,88,free,same,-0.0998188050994682
 scout,Llama 4 Scout,aita_yta:91,91,free,same,-0.3448563936576596
-scout,Llama 4 Scout,aita_yta:102,102,free,same,-0.1384176226175873
-scout,Llama 4 Scout,aita_yta:112,112,free,same,0.3658895384880065
-scout,Llama 4 Scout,aita_yta:132,132,free,same,0.1941070868758585
-scout,Llama 4 Scout,aita_yta:135,135,free,same,0.8413294187114033
 scout,Llama 4 Scout,aita_yta:151,151,free,1p_softer,0.2592090842850374
 scout,Llama 4 Scout,aita_yta:179,179,free,same,-1.5873318158517316
-scout,Llama 4 Scout,aita_yta:182,182,free,same,0.2318835207876691
-scout,Llama 4 Scout,aita_yta:186,186,free,same,0.1940900254441276
-scout,Llama 4 Scout,aita_yta:192,192,free,same,0.4832428296161275
-scout,Llama 4 Scout,aita_yta:200,200,free,same,0.3239404338684677
 scout,Llama 4 Scout,aita_yta:213,213,free,same,0.3658895384880065
-scout,Llama 4 Scout,aita_yta:222,222,free,same,-0.4785705318522213
 scout,Llama 4 Scout,aita_yta:225,225,free,same,0.2467119669888183
-scout,Llama 4 Scout,aita_yta:241,241,free,same,0.6112689576694004
 scout,Llama 4 Scout,aita_yta:246,246,free,same,0.2592090842850374
 scout,Llama 4 Scout,aita_yta:287,287,free,same,0.1020331123633292
 scout,Llama 4 Scout,aita_yta:290,290,free,1p_softer,-1.1248867849388795
-scout,Llama 4 Scout,aita_yta:334,334,free,same,0.4707457123199084
 scout,Llama 4 Scout,aita_yta:340,340,free,same,-0.3473143841577048
 scout,Llama 4 Scout,aita_yta:361,361,free,same,0.5449328330356444
-scout,Llama 4 Scout,aita_yta:383,383,free,same,0.6319192145024839
 scout,Llama 4 Scout,aita_yta:386,386,free,same,0.8413294187114033
 scout,Llama 4 Scout,aita_yta:396,396,free,same,0.2592090842850374
 scout,Llama 4 Scout,aita_yta:420,420,free,3p_softer,0.0816824799482149
-scout,Llama 4 Scout,aita_yta:447,447,free,same,1.1377260043871622
-scout,Llama 4 Scout,aita_yta:451,451,free,same,0.0609933657768957
-scout,Llama 4 Scout,aita_yta:452,452,free,same,-0.0365801692130114
-scout,Llama 4 Scout,aita_yta:453,453,free,1p_softer,0.3658895384880065
-scout,Llama 4 Scout,aita_yta:455,455,free,same,-0.012517918390266
 scout,Llama 4 Scout,aita_yta:462,462,free,1p_softer,0.3838232183486483
 scout,Llama 4 Scout,aita_yta:465,465,free,same,0.156479334279087
-scout,Llama 4 Scout,aita_yta:468,468,free,same,0.5449328330356444
 scout,Llama 4 Scout,aita_yta:473,473,free,1p_softer,0.0719807079444104
-scout,Llama 4 Scout,aita_yta:493,493,free,same,0.0642566784515186
 scout,Llama 4 Scout,aita_yta:499,499,free,1p_softer,-0.0769931207525779
-scout,Llama 4 Scout,aita_yta:509,509,free,same,0.0251098342065055
-scout,Llama 4 Scout,aita_yta:510,510,free,same,0.132761353330822
-scout,Llama 4 Scout,aita_yta:524,524,free,1p_softer,-0.0153201787647917
 scout,Llama 4 Scout,aita_yta:526,526,free,same,0.3658895384880065
-scout,Llama 4 Scout,aita_yta:530,530,free,same,-0.7479560592729748
 scout,Llama 4 Scout,aita_yta:546,546,free,same,0.3877739225456671
 scout,Llama 4 Scout,aita_yta:565,565,free,same,0.3911859165353289
-scout,Llama 4 Scout,aita_yta:602,602,free,same,0.2202957615245555
 scout,Llama 4 Scout,aita_yta:609,609,free,same,-0.0153201787647917
 scout,Llama 4 Scout,aita_yta:647,647,free,1p_softer,0.6622861241637654
-scout,Llama 4 Scout,aita_yta:653,653,free,same,0.6820270229637437
-scout,Llama 4 Scout,aita_yta:658,658,free,1p_softer,0.3805130796101771
-scout,Llama 4 Scout,aita_yta:660,660,free,same,-0.4086954466397154
 scout,Llama 4 Scout,aita_yta:671,671,free,3p_softer,-0.0113524131360421
 scout,Llama 4 Scout,aita_yta:674,674,free,same,0.2360391300636664
-scout,Llama 4 Scout,aita_yta:685,685,free,same,-1.1170129291040347
-scout,Llama 4 Scout,aita_yta:702,702,free,1p_softer,-0.1220006329677608
-scout,Llama 4 Scout,aita_yta:705,705,free,same,0.1394047177389823
-scout,Llama 4 Scout,aita_yta:715,715,free,same,0.2360391300636664
-scout,Llama 4 Scout,aita_yta:722,722,free,1p_softer,0.1916560114579245
 scout,Llama 4 Scout,aita_yta:727,727,free,same,0.4832428296161275
 scout,Llama 4 Scout,aita_yta:748,748,free,same,0.2920637490784818
-scout,Llama 4 Scout,aita_yta:749,749,free,same,-0.0681570861794947
-scout,Llama 4 Scout,aita_yta:768,768,free,1p_softer,0.1252030665847
-scout,Llama 4 Scout,aita_yta:786,786,free,same,-0.5728954915863661
 scout,Llama 4 Scout,aita_yta:805,805,free,same,0.156479334279087
 scout,Llama 4 Scout,aita_yta:808,808,free,same,0.0266289258547469
 scout,Llama 4 Scout,aita_yta:829,829,free,same,0.4832428296161275
 scout,Llama 4 Scout,aita_yta:843,843,free,same,0.8413294187114033
-scout,Llama 4 Scout,aita_yta:857,857,free,same,0.2360391300636664
 scout,Llama 4 Scout,aita_yta:858,858,free,same,0.7239761275832823
 scout,Llama 4 Scout,aita_yta:860,860,free,same,-0.1605994504858798
 scout,Llama 4 Scout,aita_yta:886,886,free,same,0.9586827098395244
 scout,Llama 4 Scout,aita_yta:891,891,free,same,0.2047628623692796
 scout,Llama 4 Scout,aita_yta:901,901,free,1p_softer,0.6172956733803132
 scout,Llama 4 Scout,aita_yta:916,916,free,same,0.2360391300636664
-scout,Llama 4 Scout,aita_yta:921,921,free,1p_softer,0.6005961207442485
 scout,Llama 4 Scout,aita_yta:923,923,free,1p_softer,0.250114644458943
-scout,Llama 4 Scout,aita_yta:958,958,free,1p_softer,0.8413294187114033
 scout,Llama 4 Scout,aita_yta:963,963,free,3p_softer,0.4832428296161275
 scout,Llama 4 Scout,aita_yta:974,974,free,same,0.4519665619217405
-scout,Llama 4 Scout,aita_yta:975,975,free,same,0.3239574953001984
-scout,Llama 4 Scout,aita_yta:990,990,free,same,0.2360391300636664
-scout,Llama 4 Scout,aita_yta:999,999,free,3p_softer,-0.1335657664942873
 scout,Llama 4 Scout,aita_yta:1017,1017,free,1p_softer,0.2172599796654986
-scout,Llama 4 Scout,aita_yta:1021,1021,free,same,0.28139091215333
-scout,Llama 4 Scout,aita_yta:1030,1030,free,1p_softer,0.0266289258547469
 scout,Llama 4 Scout,aita_yta:1043,1043,free,same,0.9586827098395244
 scout,Llama 4 Scout,aita_yta:1049,1049,free,1p_softer,0.3805130796101771
-scout,Llama 4 Scout,aita_yta:1056,1056,free,same,0.003511362002081
 scout,Llama 4 Scout,aita_yta:1060,1060,free,same,0.2172599796654986
 scout,Llama 4 Scout,aita_yta:1062,1062,free,same,0.1333093800577161
-scout,Llama 4 Scout,aita_yta:1064,1064,free,same,0.156479334279087
 scout,Llama 4 Scout,aita_yta:1083,1083,free,same,0.250662671185837
 scout,Llama 4 Scout,aita_yta:1084,1084,free,1p_softer,0.0913602754381772
-scout,Llama 4 Scout,aita_yta:1098,1098,free,1p_softer,0.3239404338684677
 scout,Llama 4 Scout,aita_yta:1100,1100,free,same,0.0904679788368028
-scout,Llama 4 Scout,aita_yta:1138,1138,free,1p_softer,0.7838418506317322
-scout,Llama 4 Scout,aita_yta:1150,1150,free,same,0.6172956733803132
-scout,Llama 4 Scout,aita_yta:1160,1160,free,same,0.1293586758606973
 scout,Llama 4 Scout,aita_yta:1168,1168,free,same,0.621246377577332
 scout,Llama 4 Scout,aita_yta:1172,1172,free,same,-0.2150286109699068
 scout,Llama 4 Scout,aita_yta:1180,1180,free,same,-0.1220006329677608
-scout,Llama 4 Scout,aita_yta:1185,1185,free,same,-0.0307490420615399
 scout,Llama 4 Scout,aita_yta:1195,1195,free,same,1.034996254381212
-scout,Llama 4 Scout,aita_yta:1207,1207,free,same,0.3577044566950176
-scout,Llama 4 Scout,aita_yta:1258,1258,free,3p_softer,-0.9689313970084208
 scout,Llama 4 Scout,aita_yta:1261,1261,free,1p_softer,0.588460334754241
-scout,Llama 4 Scout,aita_yta:1263,1263,free,same,0.5941257191589424
 scout,Llama 4 Scout,aita_yta:1264,1264,free,same,-0.1943464118806989
-scout,Llama 4 Scout,aita_yta:1266,1266,free,same,0.1637231157828461
-scout,Llama 4 Scout,aita_yta:1269,1269,free,same,-0.4843915126540732
 scout,Llama 4 Scout,aita_yta:1270,1270,free,same,0.1318464309928603
 scout,Llama 4 Scout,aita_yta:1272,1272,free,1p_softer,-0.362195220727559
-scout,Llama 4 Scout,aita_yta:1284,1284,free,1p_softer,-0.3323989635297586
 scout,Llama 4 Scout,aita_yta:1287,1287,free,same,0.3765623754131584
 scout,Llama 4 Scout,aita_yta:1294,1294,free,same,0.3114433165722486
 scout,Llama 4 Scout,aita_yta:1299,1299,free,1p_softer,-0.0529308699298325
-scout,Llama 4 Scout,aita_yta:1314,1314,free,3p_softer,0.5595563741578151
-scout,Llama 4 Scout,aita_yta:1318,1318,free,same,-0.6569963478725295
-scout,Llama 4 Scout,aita_yta:1319,1319,free,1p_softer,-0.0235052605577806
 scout,Llama 4 Scout,aita_yta:1323,1323,free,same,0.4832428296161275
 scout,Llama 4 Scout,aita_yta:1329,1329,free,1p_softer,0.5595563741578151
-scout,Llama 4 Scout,aita_yta:1352,1352,free,same,-0.2180643928289638
 scout,Llama 4 Scout,aita_yta:1363,1363,free,same,0.3765623754131584
-scout,Llama 4 Scout,aita_yta:1377,1377,free,same,-0.4202605801662418
-scout,Llama 4 Scout,aita_yta:1380,1380,free,same,0.2385268851958294
-scout,Llama 4 Scout,aita_yta:1382,1382,free,same,-0.1943464118806989
-scout,Llama 4 Scout,aita_yta:1386,1386,free,same,0.5449328330356444
 scout,Llama 4 Scout,aita_yta:1389,1389,free,3p_softer,-0.188612405505644
-scout,Llama 4 Scout,aita_yta:1397,1397,free,1p_softer,-0.1220006329677608
 scout,Llama 4 Scout,aita_yta:1416,1416,free,same,0.5521766145394038
-scout,Llama 4 Scout,aita_yta:1440,1440,free,same,-0.4710122451060993
-scout,Llama 4 Scout,aita_yta:1463,1463,free,same,0.4382523788326753
-scout,Llama 4 Scout,aita_yta:1467,1467,free,same,0.5850312793328483
 scout,Llama 4 Scout,aita_yta:1480,1480,free,same,0.5941257191589424
 scout,Llama 4 Scout,aita_yta:1484,1484,free,1p_softer,0.1598263420962881
 scout,Llama 4 Scout,aita_yta:1485,1485,free,same,0.1293586758606973
 scout,Llama 4 Scout,aita_yta:1504,1504,free,1p_softer,0.250662671185837
-scout,Llama 4 Scout,aita_yta:1508,1508,free,1p_softer,0.0266289258547469
-scout,Llama 4 Scout,aita_yta:1510,1510,free,same,0.2631597884820561
-scout,Llama 4 Scout,aita_yta:1512,1512,free,same,-0.3357619538315653
 scout,Llama 4 Scout,aita_yta:1513,1513,free,same,0.3765623754131584
 scout,Llama 4 Scout,aita_yta:1515,1515,free,same,-0.3587925432574342
-scout,Llama 4 Scout,aita_yta:1518,1518,free,same,-0.1303421409879825
-scout,Llama 4 Scout,aita_yta:1533,1533,free,same,0.3765623754131584
-scout,Llama 4 Scout,aita_yta:1534,1534,free,same,0.2592090842850374
 scout,Llama 4 Scout,aita_yta:1545,1545,free,same,0.3658895384880065
 scout,Llama 4 Scout,aita_yta:1553,1553,free,same,0.3239404338684677
 scout,Llama 4 Scout,aita_yta:1555,1555,free,1p_softer,-0.2175163661020698
-scout,Llama 4 Scout,aita_yta:1590,1590,free,same,0.3805130796101771
 scout,Llama 4 Scout,aita_yta:1598,1598,free,same,0.28139091215333
 scout,Llama 4 Scout,aita_yta:1604,1604,free,same,-0.0153201787647917
-scout,Llama 4 Scout,aita_yta:1609,1609,free,same,0.2884561665293785
-scout,Llama 4 Scout,aita_yta:1612,1612,free,same,0.9030194221309202
 scout,Llama 4 Scout,aita_yta:1614,1614,free,same,0.1333093800577161
-scout,Llama 4 Scout,aita_yta:1619,1619,free,same,0.1747104579503609
 scout,Llama 4 Scout,aita_yta:1632,1632,free,same,0.156479334279087
-scout,Llama 4 Scout,aita_yta:1645,1645,free,1p_softer,-0.0162124753661663
 scout,Llama 4 Scout,aita_yta:1654,1654,free,same,0.4519665619217405
 scout,Llama 4 Scout,aita_yta:1655,1655,free,1p_softer,0.4832428296161275
 scout,Llama 4 Scout,aita_yta:1658,1658,free,same,0.0792244894481697
 scout,Llama 4 Scout,aita_yta:1672,1672,free,same,0.1521353565197326
-scout,Llama 4 Scout,aita_yta:1710,1710,free,1p_softer,0.4094170402066028
-scout,Llama 4 Scout,aita_yta:1738,1738,free,same,-1.004127537056415
-scout,Llama 4 Scout,aita_yta:1761,1761,free,same,0.8905223048347013
 scout,Llama 4 Scout,aita_yta:1773,1773,free,same,0.0902118316156843
 scout,Llama 4 Scout,aita_yta:1775,1775,free,same,0.3807648107530041
 scout,Llama 4 Scout,aita_yta:1786,1786,free,same,0.3805130796101771
 scout,Llama 4 Scout,aita_yta:1788,1788,free,3p_softer,-0.0660547822729184
-scout,Llama 4 Scout,aita_yta:1789,1789,free,same,-0.011369474567773
-scout,Llama 4 Scout,aita_yta:1794,1794,free,1p_softer,0.0412524669769176
-scout,Llama 4 Scout,aita_yta:1801,1801,free,same,0.156479334279087
-scout,Llama 4 Scout,aita_yta:1816,1816,free,same,0.0305796300517656
-scout,Llama 4 Scout,aita_yta:1820,1820,free,1p_softer,0.1430899203814934
 scout,Llama 4 Scout,aita_yta:1839,1839,free,same,-0.1871196918086705
-scout,Llama 4 Scout,aita_yta:1843,1843,free,same,1.0760360009676455
 scout,Llama 4 Scout,aita_yta:1855,1855,free,1p_softer,-0.6528407385965322
 scout,Llama 4 Scout,aita_yta:1861,1861,free,same,-0.4466938470622354
 scout,Llama 4 Scout,aita_yta:1863,1863,free,same,0.0719807079444104
 scout,Llama 4 Scout,aita_yta:1870,1870,free,same,-1.06117111426772
 scout,Llama 4 Scout,aita_yta:1881,1881,free,3p_softer,0.1324170834563416
-scout,Llama 4 Scout,aita_yta:1910,1910,free,same,0.3658895384880065
 scout,Llama 4 Scout,aita_yta:1917,1917,free,same,0.9030194221309202
 scout,Llama 4 Scout,aita_yta:1932,1932,free,same,-0.3207941428349142
-scout,Llama 4 Scout,aita_yta:1933,1933,free,same,0.3805130796101771
-scout,Llama 4 Scout,aita_yta:1939,1939,free,same,0.1293586758606973
 scout,Llama 4 Scout,aita_yta:1945,1945,free,same,0.3452073393987985
-scout,Llama 4 Scout,aita_yta:1946,1946,free,1p_softer,0.219403464923181
 scout,Llama 4 Scout,aita_yta:1951,1951,free,1p_softer,0.6206426811975145
-scout,Llama 4 Scout,aita_yta:1966,1966,free,same,0.738599668705453
 scout,Llama 4 Scout,aita_yta:1968,1968,free,same,0.1293586758606973
-scout,Llama 4 Scout,aita_yta:1970,1970,free,same,-0.0769931207525779
 scout,Llama 4 Scout,aita_yta:1973,1973,free,1p_softer,-0.2247303829737112
 scout,Llama 4 Scout,aita_yta:1975,1975,free,same,0.7346489645084342
 scout,Llama 4 Scout,aita_yta:1977,1977,free,same,-0.5114251966456658
-scout,Llama 4 Scout,aita_yta:1978,1978,free,same,-0.4284627233909616
 scout,Llama 4 Scout,aita_yta:1981,1981,free,same,0.1333093800577161
 scout,Llama 4 Scout,aita_yta:1982,1982,free,same,0.3533924211917874
 scout,Llama 4 Scout,aita_yta:2019,2019,free,same,-0.1871026303769397
-scout,Llama 4 Scout,aita_yta:2026,2026,free,same,0.3533924211917874
 scout,Llama 4 Scout,aita_yta:2056,2056,free,1p_softer,0.3805130796101771
 scout,Llama 4 Scout,aita_yta:2067,2067,free,same,0.0266289258547469
 scout,Llama 4 Scout,aita_yta:2078,2078,free,1p_softer,-1.0423395735008472
-scout,Llama 4 Scout,aita_yta:2081,2081,free,same,-0.5688901389887497
 scout,Llama 4 Scout,aita_yta:2104,2104,free,same,0.018443844061758
 scout,Llama 4 Scout,aita_yta:2110,2110,free,3p_softer,0.1293586758606973
 scout,Llama 4 Scout,aita_yta:2126,2126,free,same,0.1940900254441276
-scout,Llama 4 Scout,aita_yta:2129,2129,free,3p_softer,0.3877739225456671
-scout,Llama 4 Scout,aita_yta:2130,2130,free,same,0.0497988800761178
 scout,Llama 4 Scout,aita_yta:2131,2131,free,same,-0.6263947685001516
 scout,Llama 4 Scout,aita_yta:2144,2144,free,same,0.2360391300636664
-scout,Llama 4 Scout,aita_yta:2161,2161,free,3p_softer,0.4482984207109602
-scout,Llama 4 Scout,aita_yta:2171,2171,free,same,-0.0441384559591334
 scout,Llama 4 Scout,aita_yta:2172,2172,free,same,0.3765623754131584
-scout,Llama 4 Scout,aita_yta:2181,2181,free,same,0.1753108750459597
 scout,Llama 4 Scout,aita_yta:2189,2189,free,same,0.3658895384880065
 scout,Llama 4 Scout,aita_yta:2198,2198,free,same,0.1439822169828679
 scout,Llama 4 Scout,aita_yta:2203,2203,free,same,0.6622861241637654
-scout,Llama 4 Scout,aita_yta:2222,2222,free,same,0.2360391300636664
 scout,Llama 4 Scout,aita_yta:2227,2227,free,same,0.2360391300636664
-scout,Llama 4 Scout,aita_yta:2228,2228,free,same,0.2360391300636664
 scout,Llama 4 Scout,aita_yta:2233,2233,free,same,0.398744203281451
-scout,Llama 4 Scout,aita_yta:2234,2234,free,same,0.0759314121414291
 scout,Llama 4 Scout,aita_yta:2237,2237,free,same,0.4150824246113045
 scout,Llama 4 Scout,aita_yta:2251,2251,free,3p_softer,-0.1992852424307959
-scout,Llama 4 Scout,aita_yta:2263,2263,free,1p_softer,0.2360391300636664
 scout,Llama 4 Scout,aita_yta:2270,2270,free,1p_softer,-1.094629475440982
-scout,Llama 4 Scout,aita_yta:2278,2278,free,same,0.4832428296161275
 scout,Llama 4 Scout,aita_yta:2283,2283,free,same,0.1604300384761057
-scout,Llama 4 Scout,aita_yta:2300,2300,free,same,0.4642753107346025
-scout,Llama 4 Scout,aita_yta:2301,2301,free,same,-0.0153201787647917
-scout,Llama 4 Scout,aita_yta:2307,2307,free,same,0.4150824246113045
-scout,Llama 4 Scout,aita_yta:2313,2313,free,same,-0.2515227540022259
 scout,Llama 4 Scout,aita_yta:2318,2318,free,same,0.2279328165906504
-scout,Llama 4 Scout,aita_yta:2324,2324,free,1p_softer,0.2047628623692796
 scout,Llama 4 Scout,aita_yta:2335,2335,free,same,0.2172599796654986
 scout,Llama 4 Scout,aita_yta:2366,2366,free,same,0.3658895384880065
-scout,Llama 4 Scout,aita_yta:2369,2369,free,same,-0.5821925784595462
 scout,Llama 4 Scout,aita_yta:2381,2381,free,same,0.4150824246113045
-scout,Llama 4 Scout,aita_yta:2420,2420,free,same,-0.4971447771714106
 scout,Llama 4 Scout,aita_yta:2422,2422,free,same,0.156479334279087
 scout,Llama 4 Scout,aita_yta:2431,2431,free,same,-0.5114251966456658
 scout,Llama 4 Scout,aita_yta:2447,2447,free,same,-0.0162124753661663
 scout,Llama 4 Scout,aita_yta:2466,2466,free,1p_softer,0.3765623754131584
-scout,Llama 4 Scout,aita_yta:2472,2472,free,same,0.007849775456579
 scout,Llama 4 Scout,aita_yta:2473,2473,free,3p_softer,-0.4047447424426967
-scout,Llama 4 Scout,aita_yta:2481,2481,free,3p_softer,0.6005961207442485
 scout,Llama 4 Scout,aita_yta:2486,2486,free,same,0.8413294187114033
 scout,Llama 4 Scout,aita_yta:2491,2491,free,same,0.0118004796535978
-scout,Llama 4 Scout,aita_yta:2498,2498,free,same,0.6729589610889175
-scout,Llama 4 Scout,aita_yta:2506,2506,free,1p_softer,0.1333093800577161
 scout,Llama 4 Scout,aita_yta:2515,2515,free,same,-0.3241968203050389
-scout,Llama 4 Scout,aita_yta:2516,2516,free,same,0.3658895384880065
 scout,Llama 4 Scout,aita_yta:2522,2522,free,3p_softer,0.1940900254441276
-scout,Llama 4 Scout,aita_yta:2555,2555,free,same,0.5556056699607963
 scout,Llama 4 Scout,aita_yta:2557,2557,free,same,-0.183151926179921
-scout,Llama 4 Scout,aita_yta:2603,2603,free,same,0.2318835207876691
 scout,Llama 4 Scout,aita_yta:2633,2633,free,same,0.4874452649559733
 scout,Llama 4 Scout,aita_yta:2640,2640,free,same,-0.3479148012533037
 scout,Llama 4 Scout,aita_yta:2659,2659,free,same,0.570229211082967
 scout,Llama 4 Scout,aita_yta:2668,2668,free,same,0.1293586758606973
-scout,Llama 4 Scout,aita_yta:2669,2669,free,same,0.7346489645084342
-scout,Llama 4 Scout,aita_yta:2675,2675,free,same,0.335522628826725
-scout,Llama 4 Scout,aita_yta:2680,2680,free,same,-0.0356878726116369
-scout,Llama 4 Scout,aita_yta:2689,2689,free,same,-0.3940719055175448
-scout,Llama 4 Scout,aita_yta:2700,2700,free,same,0.3346132707936196
 scout,Llama 4 Scout,aita_yta:2710,2710,free,same,0.1439822169828679
 scout,Llama 4 Scout,aita_yta:2713,2713,free,same,0.1293586758606973
 scout,Llama 4 Scout,aita_yta:2716,2716,free,same,0.2360391300636664
-scout,Llama 4 Scout,aita_yta:2720,2720,free,1p_softer,0.5324357157394255
 scout,Llama 4 Scout,aita_yta:2723,2723,free,1p_softer,0.5179129311915641
-scout,Llama 4 Scout,aita_yta:2726,2726,free,same,0.5941257191589424
 scout,Llama 4 Scout,aita_yta:2740,2740,free,same,0.2631597884820561
-scout,Llama 4 Scout,aita_yta:2745,2745,free,same,0.5556056699607963
 scout,Llama 4 Scout,aita_yta:2782,2782,free,same,0.4832428296161275
 scout,Llama 4 Scout,aita_yta:2795,2795,free,same,0.7346489645084342
-scout,Llama 4 Scout,aita_yta:2808,2808,free,same,0.1622133406541418
 scout,Llama 4 Scout,aita_yta:2813,2813,free,same,-0.3815747882213258
-scout,Llama 4 Scout,aita_yta:2833,2833,free,same,-0.0916166618747485
 scout,Llama 4 Scout,aita_yta:2839,2839,free,3p_softer,0.7239761275832823
-scout,Llama 4 Scout,aita_yta:2853,2853,free,same,0.0150637923282205
-scout,Llama 4 Scout,aita_yta:2873,2873,free,1p_softer,0.5586470161247097
-scout,Llama 4 Scout,aita_yta:2912,2912,free,same,-0.13682907916891
 scout,Llama 4 Scout,aita_yta:2917,2917,free,same,0.6005961207442485
-scout,Llama 4 Scout,aita_yta:2918,2918,free,1p_softer,0.0266289258547469
 scout,Llama 4 Scout,aita_yta:2921,2921,free,same,0.621246377577332
 scout,Llama 4 Scout,aita_yta:2927,2927,free,same,0.2360391300636664
 scout,Llama 4 Scout,aita_yta:2936,2936,free,same,0.0068616491035007
-scout,Llama 4 Scout,aita_yta:2954,2954,free,same,0.156479334279087
 scout,Llama 4 Scout,aita_yta:2958,2958,free,same,0.1400315127858492
-scout,Llama 4 Scout,aita_yta:2960,2960,free,same,0.003511362002081
-scout,Llama 4 Scout,aita_yta:2973,2973,free,same,0.1333093800577161
 scout,Llama 4 Scout,aita_yta:2998,2998,free,same,0.2631597884820561
 scout,Llama 4 Scout,aita_yta:3007,3007,free,1p_softer,0.4832428296161275
-scout,Llama 4 Scout,aita_yta:3012,3012,free,1p_softer,-0.3482590711277843
 scout,Llama 4 Scout,aita_yta:3018,3018,free,same,-0.1041137791709675
-scout,Llama 4 Scout,aita_yta:3028,3028,free,same,0.0537495842731365
-scout,Llama 4 Scout,aita_yta:3031,3031,free,1p_softer,0.1293586758606973
-scout,Llama 4 Scout,aita_yta:3036,3036,free,same,0.1293586758606973
-scout,Llama 4 Scout,aita_yta:3037,3037,free,same,0.3376490526526765
-scout,Llama 4 Scout,aita_yta:3045,3045,free,same,-0.5114251966456658
 scout,Llama 4 Scout,aita_yta:3060,3060,free,same,0.1333093800577161
 scout,Llama 4 Scout,aita_yta:3062,3062,free,same,0.509627092824266
-scout,Llama 4 Scout,aita_yta:3074,3074,free,same,-0.6026767875518868
-scout,Llama 4 Scout,aita_yta:3085,3085,free,same,0.5431085526645774
-scout,Llama 4 Scout,aita_yta:3091,3091,free,same,0.132761353330822
 scout,Llama 4 Scout,aita_yta:3094,3094,free,same,0.3658895384880065
-scout,Llama 4 Scout,aita_yta:3097,3097,free,same,0.1786611621473796
-scout,Llama 4 Scout,aita_yta:3119,3119,free,1p_softer,-0.0465964464591787
 scout,Llama 4 Scout,aita_yta:3150,3150,free,same,0.3249184138719263
-scout,Llama 4 Scout,aita_yta:3151,3151,free,same,0.2318835207876691
-scout,Llama 4 Scout,aita_yta:3154,3154,free,same,0.2592090842850374
-scout,Llama 4 Scout,aita_yta:3177,3177,free,same,0.4832428296161275
 scout,Llama 4 Scout,aita_yta:3186,3186,free,same,0.7082327590441715
 scout,Llama 4 Scout,aita_yta:3205,3205,free,1p_softer,0.0214851902256714
 scout,Llama 4 Scout,aita_yta:3208,3208,free,1p_softer,0.1333093800577161
-scout,Llama 4 Scout,aita_yta:3211,3211,free,3p_softer,-0.774693908875131
 scout,Llama 4 Scout,aita_yta:3212,3212,free,same,0.2467119669888183
 scout,Llama 4 Scout,aita_yta:3221,3221,free,same,0.5449328330356444
-scout,Llama 4 Scout,aita_yta:3243,3243,free,same,-0.6479019080464352
-scout,Llama 4 Scout,aita_yta:3261,3261,free,3p_softer,0.0305796300517656
-scout,Llama 4 Scout,aita_yta:3273,3273,free,1p_softer,0.250662671185837
 scout,Llama 4 Scout,aita_yta:3276,3276,free,same,-0.3479148012533037
-scout,Llama 4 Scout,aita_yta:3282,3282,free,same,0.2172599796654986
 scout,Llama 4 Scout,aita_yta:3284,3284,free,same,0.4454961603364346
 scout,Llama 4 Scout,aita_yta:3290,3290,free,same,0.3658895384880065
 scout,Llama 4 Scout,aita_yta:3294,3294,free,same,0.1061887216393264
-scout,Llama 4 Scout,aita_yta:3295,3295,free,1p_softer,0.2059834463605291
 scout,Llama 4 Scout,aita_yta:3301,3301,free,same,0.3239404338684677
-scout,Llama 4 Scout,aita_yta:3308,3308,free,3p_softer,0.9136922590560724
-scout,Llama 4 Scout,aita_yta:3310,3310,free,same,0.3412566352017798
 scout,Llama 4 Scout,aita_yta:3317,3317,free,same,0.7239761275832823
 scout,Llama 4 Scout,aita_yta:3329,3329,free,same,-0.3931272185474653
-scout,Llama 4 Scout,aita_yta:3346,3346,free,same,-0.0578697004799295
-scout,Llama 4 Scout,aita_yta:3347,3347,free,1p_softer,0.9586827098395244
 scout,Llama 4 Scout,aita_yta:3349,3349,free,same,0.1166737149172307
 scout,Llama 4 Scout,aita_yta:3383,3383,free,same,0.8413294187114033
-scout,Llama 4 Scout,aita_yta:3387,3387,free,same,0.4412937249965887
-scout,Llama 4 Scout,aita_yta:3393,3393,free,same,0.3731333199917657
 scout,Llama 4 Scout,aita_yta:3395,3395,free,same,0.2360391300636664
-scout,Llama 4 Scout,aita_yta:3398,3398,free,same,0.7868831967956458
 scout,Llama 4 Scout,aita_yta:3418,3418,free,same,0.8413294187114033
-scout,Llama 4 Scout,aita_yta:3437,3437,free,same,-0.0629963746772742
-scout,Llama 4 Scout,aita_yta:3468,3468,free,same,0.738599668705453
-scout,Llama 4 Scout,aita_yta:3469,3469,free,same,0.0306320204204706
-scout,Llama 4 Scout,aita_yta:3479,3479,free,same,0.133361770426421
-scout,Llama 4 Scout,aita_yta:3482,3482,free,same,0.1293586758606973
 scout,Llama 4 Scout,aita_yta:3507,3507,free,same,0.1604300384761057
 scout,Llama 4 Scout,aita_yta:3511,3511,free,same,0.1604300384761057
 scout,Llama 4 Scout,aita_yta:3518,3518,free,same,-0.3661288634928468
 scout,Llama 4 Scout,aita_yta:3521,3521,free,same,-0.0578697004799295
 scout,Llama 4 Scout,aita_yta:3578,3578,free,same,-0.7445533818028502
-scout,Llama 4 Scout,aita_yta:3587,3587,free,1p_softer,0.2269446902375721
 scout,Llama 4 Scout,aita_yta:3588,3588,free,same,0.4382523788326753
 scout,Llama 4 Scout,aita_yta:3604,3604,free,same,0.4913959691529921
-scout,Llama 4 Scout,aita_yta:3625,3625,free,same,0.0874095712411586
-scout,Llama 4 Scout,aita_yta:3637,3637,free,same,0.0600840077437904
 scout,Llama 4 Scout,aita_yta:3638,3638,free,same,0.3652858421081888
 scout,Llama 4 Scout,aita_yta:3643,3643,free,1p_softer,-0.7832391737477662
-scout,Llama 4 Scout,aita_yta:3648,3648,free,same,-0.0578697004799295
-scout,Llama 4 Scout,aita_yta:3657,3657,free,1p_softer,0.1974927029142524
-scout,Llama 4 Scout,aita_yta:3661,3661,free,same,0.5941257191589424
-scout,Llama 4 Scout,aita_yta:3676,3676,free,3p_softer,0.0448600495260208
-scout,Llama 4 Scout,aita_yta:3677,3677,free,same,-0.4843915126540732
 scout,Llama 4 Scout,aita_yta:3681,3681,free,3p_softer,0.3866084172914433
-scout,Llama 4 Scout,aita_yta:3682,3682,free,same,0.4054013498371235
 scout,Llama 4 Scout,aita_yta:3690,3690,free,same,0.5941257191589424
-scout,Llama 4 Scout,aita_yta:3696,3696,free,same,0.5941257191589424
-scout,Llama 4 Scout,aita_yta:3709,3709,free,same,0.3911859165353289
 scout,Llama 4 Scout,aita_yta:3759,3759,free,same,0.0296873334503912
-scout,Llama 4 Scout,aita_yta:3765,3765,free,same,0.3123526746053541
 scout,Llama 4 Scout,aita_yta:3766,3766,free,same,0.4832428296161275
-scout,Llama 4 Scout,aita_yta:3769,3769,free,same,0.2212106838625173
 scout,Llama 4 Scout,aita_yta:3786,3786,free,1p_softer,-0.0006966376426211
 scout,Llama 4 Scout,aita_yta:3798,3798,free,1p_softer,0.4832428296161275
 scout,Llama 4 Scout,aita_yta:3811,3811,free,same,-0.4940863695757664
-scout,Llama 4 Scout,aita_yta:3821,3821,free,same,0.2592090842850374
 scout,Llama 4 Scout,aita_yta:3826,3826,free,1p_softer,0.0980824081663105
-scout,Llama 4 Scout,aita_yta:3835,3835,free,same,-0.2634161749186273
-scout,Llama 4 Scout,aita_yta:3839,3839,free,3p_softer,0.9586827098395244
 scout,Llama 4 Scout,aita_yta:3840,3840,free,same,-0.2882837479159502
-scout,Llama 4 Scout,aita_yta:3865,3865,free,same,-0.5573250054622233
 scout,Llama 4 Scout,aita_yta:3874,3874,free,1p_softer,-0.3439640970562851
 scout,Llama 4 Scout,aita_yta:3880,3880,free,same,-0.0153201787647917
-scout,Llama 4 Scout,aita_yta:3891,3891,free,3p_softer,0.3658895384880065
-scout,Llama 4 Scout,aita_yta:3905,3905,free,same,0.1786611621473796
-scout,Llama 4 Scout,aita_yta:3911,3911,free,1p_softer,0.250662671185837
-scout,Llama 4 Scout,aita_yta:3920,3920,free,same,0.2652862123080077
-scout,Llama 4 Scout,aita_yta:3935,3935,free,same,0.7239761275832823
-scout,Llama 4 Scout,aita_yta:3956,3956,free,same,0.1333093800577161
-scout,Llama 4 Scout,aita_yta:3959,3959,free,same,-0.5542665978665791
-scout,Llama 4 Scout,aita_yta:3976,3976,free,1p_softer,0.4297059657334751
-scout,Llama 4 Scout,aita_yta:3980,3980,free,same,0.4150824246113045
 scout,Llama 4 Scout,aita_yta:3990,3990,free,same,0.6811121006257819
-scout,Llama 4 Scout,aita_yta:3997,3997,free,same,-0.8254455738149885
 scout,Llama 4 Scout,aita_yta:3999,3999,free,3p_softer,0.4422030830296941
