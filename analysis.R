@@ -8,6 +8,9 @@ groundhog.library(
   date = "2026-08-22"
 )
 
+dir_create(path("plots"))
+dir_create(path("plots", "appendix"))
+
 theme_set(
   theme_bw(base_size = 9)
 )
@@ -732,6 +735,45 @@ oeq_df %>%
     .groups = "drop"
   )
 
+p_oeq <- oeq_df %>%
+  mutate(total_syc = validation + indirectness + positivity + framing) %>%
+  group_by(speaker, total_syc) %>%
+  summarize(
+    rec_z_est = mean(rec_z),
+    n = n(),
+    .groups = "drop"
+  ) %>%
+  ungroup() %>%
+  ggplot(aes(x = total_syc, y = rec_z_est, group = speaker, color = speaker)) +
+  geom_line() +
+  geom_point(aes(size = n)) +
+  labs(
+    y = "Receptiveness",
+    x = "Total Social Sycophancy",
+    color = NULL,
+    size = "N"
+  ) +
+  theme(
+    legend.position = "inside",
+    legend.position.inside = c(0.8, 0.275),
+    legend.background = element_blank(),
+    legend.key = element_blank()
+  ) +
+  scale_color_discrete(
+    limits = c("Human", "GPT-5", "Rewrite", "Gemini 3.7 Flash",
+               "Claude Sonnet 5", "GPT-5.6 Terra", "Llama 4 Scout"),
+    breaks = c("Human", "GPT-5")
+  ) +
+  guides(size = "none")
+
+ggsave(
+  path("plots", "appendix", "corr_cont_oeq.pdf"),
+  p_oeq,
+  width = 3.3,
+  height = 3.3,
+  units = "in"
+)
+
 ## Receptiveness gain from the transformation (n = 808) ------------------
 
 # Reported in the text of "Making responses receptive makes them sycophantic."
@@ -1438,7 +1480,7 @@ p_quality_dist <- exp_qual %>%
   scale_fill_discrete(limits = c("Original", "Rewrite"))
 
 ggsave(
-  path("plots", "advice_quality_dist.pdf"),
+  path("plots", "appendix", "advice_quality_dist.pdf"),
   p_quality_dist,
   width = 6.6,
   height = 3.3,
@@ -1461,7 +1503,7 @@ p_quality_scatter <- exp %>%
     y = "Quality - Rewrite"
   )
 ggsave(
-  path("plots", "advice_quality_scatter.pdf"),
+  path("plots", "appendix", "advice_quality_scatter.pdf"),
   p_quality_scatter,
   width = 6.6,
   height = 3.3,
@@ -1469,71 +1511,7 @@ ggsave(
 )
 
 
-## Fig X: Social Sycophancy Moves with Receptiveness --------------------
-
-p_corr <- aita_soc_df %>%
-  mutate(no_syc = !any_syc) %>%
-  pivot_longer(
-    cols = c(
-      validation, indirectness, positivity, any_syc, any_elephant, no_syc,
-      framing
-    ), 
-  ) %>% 
-  filter(value != 0) %>% 
-  group_by(name, speaker, value) %>%
-  summarize(
-    rec_z_est = mean(rec_z),
-    se_z = sd(rec_z) / sqrt(n()),
-    n = n()
-  ) %>%
-  ungroup() %>%
-  complete(
-    name, speaker,
-    fill = list(rec_z_est = NA, se_z = NA, n = 0)
-  ) %>% 
-  filter(speaker != "Rewrite") %>% 
-  mutate(
-    name = factor(
-      name,
-      labels = c("None", "Framing", "Indirectness", "Validation",
-                 "Any\nELEPHANT", "Sharma\nPositivity", "Any"),
-      levels = c("no_syc", "framing", "indirectness", "validation", 
-                 "any_elephant", "positivity", "any_syc")
-    )
-  ) %>% 
-  ggplot(aes(x = name, y = rec_z_est, fill = speaker)) +
-  geom_col(position = "dodge") +
-  geom_errorbar(
-    aes(ymin = rec_z_est - (2 * se_z), ymax = rec_z_est + (2 * se_z)),
-    position = position_dodge(width = 0.9),
-    color = "black",
-    width = .1
-  ) + 
-  labs(
-    y = "Receptiveness",
-    x = "Social Sycophancy Measure",
-    fill = NULL
-  ) +
-  theme( 
-    legend.position = "inside",
-    legend.position.inside = c(0.10, 0.85),
-    legend.background = element_blank()
-  ) +
-  scale_fill_discrete(
-    limits = c("Human", "GPT-5", "Rewritten"),
-    breaks = c("Human", "GPT-5")
-  )
-
-ggsave(
-  path("plots", "appendix", "corr.pdf"),
-  p_corr,
-  width = 5.3,
-  height = 3.3,
-  units = "in"
-)
-
-
-## Fig X+1: Receptiveness Transforms Cause Social Syco --------------------
+## Receptiveness transforms cause social sycophancy (appendix) ------------
 
 p_share <- rcpt_trans %>%
   mutate(no_syc = !any_syc) %>%
@@ -1623,113 +1601,9 @@ p_quality_dist_verdict <- exp_qual %>%
   scale_fill_discrete(limits = c("Human", "Rewrite"))
 
 ggsave(
-  path("plots", "quality_by_verdict.pdf"),
+  path("plots", "appendix", "quality_by_verdict.pdf"),
   p_quality_dist_verdict,
   width = 5.3,
-  height = 3.3,
-  units = "in"
-)
-
-## Pref share by verdict --------------------------------------------
-
-p_listen_verdict <- exp %>%
-  count(verdict_bin, score = listen_pref_rewrite) %>%
-  filter(verdict_bin != "Unsure") %>% 
-  mutate(
-    share = n / sum(n),
-    se = sqrt(share * (1 - share) / sum(n)),
-    score = factor(
-      score,
-      levels = c(-2, -1, 0, 1, 2),
-      labels = c(
-        "Definitely\nhuman",
-        "Probably\nhuman",
-        "Tie",
-        "Probably\nrewrite",
-        "Definitely\nrewrite"
-      )
-    )
-  ) %>%
-  ggplot(aes(x = score, y = share, fill = verdict_bin)) +
-  geom_col(width = 0.85, position = position_dodge(width = 0.9)) +
-  geom_errorbar(
-    aes(ymin = pmax(0, share - 2 * se), ymax = share + 2 * se),
-    width = 0.1,
-    color = "black",
-    position = position_dodge(width = 0.9)
-  ) +
-  scale_y_continuous(
-    labels = scales::percent_format(accuracy = 1),
-    limits = c(0, NA)
-  ) +
-  scale_x_discrete(drop = FALSE) +
-  labs(
-    y = "Share of ratings",
-    x = NULL,
-    fill = NULL,
-  ) +
-  theme(
-    plot.title = element_text(size = 10, hjust = 0.5),
-    legend.position = "inside",
-    legend.position.inside = c(0.2, 0.85),
-    legend.background = element_blank()
-  )
-
-p_advice_verdict <- exp %>%
-  count(verdict_bin, score = advice_pref_rewrite) %>%
-  filter(verdict_bin != "Unsure") %>%
-  mutate(
-    share = n / sum(n),
-    se = sqrt(share * (1 - share) / sum(n)),
-    score = factor(
-      score,
-      levels = c(-2, -1, 0, 1, 2),
-      labels = c(
-        "Definitely\nhuman",
-        "Probably\nhuman",
-        "Tie",
-        "Probably\nrewrite",
-        "Definitely\nrewrite"
-      )
-    )
-  ) %>%
-  ggplot(aes(x = score, y = share, fill = verdict_bin)) +
-  geom_col(width = 0.85, position = position_dodge(width = 0.9)) +
-  geom_errorbar(
-    aes(ymin = pmax(0, share - 2 * se), ymax = share + 2 * se),
-    width = 0.1,
-    color = "black",
-    position = position_dodge(width = 0.9)
-  ) +
-  scale_y_continuous(
-    labels = scales::percent_format(accuracy = 1),
-    limits = c(0, NA)
-  ) +
-  scale_x_discrete(drop = FALSE) +
-  labs(
-    y = "Share of ratings",
-    x = NULL,
-    fill = NULL,
-  ) +
-  theme(
-    plot.title = element_text(size = 10, hjust = 0.5),
-    legend.position = "inside",
-    legend.position.inside = c(0.2, 0.85),
-    legend.background = element_blank()
-  )
-
-ggsave(
-  path("plots", "advice_personal.pdf"),
-  p_advice_verdict,
-  width = 3.3,
-  height = 3.3,
-  units = "in"
-)
-
-ggsave(
-  path("plots", "advice_listen.pdf"),
-  p_listen,
-  width = 3.3,
   height = 3.3,
   units = "in"
 )
@@ -1762,143 +1636,9 @@ p_verdicts <- exp %>%
   ) 
 
 ggsave(
-  path("plots", "verdicts_dist.pdf"),
+  path("plots", "appendix", "verdicts_dist.pdf"),
   p_verdicts,
   width = 3.3,
-  height = 3.3,
-  units = "in"
-)
-
-## Quality delta by item, with receptiveness -------------------------------
-
-item_delta <- exp %>%
-  group_by(item_id) %>%
-  summarize(
-    est = mean(quality_rewrite_minus_human),
-    se = sd(quality_rewrite_minus_human) / sqrt(n()),
-    n = n(),
-    .groups = "drop"
-  ) %>%
-  left_join(exp_items, by = "item_id")
-
-p_delta_bars <- item_delta %>%
-  mutate(item_id = fct_reorder(item_id, est)) %>%
-  ggplot(aes(x = item_id, y = est, fill = rec_delta)) +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "grey50") +
-  geom_col(width = 0.8) +
-  geom_errorbar(
-    aes(ymin = est - 2 * se, ymax = est + 2 * se),
-    width = 0.2,
-    color = "black"
-  ) +
-  scale_fill_gradient2(
-    low = "#b2182b",
-    mid = "grey90",
-    high = "#2166ac",
-    midpoint = median(item_delta$rec_delta)
-  ) +
-  labs(
-    y = "Quality (rewrite - human)",
-    x = "Item",
-    fill = "Rec. diff."
-  ) +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1, size = 7),
-    legend.position = "right"
-  )
-
-ggsave(
-  path("plots", "advice_deltas_yta.pdf"),
-  p_delta_bars,
-  width = 5.3,
-  height = 3.3,
-  units = "in"
-)
-
-# Receptiveness delta -----------------------------------------------------
-
-p_delta_scatter <- item_delta %>%
-  ggplot(aes(x = rec_z_human, y = rec_z_rewrite)) +
-  geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "grey50") +
-  geom_point() +
-  labs(
-    x = "Human receptiveness",
-    y = "Rewrite receptiveness"
-  )
-
-p_delta <- plot_grid(
-  p_delta_bars,
-  p_delta_scatter,
-  nrow = 1,
-  rel_widths = c(1.35, 1),
-  labels = c("A", "B"),
-  label_size = 11
-)
-
-ggsave(
-  path("plots", "advice_delta_by_item.pdf"),
-  p_delta,
-  width = 7.5,
-  height = 3.3,
-  units = "in"
-)
-
-
-## Survey Social Syc -------------------------------------------------------
-survey_ids <- jsonlite::fromJSON(path("data", "experiment", "items.json"))$id
-
-p_share_survey <- rcpt_trans %>%
-  filter(row_idx %in% survey_ids) %>%
-  mutate(no_syc = !any_syc) %>%
-  pivot_longer(
-    cols = c(
-      validation, indirectness, positivity, any_syc, any_elephant, no_syc,
-      framing
-    )
-  ) %>%
-  filter(value != 0) %>%
-  group_by(name, speaker) %>%
-  summarize(
-    rec_z_est = mean(rec_z),
-    se_z = sd(rec_z) / sqrt(n()),
-    n = n(),
-    .groups = "drop"
-  ) %>%
-  complete(
-    name, speaker,
-    fill = list(rec_z_est = NA, se_z = NA, n = 0)
-  ) %>%
-  filter(speaker != "GPT-5") %>%
-  mutate(
-    name = factor(
-      name,
-      labels = c("None", "Framing", "Indirectness", "Validation",
-                 "Any\nELEPHANT", "Sharma\nPositivity", "Any"),
-      levels = c("no_syc", "framing", "indirectness", "validation",
-                 "any_elephant", "positivity", "any_syc")
-    )
-  ) %>%
-  ggplot(aes(x = name, y = rec_z_est, fill = speaker)) +
-  geom_col(position = "dodge") +
-  scale_fill_discrete(
-    limits = c("Human", "GPT-5", "Rewrite"),
-    breaks = c("Human", "Rewrite")
-  ) +
-  labs(
-    y = "Receptiveness",
-    x = "Social Sycophancy Measure",
-    fill = NULL
-  ) +
-  theme(
-    legend.position = "inside",
-    legend.position.inside = c(.10, .85),
-    legend.background = element_blank()
-  )
-
-ggsave(
-  path("plots", "shift_survey_n20.pdf"),
-  p_share_survey,
-  width = 5.3,
   height = 3.3,
   units = "in"
 )

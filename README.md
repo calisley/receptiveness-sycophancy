@@ -20,7 +20,8 @@ Replication materials for an anonymous submission.
 
 **Outputs**
 
-- Figures: `plots/`
+- Main-text figures: `plots/`
+- Appendix figures: `plots/appendix/`
 - Human-study robustness table: `tables/exp_human_robustness.{csv,tex}`
 - Other reported statistics: printed to the console
 
