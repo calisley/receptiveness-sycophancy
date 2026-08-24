@@ -1362,6 +1362,7 @@ ggsave(
 
 
 ## Eligible comments -------------------------------------------------------
+N_aita <- 2000L
 
 message("\n=== Supplement: AITA human-comment eligibility filter (2000 → 1892) ===")
 {
