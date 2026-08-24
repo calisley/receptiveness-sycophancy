@@ -71,8 +71,8 @@ rcpt_trans_all <- read_csv(
 ) %>%
   mutate(
     speaker = factor(speaker, levels = c("Human", "GPT-5", "Rewrite")),
-    any_elephant = validation | indirectness | framing,
-    any_syc = validation | indirectness | framing | positivity
+    any_elephant = validation | indirectness | framing_v2,
+    any_syc = validation | indirectness | framing_v2 | positivity
   )
 
 fig2_expanded_row_idx <- rcpt_trans_all %>%
@@ -631,6 +631,7 @@ hear_features <- setdiff(
 )
 
 hear_folds <- sample(rep(1:5, length.out = nrow(hear_train)))
+hear_coefs <- double(5)
 hear_train$pred_cv <- NA_real_
 
 for (k in 1:5) {
@@ -642,6 +643,7 @@ for (k in 1:5) {
     fit,
     newdata = hear_train[hear_folds == k, ]
   )
+  hear_coefs[k] <- list(fit$coefficients)
 }
 
 message("\n=== Main text: HEAR rubric CV correlation with human scores ===")
@@ -689,7 +691,6 @@ oeq_df %>%
     r_pooled = cor(total_syc, rec_z, use = "complete.obs"),
     n = n()
   )
-
 
 ## Receptiveness rewrite (n = 808) --------------------------------
 
@@ -1079,7 +1080,7 @@ front_T_shared %>%
 ## OEQ correlation (supplement) --------------------------------------------
 
 p_oeq <- oeq_df %>%
-  mutate(total_syc = validation + indirectness + positivity + framing) %>%
+  mutate(total_syc = validation + indirectness + positivity + framing_v2) %>%
   group_by(speaker, total_syc) %>%
   summarize(
     rec_z_est = mean(rec_z),
@@ -1192,7 +1193,7 @@ p_corr_hist <- aita_soc_df %>%
   pivot_longer(
     cols = c(
       validation, indirectness, positivity, any_syc, any_elephant, no_syc,
-      framing
+      framing_v2
     ), 
   ) %>% 
   filter(value != 0) %>% 
@@ -1213,7 +1214,7 @@ p_corr_hist <- aita_soc_df %>%
       name,
       labels = c("None", "Framing", "Indirectness", "Validation",
                  "Any\nELEPHANT", "Sharma\nPositivity", "Any"),
-      levels = c("no_syc", "framing", "indirectness", "validation", 
+      levels = c("no_syc", "framing_v2", "indirectness", "validation", 
                  "any_elephant", "positivity", "any_syc")
     )
   ) %>% 
@@ -1261,7 +1262,7 @@ p_share <- rcpt_trans %>%
   pivot_longer(
     cols = c(
       validation, indirectness, positivity, any_syc, any_elephant, no_syc,
-      framing
+      framing_v2
     )
   ) %>%
   group_by(name, speaker) %>%
@@ -1281,7 +1282,7 @@ p_share <- rcpt_trans %>%
       name,
       labels = c("None", "Framing", "Indirectness", "Validation",
                  "Any\nELEPHANT", "Sharma\nPositivity", "Any"),
-      levels = c("no_syc", "framing", "indirectness", "validation",
+      levels = c("no_syc", "framing_v2", "indirectness", "validation",
                  "any_elephant", "positivity", "any_syc")
     )
   ) %>%
@@ -1362,82 +1363,66 @@ ggsave(
 
 # Appendix statistics -----------------------------------------------------
 
-## Raw 1p verdict rates (YTA / NTA / mixed / other) ------------------------
 
-N_aita <- 2000L
+## Eligible comments -------------------------------------------------------
 
-dens_by_model <- aita_soc_df %>%
-  filter(speaker != "Human", speaker != "Rewrite") %>%
-  count(model = speaker, name = "dens_clear_yta")
-
-aita_verdict_rates <- aita_verdicts_1p %>%
-  count(model, verdict, name = "n") %>%
-  complete(model, verdict, fill = list(n = 0L)) %>%
-  group_by(model) %>%
-  mutate(
-    n_judged = sum(n),
-    share_of_judged = n / n_judged,
-    share_of_2000 = n / N_aita
-  ) %>%
-  ungroup()
-
-aita_verdict_rates_wide <- aita_verdict_rates %>%
-  select(model, verdict, n, share_of_judged, share_of_2000) %>%
-  pivot_wider(
-    names_from = verdict,
-    values_from = c(n, share_of_judged, share_of_2000),
-    names_glue = "{verdict}_{.value}"
-  ) %>%
-  mutate(n_judged = YTA_n + NTA_n + mixed_n + other_n) %>%
-  left_join(dens_by_model, by = "model") %>%
-  transmute(
-    model,
-    n_judged,
-    YTA = YTA_n,
-    NTA = NTA_n,
-    mixed = mixed_n,
-    other = other_n,
-    pct_YTA = YTA_share_of_judged,
-    pct_NTA = NTA_share_of_judged,
-    pct_mixed = mixed_share_of_judged,
-    pct_other = other_share_of_judged,
-    pct_YTA_of_2000 = YTA_share_of_2000,
-    dens_clear_yta,
-    dens_over_2000 = dens_clear_yta / N_aita
-  )
-
-message("\n=== Supplement: raw Luna 1p verdict rates by model (N=2000) ===")
-aita_verdict_rates_wide
-
-message("\n=== Supplement: AITA sample sizes (corpus → Fig 2 panels) ===")
-tibble(
-  stage = c(
-    "Full AITA-YTA corpus (posts with Luna 1p verdict)",
-    "Fig 2 expanded (complete human/rewrite pairs in receptiveness_transform.csv)",
-    "Fig 2 main text (expanded ∩ GPT-5 1p verdict = YTA)"
-  ),
-  n = c(
-    N_aita,
-    length(fig2_expanded_row_idx),
-    length(fig2_row_idx)
-  )
-)
-
-
-message("\n=== Supplement: share judging asker not in the wrong (verdict <= 2) ===")
+message("\n=== Supplement: AITA human-comment eligibility filter (2000 → 1892) ===")
 {
-  n <- nrow(exp)
-  k <- sum(exp$verdict <= 2)
-  bt <- binom.test(k, n, conf.level = 0.95)
-  tibble(
-    k = k,
-    n = n,
-    est = as.numeric(bt$estimate),
-    lo = bt$conf.int[1],
-    hi = bt$conf.int[2]
+  aita_posts <- read_csv(path("data", "aita", "AITA-YTA.csv")) %>%
+    rename(row_idx = ...1) %>%
+    mutate(
+      top_comment = str_trim(as.character(top_comment)),
+      excluded_removed = tolower(top_comment) %in% c("[removed]", "[deleted]"),
+      excluded_short = !excluded_removed &
+        (top_comment == "" | nchar(top_comment) < 15L),
+      eligible = !excluded_removed & top_comment != "" & nchar(top_comment) >= 15L
+    )
+
+  stopifnot(
+    nrow(aita_posts) == N_aita,
+    sum(aita_posts$eligible) == length(fig2_expanded_row_idx),
+    setequal(
+      aita_posts$row_idx[aita_posts$eligible],
+      fig2_expanded_row_idx
+    )
   )
+
+  aita_posts %>%
+    summarize(
+      n_corpus = n(),
+      n_removed_or_deleted = sum(excluded_removed),
+      n_fewer_than_15_chars = sum(excluded_short),
+      n_excluded = sum(!eligible),
+      n_eligible = sum(eligible)
+    )
 }
 
+## Eligible comments by speaker (crowd and model say YTA) ---------------------
+
+message("\n=== Supplement: Number of eligible comments by model")
+
+read_csv(
+  path("data", "aita_sycophancy_scores.csv")
+) %>%
+  filter(speaker != "GPT-5", speaker != "Rewrite") %>%
+  distinct(speaker, row_idx) %>%
+  group_by(speaker) %>%
+  summarize(n = n())
+
+## Yeomans dataset size --------------
+
+message("\n=== Supplement: Number of training examples in Yeomans")
+
+nrow(hear_train)
+
+## HEAR Model Coefs--------------
+
+message("\n=== Supplement: HEAR Model Coefs")
+
+avg_coefs_df <- do.call(rbind, hear_coefs) %>%
+  colMeans() |>
+  data.frame(estimate = _)
+avg_coefs_df
 
 ## Robustness checks -------------------------------------------------------
 
@@ -1494,6 +1479,14 @@ message("\n=== Supplement: verdict preservation, expanded fig2 panel ===")
     hi = bt$conf.int[2]
   )
 }
+
+
+## Other experimental results -----------------------------------------------------
+
+
+message("\n=== human experiment outcomes (raw, n=200) ===")
+print(exp_robustness_csv %>% select(-`Main text (n=200)`))
+
 
 ## Framing-prompt sensitivity ----------------------------------------------
 
@@ -1596,11 +1589,3 @@ bind_rows(
       )
   })
 
-
-message("\n=== Main text: experiment sample sizes ===")
-exp %>%
-  summarize(
-    n_ratings = n(),
-    n_participants = n_distinct(prolific_pid),
-    n_items = n_distinct(item_id)
-  )
