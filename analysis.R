@@ -162,9 +162,12 @@ exp_items <- fromJSON(path("data", "experiment", "items.json")) %>%
     model_label = model_label
   )
 
-# Mitigation (Figure 5): Sonnet and Flash only; free vs inference-time tool.
-# Prompt arm rows define the shared n=200 post subset (semi_join only).
-front_models <- c("Claude Sonnet 5", "Gemini 3.7 Flash")
+# Figure 5: free baseline for Sonnet, Flash, Terra, Scout; tool mitigation for
+# Sonnet and Flash only. Prompt arm rows (Sonnet/Flash) define the n=200 subset.
+front_models <- c(
+  "GPT-5.6 Terra", "Claude Sonnet 5", "Gemini 3.7 Flash", "Llama 4 Scout"
+)
+front_models_mit <- c("Claude Sonnet 5", "Gemini 3.7 Flash")
 front_verdicts <- read_csv(path("data", "mitigation", "frontier.csv")) %>%
   select(model, row_idx, verdict_1p)
 
@@ -175,13 +178,13 @@ front_long <- read_csv(path("data", "mitigation", "transform.csv")) %>%
   ) %>%
   left_join(front_verdicts, by = c("model", "row_idx"))
 
-prompt_ids <- front_long %>%
-  filter(arm == "prompt", model %in% front_models) %>%
-  distinct(model, row_idx)
+shared_row_idx <- front_long %>%
+  filter(arm == "prompt", model %in% front_models_mit) %>%
+  distinct(row_idx)
 
 front_T_shared <- front_long %>%
-  filter(model %in% front_models) %>%
-  semi_join(prompt_ids, by = c("model", "row_idx")) %>%
+  filter(model %in% front_models, arm %in% c("free", "tool")) %>%
+  semi_join(shared_row_idx, by = "row_idx") %>%
   group_by(model_key, model, arm) %>%
   summarize(
     n = sum(landing %in% c("1p_softer", "3p_softer", "same"), na.rm = TRUE),
@@ -495,8 +498,8 @@ ggsave(
 
 ## Fig 5: Substantive Syc ---------------------------------------------------------
 
-# Shared n=200 AITA dens × Sonnet / Flash. Free vs inference-time tool probe.
-# X = T on all landed posts; Y = mean rec among 1p=YTA only.
+# Shared n=200 AITA dens × four models. Free baseline for all; tool arrows for
+# Sonnet / Flash only. X = T on all landed posts; Y = mean rec among 1p=YTA.
 
 df_front <- front_T_shared %>%
   filter(arm %in% c("free", "tool")) %>%
@@ -535,6 +538,7 @@ p_front <- ggplot(df_front, aes(color = model, fill = model, shape = model)) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
   geom_vline(xintercept = 0.5, linetype = "dashed", color = "grey40") +
   geom_segment(
+    data = df_front %>% filter(model %in% front_models_mit),
     aes(x = T_start, y = rec_z_start, xend = T_end, yend = rec_z_end),
     arrow = arrow(length = unit(0.07, "in"), type = "closed"),
     linewidth = 0.45,
@@ -542,12 +546,13 @@ p_front <- ggplot(df_front, aes(color = model, fill = model, shape = model)) +
   ) +
   geom_point(aes(x = T_free, y = rec_z_free), size = 2.8, stroke = 0.6) +
   geom_point(
+    data = df_front %>% filter(model %in% front_models_mit),
     aes(x = T_mit, y = rec_z_mit),
     size = 2.8,
     fill = "white",
     stroke = 0.9
   ) +
-  scale_shape_manual(values = c(22, 24)) +
+  scale_shape_manual(values = c(22, 24, 23, 25)) +
   scale_x_continuous(
     limits = c(0.44, 0.60),
     breaks = seq(0.44, 0.60, by = 0.04),
@@ -569,7 +574,7 @@ p_front <- ggplot(df_front, aes(color = model, fill = model, shape = model)) +
   scale_color_discrete(limits = front_models, drop = FALSE) +
   scale_fill_discrete(limits = front_models, drop = FALSE) +
   scale_shape_manual(
-    values = c(22, 24),
+    values = c(22, 24, 23, 25),
     limits = front_models,
     drop = FALSE
   )
@@ -884,13 +889,17 @@ exp %>%
 
 ## Mitigations: substantive deference and receptiveness --------------------
 
-# Reported in the text of the mitigation section (Figure 5). T is the estimate
-# of the sycophancy definition under a 1p/3p manipulation; 0.5 is invariance.
-# rec_z is mean among 1p=YTA only.
+# Reported in the text of the mitigation section (Figure 5). Free baseline for
+# all four models; tool mitigation contrast for Sonnet / Flash only.
+
+message("\n=== Mitigation: T and receptiveness (free baseline, all models) ===")
+front_T_shared %>%
+  filter(arm == "free") %>%
+  select(model, T, se, lo, hi, rec_raw, rec_se, n_rec_yta, n)
 
 message("\n=== Mitigation: T and receptiveness (free vs tool, Sonnet / Flash) ===")
 front_T_shared %>%
-  filter(arm %in% c("free", "tool")) %>%
+  filter(model %in% front_models_mit, arm %in% c("free", "tool")) %>%
   select(model_key, model, arm, T, se, lo, hi, rec_raw, rec_se, n_rec_yta, n) %>%
   pivot_wider(
     names_from = arm,
